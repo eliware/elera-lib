@@ -6,7 +6,7 @@ export interface ConnectionProfile {
   user?: string;
   password?: string;
   database: string;
-  options?: Partial<PoolOptions>;
+  options?: Partial<PoolOptions> & { socket?: string };
 }
 
 export interface RoutingNode { host: string; port: number | string; weight?: number; }
@@ -35,14 +35,15 @@ export interface DbClient {
   bundle(): RoutingBundle | undefined;
   classify(sql: string): 'primary' | 'balanced';
   attachRoutingStream(stream: RoutingStream): Promise<() => void>;
+  setNodeAvailability(route: 'primary' | 'balanced', host: string, available: boolean): void;
   config: { primary: ConnectionProfile; balanced?: ConnectionProfile };
 }
 
 export interface RoutingStream {
   connect(): Promise<void>;
-  setOnUpdate(handler: (event: unknown) => void): void;
+  setOnUpdate(handler: (event: unknown) => void | Promise<void>): void;
   close(): void;
-  state(): { connected: boolean; expectedVersion: number };
+  state(): { connected: boolean; mode: 'websocket' | 'rest' | 'disconnected'; expectedVersion: number };
 }
 
 export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; now?: () => number }): Promise<DbClient>;

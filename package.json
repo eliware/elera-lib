@@ -1,8 +1,8 @@
 {
     "name": "@eliware/elera-lib",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Generic MySQL and MariaDB client with primary, balanced, and resilient routing",
-  "keywords": ["eliware", "elera", "mysql", "mariadb", "sql", "database", "routing", "failover"],
+  "keywords": ["eliware", "elera", "mysql", "mariadb", "sql", "database", "routing", "failover", "websocket", "connection-pool"],
   "repository": {
     "type": "git",
     "url": "https://github.com/eliware/elera-lib.git"
@@ -12,10 +12,6 @@
     "url": "https://github.com/eliware/elera-lib/issues"
   },
     "license": "Apache-2.0",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/eliware/elera-lib.git"
-    },
     "type": "module",
     "engines": {
         "node": ">=26"

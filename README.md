@@ -2,7 +2,7 @@
 
 The alternative SQL client for Eliware applications. It provides generic
 primary/balanced MySQL or MariaDB routing without embedding Elera, HAProxy,
-backup, or GitOps policy. It is a v0.1.0 alternative to `@eliware/mysql`; the
+backup, or GitOps policy. It is a v0.1.1 alternative to `@eliware/mysql`; the
 existing package is intentionally unchanged.
 
 `primary` is the preferred connection path. `balanced` is an optional alternate
@@ -19,7 +19,9 @@ await db.close();
 Environment variables: `MYSQL_PRIMARY_HOST` (or `MYSQL_HOST`),
 `MYSQL_PRIMARY_PORT` (or `MYSQL_PORT`), optional `MYSQL_BALANCED_HOST`,
 optional `MYSQL_BALANCED_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, and
-`MYSQL_DATABASE`. Pool settings may be supplied with `MYSQL_CONNECT_TIMEOUT`,
+`MYSQL_DATABASE`. `MYSQL_SOCKET` optionally selects a Unix-domain socket for
+the primary connection, which is useful for local socket-authenticated MariaDB
+accounts. Pool settings may be supplied with `MYSQL_CONNECT_TIMEOUT`,
 `MYSQL_ACQUIRE_TIMEOUT`, `MYSQL_CONNECTION_LIMIT`, `MYSQL_QUEUE_LIMIT`, and
 `MYSQL_SSL`. Configure primary and balanced routes explicitly; applications
 should not rely on ambiguous single-endpoint aliases.
@@ -34,8 +36,9 @@ wire representation separately.
 The implementation accepts optional routing bundles and injected credential
 providers, maintains bounded pools per route, supports ordered writer/reader
 candidates, bundle refresh, and quarantine of unhealthy nodes. The WebSocket
-routing-event transport is implemented as a generic adapter. These are generic
-client capabilities: the
+routing-event transport is implemented as a generic adapter. Nodes can be
+immediately excluded or re-admitted with `client.setNodeAvailability(route,
+host, available)`. These are generic client capabilities: the
 library does not know about supervisors, Elera, HAProxy, GitOps, backups, or
 CLI commands. Applications provide those integrations through ordinary
 configuration and callbacks.
@@ -48,7 +51,8 @@ WebSocket transports are adapters, not supervisor or CLI policy. Underlying
 For maintenance workflows, `createQuiesceController` provides a generic
 connection-admission drain and `createSqlVerifier` provides generic connectivity,
 schema, account, and grant checks. Neither API transports or orchestrates dump
-contents.
+contents. The stream reports `websocket`, `rest`, or `disconnected` mode so
+callers can observe transport health without implementing transport policy.
 
 `createMaterializer` supports bounded plaintext use for a caller-provided
 operation. It creates a mode-restricted temporary file and removes its entire

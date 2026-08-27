@@ -1,5 +1,35 @@
 # Release notes
 
+## 0.1.1 — Runtime integration readiness
+
+This unreleased patch prepares the generic client for supervisor control-plane
+connections and application-side routing changes. It does not add supervisor,
+CLI, Galera, backup, or GitOps policy to the library.
+
+### Connection and routing lifecycle
+
+- Supports optional `MYSQL_SOCKET` Unix-domain socket connections for local
+  MariaDB control-plane use while preserving TCP configuration.
+- Adds explicit route-node availability control for immediate drain and
+  recovery exclusion without exposing pool internals.
+- Keeps manually excluded nodes unavailable until explicitly restored, rather
+  than allowing a quarantine timer to re-admit them.
+
+### Routing stream behavior
+
+- Reports whether routing updates are currently using WebSocket, REST fallback,
+  or have no usable transport.
+- Prevents late REST fallback results from changing state after stream shutdown.
+- Prevents reconnect scheduling and fallback callbacks from reviving a closed
+  stream.
+
+### Validation
+
+- Adds regression coverage for socket environment mapping, route exclusion,
+  stream shutdown, fallback state, and child lifecycle behavior.
+- Maintains 100% statements, branches, functions, and lines coverage with zero
+  lint warnings.
+
 ## 0.1.0 — Baseline release
 
 `@eliware/elera-lib` is a generic MariaDB/MySQL client library for applications
