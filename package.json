@@ -5,9 +5,10 @@
   "type": "module",
   "engines": { "node": ">=26" },
   "exports": { ".": { "types": "./src/index.d.ts", "import": "./src/index.mjs" } },
-  "files": ["src", "README.md", "RELEASE_NOTES.md", "LICENSE"],
+  "files": ["src", "README.md", "RELEASE_NOTES.md", "LICENSE", "THIRD-PARTY-NOTICES.md"],
   "scripts": {
     "test": "eliware-test",
+    "integration": "node scripts/integration.mjs",
     "lint": "eliware-test --lint",
     "check": "node --check src/index.mjs",
     "typecheck": "tsc --project tsconfig.json",
