@@ -21,9 +21,19 @@ Environment variables: `MYSQL_PRIMARY_HOST`, `MYSQL_PRIMARY_PORT`,
 `MYSQL_PASSWORD`, and `MYSQL_DATABASE`. `MYSQL_HOST` and `MYSQL_PORT` remain
 accepted as primary aliases during migration.
 
-The current implementation is the static connection foundation. Supervisor
-credential providers, connection bundles, pool failover, TLS options, and
-credential refresh are planned feature batches and are not implemented yet.
+The implementation accepts optional routing bundles and injected credential
+providers, maintains bounded pools per route, supports ordered writer/reader
+candidates, bundle refresh, and quarantine of unhealthy nodes. The WebSocket
+routing-event transport is a planned adapter in the next routing batch. These
+are generic client capabilities: the
+library does not know about supervisors, Galera, HAProxy, GitOps, backups, or
+CLI commands. Applications provide those integrations through ordinary
+configuration and callbacks.
+
+The public client intentionally exposes SQL operations, health, routing,
+lifecycle, and planned optional routing-event synchronization methods only. REST and
+WebSocket transports are adapters, not supervisor or CLI policy. Underlying
+`mysql2` pools and driver objects remain internal implementation details.
 
 ## Development
 

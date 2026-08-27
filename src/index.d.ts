@@ -1,4 +1,4 @@
-import type { Pool, PoolOptions } from 'mysql2/promise';
+import type { PoolOptions } from 'mysql2/promise';
 
 export interface ConnectionProfile {
   host: string;
@@ -24,7 +24,6 @@ export interface DbClient {
   refresh(bundle: RoutingBundle): Promise<{ bundleVersion: number | string | null; refreshRequired: boolean }>;
   bundle(): RoutingBundle | undefined;
   classify(sql: string): 'primary' | 'balanced';
-  pools: { primary: Pool; balanced: Pool | null };
 }
 
 export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; now?: () => number }): Promise<DbClient>;
