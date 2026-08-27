@@ -5,3 +5,4 @@ export { validateProfile, redactedProfile } from './config.mjs';
 export { SqlClientError, classifyError, asSqlError } from './errors.mjs';
 export { validateBundle, bundleExpired, bundleNeedsRefresh } from './bundle.mjs';
 export { createAdminSql } from './admin/sql.mjs';
+export { createMigrationRunner } from './admin/migrations.mjs';
