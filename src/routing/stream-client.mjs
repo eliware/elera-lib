@@ -1,4 +1,3 @@
-/* istanbul ignore file -- network transport adapter is covered with injected WebSocket contract tests. */
 import { log as defaultLog } from '@eliware/common';
 
 export function createRoutingStream({ endpoint, token, application = 'default', fetchBundle, WebSocketImpl = globalThis.WebSocket, onUpdate, onError, reconnectMs = 1000, maxReconnectMs = 30000, now = () => Date.now() } = {}) {

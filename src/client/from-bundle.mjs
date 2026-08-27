@@ -1,4 +1,3 @@
-/* istanbul ignore file -- bundle adapter is covered by package contract and consumer tests. */
 import { validateBundle } from '../bundle.mjs';
 
 export function profilesFromBundle(bundle) {
