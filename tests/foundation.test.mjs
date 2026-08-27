@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals';
 import { validateProfile, redactedProfile } from '../src/config.mjs';
-import { resolveCredentials, credentialContext } from '../src/credentials.mjs';
+import { resolveCredentials, credentialContext } from '../src/credential-provider.mjs';
 import { SqlClientError, classifyError, asSqlError } from '../src/errors.mjs';
 
 const valid = { host: 'db', user: 'u', password: 'p', database: 'app' };

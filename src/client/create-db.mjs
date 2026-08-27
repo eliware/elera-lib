@@ -2,7 +2,7 @@ import { log as defaultLog } from '@eliware/common';
 import * as mysql from 'mysql2/promise';
 import { validateProfile, redactedProfile } from '../config.mjs';
 import { asSqlError } from '../errors.mjs';
-import { resolveCredentials, credentialContext } from '../credentials.mjs';
+import { resolveCredentials, credentialContext } from '../credential-provider.mjs';
 import { validateBundle, bundleExpired, bundleNeedsRefresh } from '../bundle.mjs';
 import { createRouteFactory } from './route-factory.mjs';
 import { classifyQuery, routeFor } from '../routing.mjs';
