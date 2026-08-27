@@ -35,6 +35,7 @@
     },
     "files": [
         "src",
+        "examples",
         "README.md",
         "RELEASE_NOTES.md",
         "LICENSE",

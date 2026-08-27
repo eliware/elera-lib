@@ -26,6 +26,9 @@ accounts. Pool settings may be supplied with `MYSQL_CONNECT_TIMEOUT`,
 `MYSQL_SSL`. Configure primary and balanced routes explicitly; applications
 should not rely on ambiguous single-endpoint aliases.
 
+See examples/basic-client.mjs for a complete consumer example using only the
+public package API. Its usage notes are in examples/README.md.
+
 Routing bundles passed to `createDbFromBundle` use the normalized shape
 `routes.primary` and `routes.balanced`, each containing ordered `{ host, port,
 weight }` nodes. A bundle also carries `database`, `identity`, optional
