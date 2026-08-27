@@ -3,6 +3,10 @@
     "version": "0.1.0",
     "description": "Eliware SQL client with primary and balanced connection routing",
     "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/eliware/elera-lib.git"
+    },
     "type": "module",
     "engines": {
         "node": ">=26"
