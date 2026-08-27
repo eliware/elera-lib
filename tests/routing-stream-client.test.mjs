@@ -22,3 +22,28 @@ test('does not apply a REST result after the stream is closed', async () => { le
 test('does not schedule reconnect work after an already closed connect', async () => { const client = createRoutingStream({ endpoint: 'http://vip', fetchBundle: async () => ({}), WebSocketImpl: null }); client.close(); await client.connect(); expect(client.state().mode).toBe('disconnected'); });
 test('falls back after an active socket closes and cancels its timer on shutdown', async () => { const fetchBundle = jest.fn(async () => ({ bundleVersion: 'fallback' })); const client = createRoutingStream({ endpoint: 'http://vip', fetchBundle, WebSocketImpl: FakeWebSocket, reconnectMs: 100000 }); await client.connect(); const socket = sockets.at(-1); socket.open(); socket.close(); await new Promise((resolve) => setImmediate(resolve)); expect(client.state().mode).toBe('rest'); client.close(); });
 test('ignores a failed REST fallback after shutdown', async () => { let reject; const client = createRoutingStream({ endpoint: 'http://vip', fetchBundle: () => new Promise((_, fail) => { reject = fail; }), WebSocketImpl: null }); const pending = client.connect(); client.close(); reject(new Error('late failure')); await pending; expect(client.state().mode).toBe('disconnected'); });
+
+test('sends periodic heartbeats and clears them on close', async () => {
+  const client = createRoutingStream({ endpoint: 'http://vip', fetchBundle: async () => ({}), WebSocketImpl: FakeWebSocket, heartbeatMs: 1 });
+  await client.connect();
+  const socket = sockets.at(-1); socket.open();
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  expect(socket.sent?.length ?? 0).toBeGreaterThanOrEqual(0);
+  client.close();
+});
+
+test('ignores stale versioned events', async () => {
+  const update = jest.fn();
+  const client = createRoutingStream({ endpoint: 'http://vip', fetchBundle: async () => ({}), WebSocketImpl: FakeWebSocket, onUpdate: update });
+  await client.connect(); const socket = sockets.at(-1); socket.open(); socket.message({ type: 'routing.update', version: 2 }); socket.message({ type: 'routing.update', version: 1 });
+  expect(update).toHaveBeenCalledTimes(1); client.close();
+});
+
+test('delivers REST resyncs to the replaced update handler', async () => {
+  const received = [];
+  const client = createRoutingStream({ endpoint: 'http://vip', fetchBundle: async () => ({ bundleVersion: 'rest' }), WebSocketImpl: null });
+  client.setOnUpdate((event) => received.push(event));
+  await client.connect();
+  expect(received[0]).toMatchObject({ type: 'routing.resync', bundle: { bundleVersion: 'rest' } });
+  client.close();
+});

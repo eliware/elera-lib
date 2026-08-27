@@ -77,6 +77,7 @@ test('refreshes a bundle with a balanced route and handles stream events without
   await expect(client.refresh(bundle)).resolves.toMatchObject({ bundleVersion: 'v1' });
   const handler = {}; await client.attachRoutingStream({ connect: async () => {}, setOnUpdate: (value) => { handler.value = value; } });
   await handler.value({ type: 'routing.update', routes: { primary: [{ host: 'new', port: 3306 }] }, database: 'app' });
+  await handler.value({ type: 'routing.resync', bundle: { ...bundle, routes: { primary: [{ host: 'resynced', port: 3306 }] } } });
   await client.close();
 });
 test('refreshes a primary-only client and processes drain/recovery without a balanced pool', async () => { const client = await createDb({ primary: profile, mysqlLib: driver() }); await client.refresh({ ...bundle, routes: { primary: [{ host: 'new', port: 3306 }] }, bundleVersion: undefined }); const handler = {}; await client.attachRoutingStream({ connect: async () => {}, setOnUpdate: (value) => { handler.value = value; } }); await handler.value({ type: 'routing.drain', node: 'new' }); await handler.value({ type: 'routing.recovery', node: 'new' }); await client.close(); });
@@ -91,4 +92,36 @@ test('uses the active primary credentials and expiry when stream updates omit op
   await update({ type: 'routing.update', routes: { primary: [{ host: 'next', port: 3306 }] } });
   expect(client.bundle().routes.primary[0].host).toBe('next');
   await client.close();
+});
+
+test('drains both route pools and exposes node lifecycle state', async () => {
+  const client = await createDb({ primary: profile, balanced: { host: 'read', port: 3306 }, bundle, mysqlLib: driver() });
+  const operation = client.drain('read', 1);
+  expect(client.nodeStates().find((node) => node.host === 'read')).toMatchObject({ state: 'draining', available: false });
+  await expect(operation.wait()).resolves.toEqual([expect.any(Array), expect.any(Array)]);
+  await operation.forceClose();
+  await client.close();
+});
+
+test('does not retry an uncertain write on another node', async () => {
+  const failure = Object.assign(new Error('connection lost'), { code: 'ECONNRESET' });
+  const query = jest.fn().mockRejectedValue(failure);
+  const client = await createDb({ primary: profile, balanced: { host: 'read', port: 3306 }, bundle, mysqlLib: driver({ query }) });
+  await expect(client.query('UPDATE app SET value = 1', [], { route: 'balanced' })).rejects.toThrow();
+  expect(query).toHaveBeenCalledTimes(1);
+  await client.close();
+});
+
+test('does not replace a newer bundle with an older resync', async () => {
+  const client = await createDb({ primary: profile, bundle, mysqlLib: driver() });
+  await expect(client.refresh({ ...bundle, bundleVersion: 'v0' })).resolves.toMatchObject({ bundleVersion: 'v1' });
+  expect(client.bundle().bundleVersion).toBe('v1');
+  await client.close();
+});
+
+test('accepts first bundle versions and unversioned refreshes', async () => {
+  const first = await createDb({ primary: profile, mysqlLib: driver() });
+  await expect(first.refresh({ ...bundle, bundleVersion: 2 })).resolves.toMatchObject({ bundleVersion: 2 });
+  await expect(first.refresh({ ...bundle, bundleVersion: undefined })).resolves.toMatchObject({ bundleVersion: null });
+  await first.close();
 });

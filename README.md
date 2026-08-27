@@ -2,7 +2,7 @@
 
 The alternative SQL client for Eliware applications. It provides generic
 primary/balanced MySQL or MariaDB routing without embedding Elera, HAProxy,
-backup, or GitOps policy. It is a v0.1.2 alternative to `@eliware/mysql`; the
+backup, or GitOps policy. It is a v0.1.3 alternative to `@eliware/mysql`; the
 existing package is intentionally unchanged.
 
 `primary` is the preferred connection path. `balanced` is an optional alternate
@@ -42,6 +42,15 @@ host, available)`. These are generic client capabilities: the
 library does not know about supervisors, Elera, HAProxy, GitOps, backups, or
 CLI commands. Applications provide those integrations through ordinary
 configuration and callbacks.
+
+When a route node is drained, the client immediately stops assigning new work
+to that node while existing operations continue. The default drain window is
+45 seconds and can be changed with `drainTimeoutMs`; remaining pool
+connections are then force-closed. `client.drain(host)` returns `wait()` and
+`forceClose()` operations, while `client.nodeStates()` exposes lifecycle and
+active-operation state. Only conservative, single-statement reads are eligible
+for automatic retry after a connection failure; uncertain writes are never
+retried automatically.
 
 The public client intentionally exposes SQL operations, health, routing,
 lifecycle, and optional routing-event synchronization methods. REST and

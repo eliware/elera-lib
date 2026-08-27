@@ -36,6 +36,8 @@ export interface DbClient {
   classify(sql: string): 'primary' | 'balanced';
   attachRoutingStream(stream: RoutingStream): Promise<() => void>;
   setNodeAvailability(route: 'primary' | 'balanced', host: string, available: boolean): void;
+  drain(host: string, timeoutMs?: number): { host: string; timeoutMs: number; wait(): Promise<unknown[]>; forceClose(): Promise<unknown[]> };
+  nodeStates(): Array<{ host: string; port: number; route: 'primary' | 'balanced'; state: 'ready' | 'draining' | 'unavailable' | 'recovering'; active: number; available: boolean }>;
   config: { primary: ConnectionProfile; balanced?: ConnectionProfile };
 }
 
@@ -46,7 +48,7 @@ export interface RoutingStream {
   state(): { connected: boolean; mode: 'websocket' | 'rest' | 'disconnected'; expectedVersion: number };
 }
 
-export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; now?: () => number }): Promise<DbClient>;
+export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number }): Promise<DbClient>;
 export function createDbFromEnvironment(options?: { env?: Record<string, string | undefined>; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string }): Promise<DbClient>;
 export function classifyQuery(sql: unknown): 'primary' | 'balanced';
 export function routeFor(sql: unknown, requested?: 'auto' | 'primary' | 'balanced'): 'primary' | 'balanced';
@@ -61,7 +63,7 @@ export function bundleNeedsRefresh(bundle: RoutingBundle, now?: number): boolean
 export function createAdminSql(options: { query: QueryFunction }): { transaction<T>(work: (context: { query: QueryFunction }) => Promise<T>): Promise<T>; migration(statements?: string[]): Promise<unknown> };
 export function createMigrationRunner(options: { query: QueryFunction; migrations?: Array<{ version: number; name: string; statements: string[] }> }): { status(): Promise<{ applied: unknown[] }>; migrate(): Promise<unknown> };
 export function selectRouteNodes(options: { bundle: RoutingBundle; route?: 'primary' | 'balanced'; now?: number }): RoutingNode[];
-export function createRoutingStream(options: { endpoint: string; token?: string; application?: string; fetchBundle: (application: string) => Promise<RoutingBundle>; onUpdate?: (event: unknown) => void; onError?: (error: unknown) => void; reconnectMs?: number; maxReconnectMs?: number }): RoutingStream;
+export function createRoutingStream(options: { endpoint: string; token?: string; application?: string; fetchBundle: (application: string) => Promise<RoutingBundle>; onUpdate?: (event: unknown) => void; onError?: (error: unknown) => void; reconnectMs?: number; maxReconnectMs?: number; heartbeatMs?: number }): RoutingStream;
 export function createQuiesceController(options?: { close?: () => Promise<void>; onChange?: (state: string) => void }): { state(): { state: string; active: number }; enter(): () => void; begin(): Promise<void>; end(): Promise<void>; close(): Promise<void> };
 export function createSqlVerifier(options: { query: QueryFunction }): { connectivity(): Promise<{ verified: boolean }>; schema(database: string): Promise<{ database: string; verified: boolean }>; account(user: string, host?: string): Promise<{ user: string; host: string; verified: boolean; grants: string[] }>; all(options?: { database?: string; user?: string; host?: string }): Promise<unknown> };
 export function createMaterializer(options?: Record<string, unknown>): unknown;

@@ -1,7 +1,7 @@
 {
     "name": "@eliware/elera-lib",
-    "version": "0.1.2",
-    "description": "Generic MySQL and MariaDB client with primary, balanced, and resilient routing",
+    "version": "0.1.3",
+    "description": "Generic MySQL and MariaDB client with resilient routing, client-side drains, and failover",
     "keywords": [
         "eliware",
         "elera",

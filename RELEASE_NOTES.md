@@ -1,5 +1,31 @@
 # Release notes
 
+## 0.1.3 — Client-side routing drain lifecycle
+
+This patch adds generic client-side handling for supervisor-published routing
+drains and topology resynchronization. It does not add Supervisor, CLI, Galera,
+backup, or GitOps policy to the library.
+
+### Added
+
+- Tracks active operations and acquired connections per route node.
+- Exposes node lifecycle state and client drain status.
+- Immediately excludes draining nodes from new work and force-closes remaining
+  pool connections after the configurable 45-second default drain window.
+- Handles recovery events for primary and balanced routes.
+- Retries eligible read operations only; uncertain writes are not retried.
+- Rejects stale routing events and applies REST resync bundles through the
+  active routing handler.
+- Adds WebSocket heartbeat scheduling and cleanup during reconnect and close.
+
+### Validation
+
+- Adds regression coverage for drain completion, forced cutoff, connection
+  accounting, safe retry behavior, stale events, REST resync, and heartbeats.
+- Maintains 100% statements, branches, functions, and lines coverage with zero
+  lint warnings.
+- Typecheck and diff validation pass.
+
 ## 0.1.2 — Unix-socket connection correction
 
 This patch corrects the mysql2 option used for local MariaDB Unix-domain

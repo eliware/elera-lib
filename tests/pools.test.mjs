@@ -20,3 +20,63 @@ test('walks past a weighted node before selecting the next node', () => {
   expect(pool.choose().host).toBe('first');
   expect(pool.choose().host).toBe('second');
 });
+
+test('tracks active work and drains before force-closing', async () => {
+  let resolveQuery;
+  const query = new Promise((resolve) => { resolveQuery = resolve; });
+  const end = jest.fn(async () => {});
+  const pool = driver({ query: jest.fn(() => query), end });
+  const node = createNodePool({ profile, mysqlLib: pool });
+  const running = node.query('SELECT SLEEP(1)');
+  expect(node.active).toBe(1);
+  expect(node.drain().state).toBe('draining');
+  expect(node.available).toBe(false);
+  await expect(node.query('SELECT 1')).rejects.toThrow('unavailable');
+  const idle = node.waitForIdle(1000);
+  resolveQuery([['ok']]);
+  await running;
+  await expect(idle).resolves.toBe(true);
+  node.recover();
+  expect(node.state).toBe('ready');
+  await node.forceClose();
+  expect(end).toHaveBeenCalled();
+});
+
+test('does not resolve idle wait while another operation remains active', async () => {
+  let release;
+  const pending = new Promise((resolve) => { release = resolve; });
+  const pool = driver({ query: jest.fn(() => pending) });
+  const node = createNodePool({ profile, mysqlLib: pool });
+  const first = node.query('SELECT 1');
+  const second = node.query('SELECT 2');
+  const idle = node.waitForIdle(1);
+  release([['ok']]);
+  await Promise.all([first, second]);
+  await idle;
+});
+
+test('automatically force-closes after the drain deadline and protects release accounting', async () => {
+  const end = jest.fn(async () => {});
+  const conn = connection();
+  const pool = driver({ end, getConnection: jest.fn(async () => conn) });
+  const node = createNodePool({ profile, mysqlLib: pool });
+  const acquired = await node.getConnection();
+  expect(node.active).toBe(1);
+  acquired.release();
+  acquired.release();
+  expect(node.active).toBe(0);
+  node.drain(0);
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  expect(end).toHaveBeenCalled();
+  await expect(node.waitForIdle()).resolves.toBe(true);
+});
+
+test('route lifecycle helpers tolerate simple nodes', async () => {
+  const nodes = [{ host: 'simple', weight: 1, available: true, query: jest.fn(), execute: jest.fn(), close: jest.fn(async () => {}) }];
+  const pool = createRoutePool(nodes);
+  expect(pool.drain('missing')).toEqual([]);
+  expect(pool.recover('missing')).toEqual([]);
+  await expect(pool.waitForIdle(0)).resolves.toEqual([true]);
+  await pool.forceClose('simple');
+  expect(nodes[0].close).toHaveBeenCalled();
+});
