@@ -18,20 +18,20 @@ await db.close();
 
 Environment variables: `MYSQL_PRIMARY_HOST`, `MYSQL_PRIMARY_PORT`,
 `MYSQL_BALANCED_HOST`, `MYSQL_BALANCED_PORT`, `MYSQL_USER`,
-`MYSQL_PASSWORD`, and `MYSQL_DATABASE`. `MYSQL_HOST` and `MYSQL_PORT` remain
-accepted as primary aliases during migration.
+`MYSQL_PASSWORD`, and `MYSQL_DATABASE`. Configure primary and balanced routes
+explicitly; applications should not rely on ambiguous single-endpoint aliases.
 
 The implementation accepts optional routing bundles and injected credential
 providers, maintains bounded pools per route, supports ordered writer/reader
 candidates, bundle refresh, and quarantine of unhealthy nodes. The WebSocket
-routing-event transport is a planned adapter in the next routing batch. These
-are generic client capabilities: the
+routing-event transport is implemented as a generic adapter. These are generic
+client capabilities: the
 library does not know about supervisors, Elera, HAProxy, GitOps, backups, or
 CLI commands. Applications provide those integrations through ordinary
 configuration and callbacks.
 
 The public client intentionally exposes SQL operations, health, routing,
-lifecycle, and planned optional routing-event synchronization methods only. REST and
+lifecycle, and optional routing-event synchronization methods. REST and
 WebSocket transports are adapters, not supervisor or CLI policy. Underlying
 `mysql2` pools and driver objects remain internal implementation details.
 
