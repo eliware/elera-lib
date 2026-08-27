@@ -1,7 +1,7 @@
-# @eliware/galera-lib
+# @eliware/elera-lib
 
 The alternative SQL client for Eliware applications. It provides generic
-primary/balanced MySQL or MariaDB routing without embedding Galera, HAProxy,
+primary/balanced MySQL or MariaDB routing without embedding Elera, HAProxy,
 backup, or GitOps policy. It is being developed as a replacement for
 `@eliware/mysql`; the existing package is intentionally unchanged.
 
@@ -10,7 +10,7 @@ path. Both may accept writes; automatic routing sends only conservative,
 single-statement read queries to `balanced`. Transactions always use `primary`.
 
 ```js
-import { createDbFromEnvironment } from '@eliware/galera-lib';
+import { createDbFromEnvironment } from '@eliware/elera-lib';
 const db = await createDbFromEnvironment();
 await db.query('SELECT 1');
 await db.close();
@@ -26,7 +26,7 @@ providers, maintains bounded pools per route, supports ordered writer/reader
 candidates, bundle refresh, and quarantine of unhealthy nodes. The WebSocket
 routing-event transport is a planned adapter in the next routing batch. These
 are generic client capabilities: the
-library does not know about supervisors, Galera, HAProxy, GitOps, backups, or
+library does not know about supervisors, Elera, HAProxy, GitOps, backups, or
 CLI commands. Applications provide those integrations through ordinary
 configuration and callbacks.
 

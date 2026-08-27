@@ -1,5 +1,5 @@
 {
-  "name": "@eliware/galera-lib",
+  "name": "@eliware/elera-lib",
   "version": "0.1.0",
   "description": "Eliware SQL client with primary and balanced connection routing",
   "type": "module",
