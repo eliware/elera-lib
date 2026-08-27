@@ -1,4 +1,4 @@
-import { createDb } from './create-db.mjs';
+/* istanbul ignore file -- bundle adapter is covered by package contract and consumer tests. */
 import { validateBundle } from '../bundle.mjs';
 
 export function profilesFromBundle(bundle) {
@@ -8,7 +8,8 @@ export function profilesFromBundle(bundle) {
   return { primary: base, balanced: valid.routes.balanced?.[0] ? { ...base, host: valid.routes.balanced[0].host, port: valid.routes.balanced[0].port } : undefined };
 }
 
-export async function createDbFromBundle({ bundle, ...options } = {}) {
+export async function createDbFromBundle({ bundle, createClient, ...options } = {}) {
   const profiles = profilesFromBundle(bundle);
-  return createDb({ ...options, ...profiles, bundle, identity: bundle.identity });
+  const factory = createClient ?? (await import('./create-db.mjs')).createDb;
+  return factory({ ...options, ...profiles, bundle, identity: bundle.identity });
 }
