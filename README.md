@@ -40,6 +40,11 @@ connection-admission drain and `createSqlVerifier` provides generic connectivity
 schema, account, and grant checks. Neither API transports or orchestrates dump
 contents.
 
+`createMaterializer` supports bounded plaintext use for a caller-provided
+operation. It creates a mode-restricted temporary file and removes its entire
+temporary directory in a `finally` block; the library does not persist secrets,
+age keys, or supervisor-specific artifact metadata.
+
 ## Development
 
 ```bash

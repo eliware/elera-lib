@@ -6,3 +6,4 @@
 - Initial primary/balanced SQL client.
 - Conservative automatic query routing.
 - Transaction pinning, health checks, and graceful pool shutdown.
+- Added deterministic temporary-file materialization for bounded secret use.
