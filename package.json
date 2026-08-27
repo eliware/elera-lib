@@ -1,0 +1,27 @@
+{
+  "name": "@eliware/galera-lib",
+  "version": "0.1.0",
+  "description": "Eliware SQL client with primary and balanced connection routing",
+  "type": "module",
+  "engines": { "node": ">=26" },
+  "exports": { ".": { "types": "./src/index.d.ts", "import": "./src/index.mjs" } },
+  "files": ["src", "README.md", "RELEASE_NOTES.md", "LICENSE"],
+  "scripts": {
+    "test": "eliware-test",
+    "lint": "eliware-test --lint",
+    "check": "node --check src/index.mjs",
+    "typecheck": "tsc --project tsconfig.json",
+    "pack": "npm pack --dry-run",
+    "audit": "npm audit --omit=dev --audit-level=moderate"
+  },
+  "dependencies": {
+    "@eliware/common": "^2.0.0",
+    "mysql2": "^3.24.2"
+  },
+  "devDependencies": {
+    "@eliware/test": "^2.0.0",
+    "@types/node": "^24.0.0",
+    "typescript": "^7.0.2"
+  },
+  "publishConfig": { "access": "public" }
+}

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmitOnError": true,
+    "strict": true,
+    "target": "ES2024",
+    "lib": ["ESNext"],
+    "types": ["node"]
+  },
+  "include": ["src/**/*.d.ts"]
+}
