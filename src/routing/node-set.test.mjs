@@ -1,0 +1,4 @@
+import { selectRouteNodes } from './node-set.mjs';
+const bundle = { database: 'db', identity: 'app', expiresAt: '2030-01-01T00:00:00Z', routes: { primary: [{ host: 'one', port: 3306 }], balanced: [{ host: 'two', port: 3306, weight: 2 }] } };
+test('returns validated direct nodes without embedding policy', () => { expect(selectRouteNodes({ bundle, route: 'primary', now: 0 })).toEqual([{ host: 'one', port: 3306 }]); expect(selectRouteNodes({ bundle, route: 'balanced', now: 0 })).toEqual([{ host: 'two', port: 3306, weight: 2 }]); });
+test('rejects expired or empty routes', () => { expect(() => selectRouteNodes({ bundle, now: Date.parse(bundle.expiresAt) })).toThrow('expired'); expect(() => selectRouteNodes({ bundle: { ...bundle, routes: { ...bundle.routes, primary: [] } } })).toThrow('empty'); });
