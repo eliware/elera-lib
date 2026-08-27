@@ -3,9 +3,22 @@
   "version": "0.1.0",
   "description": "Eliware SQL client with primary and balanced connection routing",
   "type": "module",
-  "engines": { "node": ">=26" },
-  "exports": { ".": { "types": "./src/index.d.ts", "import": "./src/index.mjs" } },
-  "files": ["src", "README.md", "RELEASE_NOTES.md", "LICENSE", "THIRD-PARTY-NOTICES.md"],
+  "engines": {
+    "node": ">=26"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.mjs"
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "RELEASE_NOTES.md",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md"
+  ],
   "scripts": {
     "test": "eliware-test",
     "integration": "node scripts/integration.mjs",
@@ -23,7 +36,11 @@
   "devDependencies": {
     "@eliware/test": "^2.0.0",
     "@types/node": "^24.0.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "typescript": "^7.0.2"
   },
-  "publishConfig": { "access": "public" }
+  "publishConfig": {
+    "access": "public"
+  }
 }
