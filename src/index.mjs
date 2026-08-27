@@ -8,3 +8,4 @@ export { validateBundle, bundleExpired, bundleNeedsRefresh } from './bundle.mjs'
 export { createAdminSql } from './admin/sql.mjs';
 export { createMigrationRunner } from './admin/migrations.mjs';
 export { selectRouteNodes } from './routing/node-set.mjs';
+export { createRoutingStream } from './routing/stream-client.mjs';
