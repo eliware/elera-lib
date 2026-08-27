@@ -9,3 +9,5 @@ export { createAdminSql } from './admin/sql.mjs';
 export { createMigrationRunner } from './admin/migrations.mjs';
 export { selectRouteNodes } from './routing/node-set.mjs';
 export { createRoutingStream } from './routing/stream-client.mjs';
+export { createQuiesceController } from './lifecycle/quiesce.mjs';
+export { createSqlVerifier } from './verification/sql.mjs';

@@ -35,6 +35,11 @@ lifecycle, and planned optional routing-event synchronization methods only. REST
 WebSocket transports are adapters, not supervisor or CLI policy. Underlying
 `mysql2` pools and driver objects remain internal implementation details.
 
+For maintenance workflows, `createQuiesceController` provides a generic
+connection-admission drain and `createSqlVerifier` provides generic connectivity,
+schema, account, and grant checks. Neither API transports or orchestrates dump
+contents.
+
 ## Development
 
 ```bash
