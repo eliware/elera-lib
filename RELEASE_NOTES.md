@@ -1,8 +1,27 @@
 # Release notes
 
+## 0.1.2 — Unix-socket connection correction
+
+This patch corrects the mysql2 option used for local MariaDB Unix-domain
+socket connections.
+
+### Fixed
+
+- Maps `MYSQL_SOCKET` to mysql2's `socketPath` option so local socket
+  connections reach the configured MariaDB socket instead of falling back to
+  TCP.
+- Removes the obsolete `socket` option from node-pool driver options.
+
+### Validation
+
+- Adds regression coverage for socket-path mapping and option cleanup.
+- Maintains 100% statements, branches, functions, and lines coverage with
+  zero lint warnings.
+- Contract and syntax checks pass.
+
 ## 0.1.1 — Runtime integration readiness
 
-This unreleased patch prepares the generic client for supervisor control-plane
+This patch prepares the generic client for supervisor control-plane
 connections and application-side routing changes. It does not add supervisor,
 CLI, Galera, backup, or GitOps policy to the library.
 

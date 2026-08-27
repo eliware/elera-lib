@@ -2,7 +2,7 @@ import { asSqlError } from '../errors.mjs';
 const connectionFailure = (error) => asSqlError(error).retryable;
 export function createNodePool({ profile, mysqlLib, log, now = () => Date.now(), quarantineMs = 5000 }) {
   const { acquireTimeout: _acquireTimeout, ...driverOptions } = profile.options ?? {};
-  if (driverOptions.socket === undefined) delete driverOptions.socket;
+  if (driverOptions.socketPath === undefined) delete driverOptions.socketPath;
   const pool = mysqlLib.createPool({ host: profile.host, port: profile.port, user: profile.user, password: profile.password, database: profile.database, waitForConnections: true, ...driverOptions });
   const sessionStatements = profile.options?.sessionStatements ?? [];
   const withConnection = async (operation, sql, values) => { const connection = await pool.getConnection(); try { for (const statement of sessionStatements) await connection.query(statement); return operation(connection, sql, values); } finally { connection.release(); } };

@@ -2,7 +2,7 @@
 
 The alternative SQL client for Eliware applications. It provides generic
 primary/balanced MySQL or MariaDB routing without embedding Elera, HAProxy,
-backup, or GitOps policy. It is a v0.1.1 alternative to `@eliware/mysql`; the
+backup, or GitOps policy. It is a v0.1.2 alternative to `@eliware/mysql`; the
 existing package is intentionally unchanged.
 
 `primary` is the preferred connection path. `balanced` is an optional alternate
