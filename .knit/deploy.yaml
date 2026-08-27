@@ -4,7 +4,7 @@ on:
   push:
     deployments:
       - target: dev
-        cwd: /opt/galera-lib
+        cwd: /opt/elera-lib
     commands:
       - git pull --ff-only
       - npm ci
