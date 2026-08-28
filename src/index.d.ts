@@ -42,6 +42,7 @@ export interface DbClient {
   classify(sql: string): 'primary' | 'balanced';
   attachRoutingStream(stream: RoutingStream): Promise<() => void>;
   setNodeAvailability(route: 'primary' | 'balanced', host: string, available: boolean): void;
+  availability(): { state: 'available' | 'cluster-unavailable'; routes: { primary: boolean; balanced: boolean } };
   drain(host: string, timeoutMs?: number): { host: string; timeoutMs: number; wait(): Promise<unknown[]>; forceClose(): Promise<unknown[]> };
   nodeStates(): Array<{ host: string; port: number; route: 'primary' | 'balanced'; state: 'ready' | 'draining' | 'unavailable' | 'recovering'; active: number; available: boolean }>;
   config: { primary: ConnectionProfile; balanced?: ConnectionProfile };
@@ -67,6 +68,7 @@ export function routeFor(sql: unknown, requested?: 'auto' | 'primary' | 'balance
 export function validateProfile(profile: ConnectionProfile, name?: string): ConnectionProfile;
 export function redactedProfile(profile: ConnectionProfile): ConnectionProfile;
 export class SqlClientError extends Error { code?: string; retryable?: boolean; cause?: unknown; }
+export class ClusterUnavailableError extends SqlClientError {}
 export function classifyError(error: unknown): { retryable: boolean; code?: string };
 export function asSqlError(error: unknown): SqlClientError;
 export function validateBundle(bundle: RoutingBundle): RoutingBundle;

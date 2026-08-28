@@ -4,6 +4,13 @@ export class SqlClientError extends Error {
   }
 }
 
+export class ClusterUnavailableError extends SqlClientError {
+  constructor(message = 'No eligible SQL nodes are available', options = {}) {
+    super(message, { code: 'CLUSTER_UNAVAILABLE', retryable: false, ...options });
+    this.name = 'ClusterUnavailableError';
+  }
+}
+
 export function classifyError(error) {
   const code = error?.code;
   if (['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'PROTOCOL_CONNECTION_LOST', 'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR'].includes(code)) return { code: 'CONNECTION_ERROR', retryable: true };

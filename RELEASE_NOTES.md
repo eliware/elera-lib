@@ -1,5 +1,21 @@
 # Release notes
 
+## 0.1.8 — Explicit outage state and recovery observability
+
+### Added
+
+- Exposes `ClusterUnavailableError` with the stable `CLUSTER_UNAVAILABLE` code
+  when no eligible SQL node can serve a route.
+- Adds `DbClient.availability()` so applications can distinguish an available
+  client from a fully unavailable primary route, including per-route status.
+- Covers standalone node drain, total primary-route outage, and route recovery.
+- Updates the TypeScript declarations for the new runtime API and error type.
+
+### Validation
+
+- Maintains 100% statements, branches, functions, and lines coverage.
+- Tests and TypeScript typechecking pass with zero lint warnings.
+
 ## 0.1.7 — Routing shutdown contract completion
 
 ### Added

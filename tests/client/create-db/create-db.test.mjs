@@ -187,6 +187,24 @@ test('updates one application client without changing another client assignment'
   await clientA.close(); await clientB.close();
 });
 
+test('reports cluster-unavailable when the standalone route is drained', async () => {
+  const client = await createDb({ primary: profile, bundle: { ...bundle, writer: { host: 'only-node', port: 3306 }, routes: { primary: [{ host: 'only-node', port: 3306 }], balanced: [] } }, mysqlLib: driver() });
+  expect(client.availability()).toMatchObject({ state: 'available', routes: { primary: true } });
+  client.drain('only-node', 1000);
+  expect(client.availability()).toMatchObject({ state: 'cluster-unavailable', routes: { primary: false } });
+  await expect(client.query('SELECT 1', undefined, { route: 'primary' })).rejects.toMatchObject({ code: 'CLUSTER_UNAVAILABLE' });
+  await client.close();
+});
+
+test('recovery makes a previously unavailable route usable again', async () => {
+  const client = await createDb({ primary: profile, bundle: { ...bundle, writer: { host: 'recovering-node', port: 3306 }, routes: { primary: [{ host: 'recovering-node', port: 3306 }], balanced: [] } }, mysqlLib: driver() });
+  client.drain('recovering-node', 1000);
+  expect(client.availability().state).toBe('cluster-unavailable');
+  client.setNodeAvailability('primary', 'recovering-node', true);
+  expect(client.availability().state).toBe('available');
+  await client.close();
+});
+
 test('merges writer-only updates with the active route sets', async () => {
   const client = await createDb({ primary: profile, bundle, mysqlLib: driver() });
   let update;

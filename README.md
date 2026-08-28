@@ -2,9 +2,9 @@
 
 The alternative SQL client for Eliware applications. It provides generic
 primary/balanced MySQL or MariaDB routing without embedding Elera, HAProxy,
-backup, or GitOps policy. It is a v0.1.7 alternative to `@eliware/mysql`; the
+backup, or GitOps policy. It is a v0.1.8 alternative to `@eliware/mysql`; the
 existing package is intentionally unchanged. The current package version is
-0.1.7.
+0.1.8.
 
 `primary` is the preferred connection path. `balanced` is an optional alternate
 path. Both may accept writes; automatic routing sends only conservative,
@@ -57,6 +57,12 @@ operations, while `client.nodeStates()` exposes lifecycle and active-operation
 state. Only conservative, single-statement reads are eligible for automatic
 retry after a connection failure; uncertain writes are never retried
 automatically.
+
+`client.availability()` reports whether a primary route is usable. It returns
+`state: 'cluster-unavailable'` when every primary candidate is draining or
+unavailable; the `routes` fields report primary and balanced availability
+independently. New operations in that state fail with the exported
+`ClusterUnavailableError` using code `CLUSTER_UNAVAILABLE`.
 
 When an attached routing stream receives a `routing.shutdown` event, the
 client drains the identified node, performs a REST bundle resynchronization,
