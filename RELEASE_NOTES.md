@@ -1,5 +1,42 @@
 # Release notes
 
+## 0.1.4 — Explicit writer and failover routing
+
+This release strengthens generic client-side routing for supervisor-provided
+bundles. Applications still use the public library API; supervisor and CLI
+policy remain outside the package.
+
+### Added
+
+- Supports explicit `writer`, ordered `failover`, and `readers` assignments in
+  routing bundles.
+- Replaces active writer and reader pools immediately when a valid routing
+  update arrives through WebSocket or REST resynchronization.
+- Keeps application clients independent so updating one application's bundle
+  does not change another client's assignment.
+- Selects the writer first and fails over in the supplied order when a node is
+  drained or explicitly unavailable.
+- Completes in-flight work during drain while excluding the node from new work.
+- Enforces a 45-second maximum client-side drain window.
+
+### Fixed and hardened
+
+- Compares numeric and string bundle versions numerically and rejects stale
+  updates, including versions such as `v10` versus `v9`.
+- Validates routing hosts, ports, weights, duplicate nodes, and writer/failover
+  overlap before pool creation.
+- Preserves explicit writer, failover, and reader assignments during stream
+  refreshes.
+
+### Validation
+
+- Adds integration-style coverage for pool replacement, per-client assignment
+  isolation, writer failover, in-flight drain behavior, version ordering,
+  WebSocket reconnect, and REST fallback.
+- Maintains 100% statements, branches, functions, and lines coverage with zero
+  lint warnings.
+- Diff validation passes.
+
 ## 0.1.3 — Client-side routing drain lifecycle
 
 This patch adds generic client-side handling for supervisor-published routing

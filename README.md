@@ -2,7 +2,7 @@
 
 The alternative SQL client for Eliware applications. It provides generic
 primary/balanced MySQL or MariaDB routing without embedding Elera, HAProxy,
-backup, or GitOps policy. It is a v0.1.3 alternative to `@eliware/mysql`; the
+backup, or GitOps policy. It is a v0.1.4 alternative to `@eliware/mysql`; the
 existing package is intentionally unchanged.
 
 `primary` is the preferred connection path. `balanced` is an optional alternate
@@ -31,10 +31,12 @@ public package API. Its usage notes are in examples/README.md.
 
 Routing bundles passed to `createDbFromBundle` use the normalized shape
 `routes.primary` and `routes.balanced`, each containing ordered `{ host, port,
-weight }` nodes. A bundle also carries `database`, `identity`, optional
-`credentials`, and `expiresAt`; `validateBundle` rejects expired or malformed
-route data. The checked-in contract fixture documents the supervisor-facing
-wire representation separately.
+weight }` nodes. A bundle may also carry an explicit `writer`, ordered
+`failover`, and `readers` assignment. The bundle carries `database`,
+`identity`, optional `credentials`, and `expiresAt`; `validateBundle` rejects
+expired, malformed, duplicated, or conflicting route data. The checked-in
+contract fixture documents the supervisor-facing wire representation
+separately.
 
 The implementation accepts optional routing bundles and injected credential
 providers, maintains bounded pools per route, supports ordered writer/reader
@@ -47,13 +49,13 @@ CLI commands. Applications provide those integrations through ordinary
 configuration and callbacks.
 
 When a route node is drained, the client immediately stops assigning new work
-to that node while existing operations continue. The default drain window is
-45 seconds and can be changed with `drainTimeoutMs`; remaining pool
-connections are then force-closed. `client.drain(host)` returns `wait()` and
-`forceClose()` operations, while `client.nodeStates()` exposes lifecycle and
-active-operation state. Only conservative, single-statement reads are eligible
-for automatic retry after a connection failure; uncertain writes are never
-retried automatically.
+to that node while existing operations continue. The drain window defaults to
+45 seconds and is capped at 45 seconds; remaining pool connections are then
+force-closed. `client.drain(host)` returns `wait()` and `forceClose()`
+operations, while `client.nodeStates()` exposes lifecycle and active-operation
+state. Only conservative, single-statement reads are eligible for automatic
+retry after a connection failure; uncertain writes are never retried
+automatically.
 
 The public client intentionally exposes SQL operations, health, routing,
 lifecycle, and optional routing-event synchronization methods. REST and
