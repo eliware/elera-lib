@@ -38,6 +38,12 @@ test('ignores stale versioned events', async () => {
   await client.connect(); const socket = sockets.at(-1); socket.open(); socket.message({ type: 'routing.update', version: 2 }); socket.message({ type: 'routing.update', version: 1 });
   expect(update).toHaveBeenCalledTimes(1); client.close();
 });
+test('orders string bundle versions numerically', async () => {
+  const update = jest.fn();
+  const client = createRoutingStream({ endpoint: 'http://vip', fetchBundle: async () => ({}), WebSocketImpl: FakeWebSocket, onUpdate: update });
+  await client.connect(); const socket = sockets.at(-1); socket.open(); socket.message({ type: 'routing.update', version: 'v10' }); socket.message({ type: 'routing.update', version: 'v9' });
+  expect(update).toHaveBeenCalledTimes(1); expect(client.state().expectedVersion).toBe('v10'); client.close();
+});
 
 test('delivers REST resyncs to the replaced update handler', async () => {
   const received = [];

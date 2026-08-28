@@ -20,6 +20,15 @@ test('walks past a weighted node before selecting the next node', () => {
   expect(pool.choose().host).toBe('first');
   expect(pool.choose().host).toBe('second');
 });
+test('prefers the elected writer and fails over in bundle order', () => {
+  const node = (host, available = true) => ({ host, weight: 0, available });
+  const pool = createRoutePool([node('writer'), node('backup-a'), node('backup-b')], { preferred: true });
+  expect(pool.choose().host).toBe('writer');
+  pool.setAvailability('writer', false);
+  expect(pool.choose().host).toBe('backup-a');
+  pool.setAvailability('backup-a', false);
+  expect(pool.choose().host).toBe('backup-b');
+});
 
 test('tracks active work and drains before force-closing', async () => {
   let resolveQuery;

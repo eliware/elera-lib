@@ -10,6 +10,7 @@ export interface ConnectionProfile {
 }
 
 export interface RoutingNode { host: string; port: number | string; weight?: number; }
+export interface WriterAssignment { host: string; port: number | string; }
 export interface RoutingBundle {
   apiVersion?: string;
   database?: string;
@@ -19,6 +20,9 @@ export interface RoutingBundle {
   expiresAt: string;
   refreshAfter?: string;
   routes: { primary?: RoutingNode[]; balanced?: RoutingNode[] };
+  writer?: WriterAssignment;
+  failover?: WriterAssignment[];
+  readers?: WriterAssignment[];
 }
 export interface CredentialProviderResult { user: string; password: string; }
 export type CredentialProvider = (context: { database: string; identity: string | null; route: string }) => Promise<CredentialProviderResult> | CredentialProviderResult;
@@ -45,7 +49,7 @@ export interface RoutingStream {
   connect(): Promise<void>;
   setOnUpdate(handler: (event: unknown) => void | Promise<void>): void;
   close(): void;
-  state(): { connected: boolean; mode: 'websocket' | 'rest' | 'disconnected'; expectedVersion: number };
+  state(): { connected: boolean; mode: 'websocket' | 'rest' | 'disconnected'; expectedVersion: number | string };
 }
 
 export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number }): Promise<DbClient>;
@@ -64,6 +68,11 @@ export function createAdminSql(options: { query: QueryFunction }): { transaction
 export function createMigrationRunner(options: { query: QueryFunction; migrations?: Array<{ version: number; name: string; statements: string[] }> }): { status(): Promise<{ applied: unknown[] }>; migrate(): Promise<unknown> };
 export function selectRouteNodes(options: { bundle: RoutingBundle; route?: 'primary' | 'balanced'; now?: number }): RoutingNode[];
 export function createRoutingStream(options: { endpoint: string; token?: string; application?: string; fetchBundle: (application: string) => Promise<RoutingBundle>; onUpdate?: (event: unknown) => void; onError?: (error: unknown) => void; reconnectMs?: number; maxReconnectMs?: number; heartbeatMs?: number }): RoutingStream;
+export function writerAssignment(bundle: RoutingBundle): WriterAssignment;
+export function failoverNodes(bundle: RoutingBundle): WriterAssignment[];
+export function compareBundleVersions(left: number | string | undefined, right: number | string | undefined): number;
+export const CLIENT_DRAIN_TIMEOUT_MS: 45000;
+export function clientDrainTimeout(timeoutMs?: number): number;
 export function createQuiesceController(options?: { close?: () => Promise<void>; onChange?: (state: string) => void }): { state(): { state: string; active: number }; enter(): () => void; begin(): Promise<void>; end(): Promise<void>; close(): Promise<void> };
 export function createSqlVerifier(options: { query: QueryFunction }): { connectivity(): Promise<{ verified: boolean }>; schema(database: string): Promise<{ database: string; verified: boolean }>; account(user: string, host?: string): Promise<{ user: string; host: string; verified: boolean; grants: string[] }>; all(options?: { database?: string; user?: string; host?: string }): Promise<unknown> };
 export function createMaterializer(options?: Record<string, unknown>): unknown;

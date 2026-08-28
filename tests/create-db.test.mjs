@@ -125,3 +125,59 @@ test('accepts first bundle versions and unversioned refreshes', async () => {
   await expect(first.refresh({ ...bundle, bundleVersion: undefined })).resolves.toMatchObject({ bundleVersion: null });
   await first.close();
 });
+
+test('replaces the writer pool and preserves explicit application assignments on refresh', async () => {
+  const pools = [];
+  const mysqlLib = { createPool: jest.fn((options) => { const pool = { options, query: jest.fn(async () => [[options.host]]), execute: jest.fn(async () => [[options.host]]), getConnection: jest.fn(async () => connection()), end: jest.fn(async () => {}) }; pools.push(pool); return pool; }) };
+  const client = await createDb({ primary: profile, mysqlLib });
+  await client.refresh({ ...bundle, bundleVersion: 2, writer: { host: 'writer-b', port: 3306 }, failover: [{ host: 'writer-c', port: 3306 }], readers: [{ host: 'reader-b', port: 3306 }], routes: { primary: [{ host: 'writer-b', port: 3306 }], balanced: [{ host: 'reader-b', port: 3306 }] } });
+  expect(client.nodeStates().filter((node) => node.route === 'primary').map((node) => node.host)).toEqual(['writer-b', 'writer-c']);
+  expect(client.nodeStates().filter((node) => node.route === 'balanced').map((node) => node.host)).toEqual(['reader-b']);
+  await expect(client.execute('UPDATE app SET value=1')).resolves.toEqual([['writer-b']]);
+  await expect(client.query('SELECT 1')).resolves.toEqual([['reader-b']]);
+  await client.close();
+});
+
+test('finishes an in-flight query while excluding the drained node from new work', async () => {
+  let release;
+  const pending = new Promise((resolve) => { release = resolve; });
+  const mysqlLib = { createPool: jest.fn((options) => ({ options, query: jest.fn((sql) => options.host === 'writer' && sql === 'pending' ? pending : Promise.resolve([[options.host]])), execute: jest.fn(async () => [[options.host]]), getConnection: jest.fn(async () => connection()), end: jest.fn(async () => {}) })) };
+  const client = await createDb({ primary: profile, bundle: { ...bundle, writer: { host: 'writer', port: 3306 }, failover: [{ host: 'backup', port: 3306 }], routes: { primary: [{ host: 'writer', port: 3306 }], balanced: [] } }, mysqlLib });
+  const inFlight = client.query('pending', [], { route: 'primary' });
+  const drain = client.drain('writer', 90000);
+  await expect(client.execute('UPDATE app SET x=1', [], { route: 'primary' })).resolves.toEqual([['backup']]);
+  release([['writer']]);
+  await expect(inFlight).resolves.toEqual([['writer']]);
+  expect(drain.timeoutMs).toBe(45000);
+  await client.close();
+});
+
+test('applies explicit writer updates delivered through the routing stream', async () => {
+  const client = await createDb({ primary: profile, bundle, mysqlLib: driver() });
+  let update;
+  await client.attachRoutingStream({ connect: async () => {}, setOnUpdate: (handler) => { update = handler; } });
+  await update({ type: 'routing.update', writer: { host: 'stream-writer', port: 3306 }, failover: [{ host: 'stream-backup', port: 3306 }], readers: [{ host: 'stream-reader', port: 3306 }], routes: { primary: [{ host: 'stream-writer', port: 3306 }], balanced: [{ host: 'stream-reader', port: 3306 }] }, bundleVersion: 3, database: 'app' });
+  expect(client.nodeStates().filter((node) => node.route === 'primary').map((node) => node.host)).toEqual(['stream-writer', 'stream-backup']);
+  expect(client.nodeStates().filter((node) => node.route === 'balanced').map((node) => node.host)).toEqual(['stream-reader']);
+  await client.close();
+});
+
+test('updates one application client without changing another client assignment', async () => {
+  const clientA = await createDb({ primary: profile, bundle: { ...bundle, writer: { host: 'app-a-writer' }, failover: [{ host: 'a-backup' }] }, mysqlLib: driver() });
+  const clientB = await createDb({ primary: profile, bundle: { ...bundle, writer: { host: 'app-b-writer' }, failover: [{ host: 'b-backup' }] }, mysqlLib: driver() });
+  let update;
+  await clientA.attachRoutingStream({ connect: async () => {}, setOnUpdate: (handler) => { update = handler; } });
+  await update({ type: 'routing.update', writer: { host: 'app-a-new-writer' }, failover: [{ host: 'a-backup' }], bundleVersion: 2, routes: { primary: [{ host: 'app-a-new-writer', port: 3306 }], balanced: bundle.routes.balanced }, database: 'app' });
+  expect(clientA.bundle().writer.host).toBe('app-a-new-writer');
+  expect(clientB.bundle().writer.host).toBe('app-b-writer');
+  await clientA.close(); await clientB.close();
+});
+
+test('merges writer-only updates with the active route sets', async () => {
+  const client = await createDb({ primary: profile, bundle, mysqlLib: driver() });
+  let update;
+  await client.attachRoutingStream({ connect: async () => {}, setOnUpdate: (handler) => { update = handler; } });
+  await update({ type: 'routing.update', writer: { host: 'writer-only', port: 3306 }, failover: [], bundleVersion: 2 });
+  expect(client.nodeStates().find((node) => node.route === 'primary').host).toBe('writer-only');
+  await client.close();
+});
