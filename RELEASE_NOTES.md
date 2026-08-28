@@ -1,5 +1,26 @@
 # Release notes
 
+## 0.1.6 — Graceful routing shutdown handoff
+
+### Added
+
+- Handles supervisor `routing.shutdown` events without exposing supervisor-
+  specific internals to applications.
+- Drains the affected SQL node so in-flight work can finish while new work is
+  routed elsewhere.
+- Closes the retiring WebSocket with restart code `1012` and reconnects through
+  the configured load-balancer endpoint.
+- Performs an immediate REST routing-bundle resynchronization when the stream
+  is being retired or temporarily unavailable.
+- Tracks intentional reconnects, failovers, and reconnect delay in telemetry.
+- Adds regression coverage for shutdown events, close codes, reconnects, REST
+  fallback, node draining, and telemetry behavior.
+
+### Validation
+
+- 24 test suites pass with 116 tests.
+- Syntax and diff validation pass.
+
 ## 0.1.5 — Telemetry and convention alignment
 
 ### Added
