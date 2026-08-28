@@ -54,8 +54,11 @@ export interface RoutingStream {
   close(): void;
   sendTelemetry(payload: unknown): void;
   setTelemetry?(telemetry?: Pick<Telemetry, 'recordReconnect'>): void;
-  state(): { connected: boolean; mode: 'websocket' | 'rest' | 'disconnected'; expectedVersion: number | string };
+  state(): { connected: boolean; mode: 'websocket' | 'rest' | 'disconnected'; expectedVersion: number | string; endpoint: string; reconnectDeadlineAt?: number };
 }
+
+export type RoutingEvent = { type: 'routing.update' | 'routing.resync' | 'routing.drain' | 'routing.recovery'; node?: string; version?: number | string; [key: string]: unknown } | { type: 'routing.shutdown'; node?: string; reason?: string; reconnect?: boolean; reconnectDeadlineMs?: number; loadBalancerEndpoint?: string };
+export function validateRoutingEvent(event: unknown): RoutingEvent;
 
 export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number; telemetry?: true | Telemetry }): Promise<DbClient>;
 export function createDbFromEnvironment(options?: { env?: Record<string, string | undefined>; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; telemetry?: true | Telemetry }): Promise<DbClient>;

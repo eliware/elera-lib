@@ -9,6 +9,7 @@ export { createAdminSql } from './admin/sql.mjs';
 export { createMigrationRunner } from './admin/migrations.mjs';
 export { selectRouteNodes } from './routing/node-set.mjs';
 export { createRoutingStream } from './routing/stream-client.mjs';
+export { validateRoutingEvent } from './routing/event-contract.mjs';
 export { writerAssignment, failoverNodes } from './routing/assignment.mjs';
 export { compareBundleVersions } from './routing/bundle-version.mjs';
 export { CLIENT_DRAIN_TIMEOUT_MS, clientDrainTimeout } from './lifecycle/drain-policy.mjs';

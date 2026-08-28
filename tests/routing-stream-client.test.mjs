@@ -63,14 +63,15 @@ test('honors a supervisor shutdown event with immediate resync and reconnect', a
   await client.connect();
   const socket = sockets.at(-1);
   socket.open();
-  socket.message({ type: 'routing.shutdown', reason: 'SIGTERM', reconnect: true });
+  socket.message({ type: 'routing.shutdown', node: 'writer', reason: 'SIGTERM', reconnect: true, reconnectDeadlineMs: 60000, loadBalancerEndpoint: 'http://new-vip' });
   await new Promise((resolve) => setImmediate(resolve));
   expect(updates).toEqual(expect.arrayContaining([expect.objectContaining({ type: 'routing.shutdown' }), expect.objectContaining({ type: 'routing.resync', bundle: { bundleVersion: 'rest-after-shutdown' } })]));
   expect(fetchBundle).toHaveBeenCalledWith('default');
   expect(socket.closeArgs).toEqual([1012, 'supervisor restarting']);
+  expect(client.state().endpoint).toBe('http://new-vip');
   expect(client.state().mode).toBe('disconnected');
   await new Promise((resolve) => setTimeout(resolve, 5));
-  expect(sockets.at(-1).url).toContain('ws://vip/api/v1/routing/stream');
+  expect(sockets.at(-1).url).toContain('ws://new-vip/api/v1/routing/stream');
   client.close();
 });
 
@@ -83,5 +84,19 @@ test('records an intentional reconnect separately from ordinary socket loss', as
   await new Promise((resolve) => setTimeout(resolve, 5));
   sockets.at(-1).open();
   expect(recordReconnect).toHaveBeenCalledWith({ delayMs: expect.any(Number), failover: true });
+  client.close();
+});
+
+test('does not reconnect after the shutdown deadline expires', async () => {
+  let now = 1000;
+  const client = createRoutingStream({ endpoint: 'http://vip', fetchBundle: async () => ({}), WebSocketImpl: FakeWebSocket, reconnectMs: 1, maxReconnectMs: 1, now: () => now });
+  await client.connect();
+  const socket = sockets.at(-1);
+  socket.open();
+  socket.message({ type: 'routing.shutdown', reconnectDeadlineMs: 0 });
+  now = 1001;
+  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  expect(sockets).toHaveLength(1);
   client.close();
 });
