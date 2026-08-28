@@ -1,5 +1,28 @@
 # Release notes
 
+## 0.1.5 — Telemetry and convention alignment
+
+### Added
+
+- Adds opt-in generic in-memory client telemetry for query counts, failures,
+  retries, in-flight work, and latency.
+- Sends telemetry over an attached routing stream once per second without
+  sending SQL text or credentials.
+- Adds public TypeScript declarations and smoke coverage for the telemetry and
+  public client surface.
+- Uses Snowflake identifiers for non-security temporary materialization paths.
+
+### Refactored
+
+- Extracts telemetry timing into a focused client module.
+- Reorganizes `create-db` tests under the mirrored `tests/client/create-db/`
+  hierarchy while retaining a small cross-cutting contract test.
+
+### Validation
+
+- Tests pass with 100% statements, branches, functions, and lines coverage.
+- TypeScript typecheck passes with zero lint warnings.
+
 ## 0.1.4 — Explicit writer and failover routing
 
 This release strengthens generic client-side routing for supervisor-provided
