@@ -53,6 +53,7 @@
     },
     "dependencies": {
         "@eliware/common": "^2.0.0",
+        "@eliware/snowflake": "^2.0.0",
         "mysql2": "^3.24.2"
     },
     "devDependencies": {

@@ -28,12 +28,14 @@ export interface CredentialProviderResult { user: string; password: string; }
 export type CredentialProvider = (context: { database: string; identity: string | null; route: string }) => Promise<CredentialProviderResult> | CredentialProviderResult;
 export type QueryFunction = (sql: string, values?: unknown) => Promise<any>;
 export interface DbOptions { route?: 'auto' | 'primary' | 'balanced'; connection?: unknown; }
+export interface TelemetrySnapshot { type: 'client.telemetry'; application: string; queries: number; failures: number; retries: number; reconnects: number; failoverCount: number; inflight: number; totalLatencyMs: number; maxLatencyMs: number; avgLatencyMs: number; sentAt: string; }
+export interface Telemetry { begin(): number; record(event?: { latencyMs?: number; failed?: boolean; retry?: boolean; reconnect?: boolean; failover?: boolean }): void; snapshot(): TelemetrySnapshot; start(stream: Pick<RoutingStream, 'sendTelemetry'>): void; stop(): void; }
 
 export interface DbClient {
   query(sql: string, values?: unknown, options?: DbOptions): Promise<unknown>;
   execute(sql: string, values?: unknown, options?: DbOptions): Promise<unknown>;
   transaction<T>(callback: (transaction: Pick<DbClient, 'query' | 'execute'>) => Promise<T>): Promise<T>;
-  health(route?: 'primary' | 'balanced'): Promise<{ ok: boolean; route: string; latencyMs: number }>;
+  health(route?: 'primary' | 'balanced'): Promise<{ ok: boolean; route: string; latencyMs: number; telemetry?: TelemetrySnapshot }>;
   close(): Promise<void>;
   refresh(bundle: RoutingBundle): Promise<{ bundleVersion: number | string | null; refreshRequired: boolean }>;
   bundle(): RoutingBundle | undefined;
@@ -43,17 +45,19 @@ export interface DbClient {
   drain(host: string, timeoutMs?: number): { host: string; timeoutMs: number; wait(): Promise<unknown[]>; forceClose(): Promise<unknown[]> };
   nodeStates(): Array<{ host: string; port: number; route: 'primary' | 'balanced'; state: 'ready' | 'draining' | 'unavailable' | 'recovering'; active: number; available: boolean }>;
   config: { primary: ConnectionProfile; balanced?: ConnectionProfile };
+  telemetry?: Telemetry;
 }
 
 export interface RoutingStream {
   connect(): Promise<void>;
   setOnUpdate(handler: (event: unknown) => void | Promise<void>): void;
   close(): void;
+  sendTelemetry(payload: unknown): void;
   state(): { connected: boolean; mode: 'websocket' | 'rest' | 'disconnected'; expectedVersion: number | string };
 }
 
-export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number }): Promise<DbClient>;
-export function createDbFromEnvironment(options?: { env?: Record<string, string | undefined>; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string }): Promise<DbClient>;
+export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number; telemetry?: true | Telemetry }): Promise<DbClient>;
+export function createDbFromEnvironment(options?: { env?: Record<string, string | undefined>; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; telemetry?: true | Telemetry }): Promise<DbClient>;
 export function classifyQuery(sql: unknown): 'primary' | 'balanced';
 export function routeFor(sql: unknown, requested?: 'auto' | 'primary' | 'balanced'): 'primary' | 'balanced';
 export function validateProfile(profile: ConnectionProfile, name?: string): ConnectionProfile;
@@ -76,3 +80,4 @@ export function clientDrainTimeout(timeoutMs?: number): number;
 export function createQuiesceController(options?: { close?: () => Promise<void>; onChange?: (state: string) => void }): { state(): { state: string; active: number }; enter(): () => void; begin(): Promise<void>; end(): Promise<void>; close(): Promise<void> };
 export function createSqlVerifier(options: { query: QueryFunction }): { connectivity(): Promise<{ verified: boolean }>; schema(database: string): Promise<{ database: string; verified: boolean }>; account(user: string, host?: string): Promise<{ user: string; host: string; verified: boolean; grants: string[] }>; all(options?: { database?: string; user?: string; host?: string }): Promise<unknown> };
 export function createMaterializer(options?: Record<string, unknown>): unknown;
+export function createTelemetry(options?: { application?: string; intervalMs?: number; now?: () => number; setIntervalImpl?: typeof setInterval; clearIntervalImpl?: typeof clearInterval }): Telemetry;

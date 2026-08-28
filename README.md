@@ -68,6 +68,12 @@ schema, account, and grant checks. Neither API transports or orchestrates dump
 contents. The stream reports `websocket`, `rest`, or `disconnected` mode so
 callers can observe transport health without implementing transport policy.
 
+Applications may opt into generic in-memory telemetry with
+`createDb({ ..., telemetry: true })`. Query counts, failures, retries,
+in-flight work, and latency are exposed through `client.telemetry` and sent
+over an attached routing stream once per second. Telemetry is observational
+only; it does not carry SQL or credentials.
+
 `createMaterializer` supports bounded plaintext use for a caller-provided
 operation. It creates a mode-restricted temporary file and removes its entire
 temporary directory in a `finally` block; this limits lifetime and cleanup but

@@ -27,5 +27,5 @@ export function createRoutingStream({ endpoint, token, application = 'default', 
       socket.onclose = () => { clearInterval(heartbeat); heartbeat = undefined; socket = undefined; mode = 'disconnected'; if (!closed) { void fallback(); schedule(); } };
     } catch (error) { mode = 'disconnected'; onError?.(error); await fallback(); schedule(); }
   }
-  return { connect, setOnUpdate: (handler) => { updateHandler = handler; }, close: () => { closed = true; mode = 'disconnected'; clearTimeout(timer); clearInterval(heartbeat); socket?.close?.(); }, state: () => ({ connected: socket?.readyState === 1, mode, expectedVersion }) };
+  return { connect, sendTelemetry: (payload) => { if (socket?.readyState === 1) socket.send(JSON.stringify(payload)); }, setOnUpdate: (handler) => { updateHandler = handler; }, close: () => { closed = true; mode = 'disconnected'; clearTimeout(timer); clearInterval(heartbeat); socket?.close?.(); }, state: () => ({ connected: socket?.readyState === 1, mode, expectedVersion }) };
 }

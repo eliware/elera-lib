@@ -15,3 +15,4 @@ export { CLIENT_DRAIN_TIMEOUT_MS, clientDrainTimeout } from './lifecycle/drain-p
 export { createQuiesceController } from './lifecycle/quiesce.mjs';
 export { createSqlVerifier } from './verification/sql.mjs';
 export { createMaterializer } from './lifecycle/materializer.mjs';
+export { createTelemetry } from './telemetry.mjs';
