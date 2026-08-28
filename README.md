@@ -2,9 +2,9 @@
 
 The alternative SQL client for Eliware applications. It provides generic
 primary/balanced MySQL or MariaDB routing without embedding Elera, HAProxy,
-backup, or GitOps policy. It is a v0.1.6 alternative to `@eliware/mysql`; the
+backup, or GitOps policy. It is a v0.1.7 alternative to `@eliware/mysql`; the
 existing package is intentionally unchanged. The current package version is
-0.1.6.
+0.1.7.
 
 `primary` is the preferred connection path. `balanced` is an optional alternate
 path. Both may accept writes; automatic routing sends only conservative,
@@ -60,12 +60,21 @@ automatically.
 
 When an attached routing stream receives a `routing.shutdown` event, the
 client drains the identified node, performs a REST bundle resynchronization,
-and closes the retiring WebSocket with restart code `1012`. It then reconnects
-through the configured endpoint, which should normally be the application's
-load-balancer address. Reconnects, failovers, and measured reconnect delay are
-included in telemetry. If the WebSocket remains unavailable, REST
-resynchronization and bounded reconnect backoff continue until the caller
-closes the stream.
+and closes the retiring WebSocket with restart code `1012`. If the event
+contains `loadBalancerEndpoint`, that endpoint replaces the current endpoint
+before resynchronization and reconnect. `reconnectDeadlineMs` bounds the
+planned reconnect window; after it expires, no new reconnect is scheduled.
+Reconnects, failovers, and measured reconnect delay are included in telemetry.
+If the WebSocket remains unavailable before the deadline, REST
+resynchronization and bounded reconnect backoff continue until the deadline or
+until the caller closes the stream.
+
+Routing events are validated before application. Shutdown events may include
+`node`, `reason`, `reconnect`, `reconnectDeadlineMs`, and
+`loadBalancerEndpoint`; invalid event fields are reported through `onError` and
+do not change routing state. `routing.update` replaces the writer and reader
+pools atomically, while `routing.drain` excludes only the named node from new
+work and allows active operations to finish.
 
 The public client intentionally exposes SQL operations, health, routing,
 lifecycle, and optional routing-event synchronization methods. REST and

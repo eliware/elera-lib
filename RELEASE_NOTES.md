@@ -1,5 +1,27 @@
 # Release notes
 
+## 0.1.7 — Routing shutdown contract completion
+
+### Added
+
+- Validates supervisor routing-control events before applying them.
+- Supports node-specific shutdown events so only the retiring SQL node is
+  drained by the client.
+- Honors an optional `loadBalancerEndpoint` supplied during shutdown before
+  REST resynchronization and WebSocket reconnect.
+- Honors `reconnectDeadlineMs` and stops scheduling reconnect attempts after
+  the deadline expires.
+- Exposes the active endpoint and reconnect deadline in routing-stream state.
+- Publishes typed routing-event declarations for TypeScript consumers.
+
+### Validation
+
+- Adds regression coverage for node-specific shutdown draining, endpoint
+  replacement, deadline expiry, malformed events, and reconnect behavior.
+- Maintains 100% statements, branches, functions, and lines coverage with
+  zero lint warnings.
+- Typecheck and diff validation pass.
+
 ## 0.1.6 — Graceful routing shutdown handoff
 
 ### Added
@@ -18,7 +40,8 @@
 
 ### Validation
 
-- 24 test suites pass with 116 tests.
+- The complete test suite passes with 100% statements, branches, functions,
+  and lines coverage.
 - Syntax and diff validation pass.
 
 ## 0.1.5 — Telemetry and convention alignment
