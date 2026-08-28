@@ -167,6 +167,15 @@ test('applies explicit writer updates delivered through the routing stream', asy
   await client.close();
 });
 
+test('drains the affected node when a supervisor announces shutdown', async () => {
+  const client = await createDb({ primary: profile, bundle: { ...bundle, writer: { host: 'writer', port: 3306 }, failover: [{ host: 'backup', port: 3306 }], routes: { primary: [{ host: 'writer', port: 3306 }, { host: 'backup', port: 3306 }], balanced: [] } }, mysqlLib: driver() });
+  let update;
+  await client.attachRoutingStream({ connect: async () => {}, setOnUpdate: (handler) => { update = handler; } });
+  await update({ type: 'routing.shutdown', node: 'writer' });
+  expect(client.nodeStates().find((node) => node.host === 'writer')).toMatchObject({ state: 'draining', available: false });
+  await client.close();
+});
+
 test('updates one application client without changing another client assignment', async () => {
   const clientA = await createDb({ primary: profile, bundle: { ...bundle, writer: { host: 'app-a-writer' }, failover: [{ host: 'a-backup' }] }, mysqlLib: driver() });
   const clientB = await createDb({ primary: profile, bundle: { ...bundle, writer: { host: 'app-b-writer' }, failover: [{ host: 'b-backup' }] }, mysqlLib: driver() });

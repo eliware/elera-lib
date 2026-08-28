@@ -28,8 +28,8 @@ export interface CredentialProviderResult { user: string; password: string; }
 export type CredentialProvider = (context: { database: string; identity: string | null; route: string }) => Promise<CredentialProviderResult> | CredentialProviderResult;
 export type QueryFunction = (sql: string, values?: unknown) => Promise<any>;
 export interface DbOptions { route?: 'auto' | 'primary' | 'balanced'; connection?: unknown; }
-export interface TelemetrySnapshot { type: 'client.telemetry'; application: string; queries: number; failures: number; retries: number; reconnects: number; failoverCount: number; inflight: number; totalLatencyMs: number; maxLatencyMs: number; avgLatencyMs: number; sentAt: string; }
-export interface Telemetry { begin(): number; record(event?: { latencyMs?: number; failed?: boolean; retry?: boolean; reconnect?: boolean; failover?: boolean }): void; snapshot(): TelemetrySnapshot; start(stream: Pick<RoutingStream, 'sendTelemetry'>): void; stop(): void; }
+export interface TelemetrySnapshot { type: 'client.telemetry'; application: string; queries: number; failures: number; retries: number; reconnects: number; failoverCount: number; reconnectDelayMs: number; inflight: number; totalLatencyMs: number; maxLatencyMs: number; avgLatencyMs: number; sentAt: string; }
+export interface Telemetry { begin(): number; record(event?: { latencyMs?: number; failed?: boolean; retry?: boolean; reconnect?: boolean; failover?: boolean }): void; recordReconnect(event?: { delayMs?: number; failover?: boolean }): void; snapshot(): TelemetrySnapshot; start(stream: Pick<RoutingStream, 'sendTelemetry'>): void; stop(): void; }
 
 export interface DbClient {
   query(sql: string, values?: unknown, options?: DbOptions): Promise<unknown>;
@@ -53,6 +53,7 @@ export interface RoutingStream {
   setOnUpdate(handler: (event: unknown) => void | Promise<void>): void;
   close(): void;
   sendTelemetry(payload: unknown): void;
+  setTelemetry?(telemetry?: Pick<Telemetry, 'recordReconnect'>): void;
   state(): { connected: boolean; mode: 'websocket' | 'rest' | 'disconnected'; expectedVersion: number | string };
 }
 
@@ -71,7 +72,7 @@ export function bundleNeedsRefresh(bundle: RoutingBundle, now?: number): boolean
 export function createAdminSql(options: { query: QueryFunction }): { transaction<T>(work: (context: { query: QueryFunction }) => Promise<T>): Promise<T>; migration(statements?: string[]): Promise<unknown> };
 export function createMigrationRunner(options: { query: QueryFunction; migrations?: Array<{ version: number; name: string; statements: string[] }> }): { status(): Promise<{ applied: unknown[] }>; migrate(): Promise<unknown> };
 export function selectRouteNodes(options: { bundle: RoutingBundle; route?: 'primary' | 'balanced'; now?: number }): RoutingNode[];
-export function createRoutingStream(options: { endpoint: string; token?: string; application?: string; fetchBundle: (application: string) => Promise<RoutingBundle>; onUpdate?: (event: unknown) => void; onError?: (error: unknown) => void; reconnectMs?: number; maxReconnectMs?: number; heartbeatMs?: number }): RoutingStream;
+export function createRoutingStream(options: { endpoint: string; token?: string; application?: string; fetchBundle: (application: string) => Promise<RoutingBundle>; onUpdate?: (event: unknown) => void; onError?: (error: unknown) => void; reconnectMs?: number; maxReconnectMs?: number; heartbeatMs?: number; telemetry?: Pick<Telemetry, 'recordReconnect'> }): RoutingStream;
 export function writerAssignment(bundle: RoutingBundle): WriterAssignment;
 export function failoverNodes(bundle: RoutingBundle): WriterAssignment[];
 export function compareBundleVersions(left: number | string | undefined, right: number | string | undefined): number;

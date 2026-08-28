@@ -7,7 +7,7 @@ test('requires endpoint and REST fallback', () => {
 
 const sockets = [];
 afterEach(() => sockets.splice(0).forEach((socket) => socket.close()));
-class FakeWebSocket { constructor(url) { this.url = url; this.readyState = 0; sockets.push(this); } open() { this.readyState = 1; this.onopen?.(); } message(value) { this.onmessage?.({ data: JSON.stringify(value) }); } close() { this.readyState = 3; this.onclose?.(); } }
+class FakeWebSocket { constructor(url) { this.url = url; this.readyState = 0; sockets.push(this); } open() { this.readyState = 1; this.onopen?.(); } message(value) { this.onmessage?.({ data: JSON.stringify(value) }); } close(...args) { this.closeArgs = args; this.readyState = 3; this.onclose?.(); } }
 test('authenticates, applies updates, and resynchronizes gaps', async () => {
   const update = jest.fn(); const fetchBundle = jest.fn(async () => ({ bundleVersion: 'rest' }));
   const client = createRoutingStream({ endpoint: 'http://vip', token: 'root', WebSocketImpl: FakeWebSocket, fetchBundle, onUpdate: update, reconnectMs: 100000 }); const pending = client.connect(); const socket = sockets[0];
@@ -52,5 +52,35 @@ test('delivers REST resyncs to the replaced update handler', async () => {
   client.setOnUpdate((event) => received.push(event));
   await client.connect();
   expect(received[0]).toMatchObject({ type: 'routing.resync', bundle: { bundleVersion: 'rest' } });
+  client.close();
+});
+
+test('honors a supervisor shutdown event with immediate resync and reconnect', async () => {
+  const updates = [];
+  const fetchBundle = jest.fn(async () => ({ bundleVersion: 'rest-after-shutdown' }));
+  const client = createRoutingStream({ endpoint: 'http://vip', fetchBundle, WebSocketImpl: FakeWebSocket, reconnectMs: 1, maxReconnectMs: 1, onUpdate: (event) => updates.push(event) });
+  await client.connect();
+  const socket = sockets.at(-1);
+  socket.open();
+  socket.message({ type: 'routing.shutdown', reason: 'SIGTERM', reconnect: true });
+  await new Promise((resolve) => setImmediate(resolve));
+  expect(updates).toEqual(expect.arrayContaining([expect.objectContaining({ type: 'routing.shutdown' }), expect.objectContaining({ type: 'routing.resync', bundle: { bundleVersion: 'rest-after-shutdown' } })]));
+  expect(fetchBundle).toHaveBeenCalledWith('default');
+  expect(socket.closeArgs).toEqual([1012, 'supervisor restarting']);
+  expect(client.state().mode).toBe('disconnected');
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  expect(sockets.at(-1).url).toContain('ws://vip/api/v1/routing/stream');
+  client.close();
+});
+
+test('records an intentional reconnect separately from ordinary socket loss', async () => {
+  const recordReconnect = jest.fn();
+  const client = createRoutingStream({ endpoint: 'http://vip', fetchBundle: async () => ({}), WebSocketImpl: FakeWebSocket, telemetry: { recordReconnect }, reconnectMs: 1, maxReconnectMs: 1 });
+  await client.connect();
+  const socket = sockets.at(-1); socket.open(); socket.message({ type: 'routing.shutdown', node: 'elera-0' });
+  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  sockets.at(-1).open();
+  expect(recordReconnect).toHaveBeenCalledWith({ delayMs: expect.any(Number), failover: true });
   client.close();
 });
