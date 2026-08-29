@@ -1,7 +1,7 @@
 {
     "name": "@eliware/elera-lib",
-    "version": "0.2.0",
-    "description": "Shared Elera routing, event, lifecycle, telemetry, and protocol helpers",
+    "version": "0.3.0",
+    "description": "Shared Elera routing, event, lifecycle, telemetry, validation, and protocol helpers",
     "keywords": [
         "eliware",
         "elera",
@@ -14,7 +14,8 @@
         "failover",
         "telemetry",
         "websocket",
-        "protocol-contracts"
+        "protocol-contracts",
+        "mysql-client"
     ],
     "repository": {
         "type": "git",
@@ -26,6 +27,7 @@
     },
     "license": "Apache-2.0",
     "type": "module",
+    "sideEffects": false,
     "engines": {
         "node": ">=26"
     },

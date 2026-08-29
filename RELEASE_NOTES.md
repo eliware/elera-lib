@@ -1,5 +1,38 @@
 # Release notes
 
+## 0.3.0 — Shared protocol and helper boundary
+
+### Breaking changes
+
+- Narrows `@eliware/elera-lib` to shared Elera contracts, validation, routing,
+  lifecycle, telemetry, and error helpers.
+- Removes the managed SQL client, SQL pools, credential providers, and
+  application-facing database orchestration from this package. Those concerns
+  belong to `@eliware/elera-client` or repository-specific implementations.
+- Removes supervisor- and CLI-specific administration, provisioning, and
+  connection behavior from the public library.
+
+### Changed
+
+- Makes routing-bundle validation enforce the complete shared contract,
+  including application, database, identity, credentials, writer, readers,
+  failover, version, expiry, node identity, and service ports.
+- Aligns the checked-in routing schema and fixture with the shared wire
+  contract.
+- Synchronizes the public runtime exports and TypeScript declarations with the
+  reduced shared-library boundary.
+- Keeps REST/WebSocket transport behavior, routing failover, lifecycle policy,
+  and telemetry primitives transport- and application-policy-neutral.
+
+### Verification
+
+- Adds focused validation for the complete routing-bundle contract, routing
+  nodes, shared errors, and public exports.
+- Removes client-specific tests and implementation from the shared package so
+  they can be maintained by `@eliware/elera-client`.
+- Contract verification, tests, lint, and coverage checks pass for the shared
+  library.
+
 ## 0.2.0 — Managed endpoint and token client
 
 ### Breaking changes

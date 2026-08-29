@@ -1,56 +1,36 @@
-# Managed client contract
+# Shared contract boundary
 
-This is the application-facing contract for Elera-managed SQL access. It is
-separate from low-level programmatic APIs so applications do not need to
-know physical SQL hosts, database names, SQL usernames, passwords, or cluster
-topology.
+This document describes the bundle and event contract consumed by Elera
+components. It is not an application-client API; application-facing SQL
+connections belong to `@eliware/elera-client`.
 
-## Required application configuration
+## Routing bundles
 
-An application supplies exactly:
+The supervisor publishes a complete `v1` bundle containing application,
+database, identity, credentials, writer, readers, ordered failover nodes,
+bundle version, expiry, node identity, and service ports. The normalized route
+arrays are `routes.primary` and `routes.balanced`.
 
-```text
-ELERA_API_ENDPOINT=http://supervisor-or-load-balancer:8080
-ELERA_API_TOKEN=<application-scoped-token>
-```
+`validateBundle()` rejects missing required fields, malformed nodes or ports,
+expired timestamps, duplicate writer/failover nodes, and invalid route arrays.
+Consumers must validate a complete bundle before using it. Partial routing
+events must be merged with the active complete bundle by the consumer before
+validation.
 
-The token identifies the application, database, identity, and permitted
-scopes. Multiple databases are represented by multiple client instances and
-tokens; the application does not select a database by request argument.
+## Routing events
 
-The first authenticated bundle establishes that authorization context. Later
-bundle updates must remain within the same application, database, identity,
-credential, and scope boundary; a cross-context update is rejected.
+`validateRoutingEvent()` defines the shared event boundary for routing updates,
+drains, recovery, and shutdown. Event handling and transport orchestration are
+owned by the consuming client or supervisor; this package supplies contracts
+and validation only.
 
-## Library responsibilities
+## Shared helpers
 
-The managed client:
+The public package provides bundle and node validation, version comparison,
+writer/failover calculation, shared SQL errors, client drain policy, and
+transport-neutral telemetry. It does not retrieve bundles, open SQL pools,
+materialize application credentials, provision databases, manage Galera, or
+implement CLI and supervisor workflows.
 
-1. Retrieve the initial routing bundle over the authenticated REST API.
-2. Materialize the returned SQL credentials internally.
-3. Route reads and writes according to the bundle.
-4. Maintain the routing WebSocket and REST fallback.
-5. Apply routing, drain, shutdown, recovery, and bundle-update events.
-6. Handle connection failover without exposing topology policy to the app.
-
-The application receives the normal SQL client interface. It does not need to
-construct a bundle, provide a credential provider, or configure primary and
-balanced SQL hosts.
-
-The corresponding library entry point is `createDb({ endpoint, token })`.
-Both properties are optional when `ELERA_API_ENDPOINT` and
-`ELERA_API_TOKEN` are present in the process environment. The constructor
-reads those variables automatically when arguments are omitted.
-The optional transport and driver arguments exist for testing and deployment
-integration; applications normally provide only the two required values.
-
-## Supervisor response boundary
-
-The bundle may contain application/database/identity IDs, internal database and
-credential material, writer/readers/failover routes, node identity and port
-data, version, expiry, and refresh metadata. These values are consumed by the
-library and are not application configuration.
-
-Low-level bundle and profile APIs remain available for internal composition and
-testing. They are not application configuration and are not used by the
-managed application workflow.
+See `README.md` for the complete export boundary and
+`contracts/routing-bundle.schema.json` for the machine-readable contract.
