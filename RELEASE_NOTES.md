@@ -1,5 +1,19 @@
 # Release notes
 
+## 0.1.11 — Public runtime declarations
+
+### Changed
+
+- Publishes declarations for the existing `profilesFromBundle`,
+  `createDbFromBundle`, and `validateTokenContext` exports.
+- Keeps runtime behavior unchanged while aligning declarations with the
+  supported JavaScript entry point.
+
+### Validation
+
+- Typecheck, tests, lint, syntax, contract, and package checks pass.
+- Maintains 100% statements, branches, functions, and lines coverage.
+
 ## 0.1.10 — Token-bound routing context
 
 ### Added

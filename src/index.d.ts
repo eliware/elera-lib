@@ -65,6 +65,9 @@ export type RoutingEvent = { type: 'routing.update' | 'routing.resync' | 'routin
 export function validateRoutingEvent(event: unknown): RoutingEvent;
 
 export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; tokenContext?: { application?: string; database?: string; credentialName?: string; identity?: string; scopes?: string[] }; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number; telemetry?: true | Telemetry }): Promise<DbClient>;
+export function profilesFromBundle(bundle: RoutingBundle): { primary: ConnectionProfile; balanced?: ConnectionProfile };
+export function createDbFromBundle(options: { bundle: RoutingBundle; createClient?: typeof createDb; credentialProvider?: CredentialProvider; tokenContext?: { application?: string; database?: string; credentialName?: string; identity?: string; scopes?: string[] }; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number; telemetry?: true | Telemetry }): Promise<DbClient>;
+export function validateTokenContext(bundle: RoutingBundle, tokenContext?: { application?: string; database?: string; credentialName?: string; identity?: string; scopes?: string[] }): RoutingBundle;
 export function createDbFromEnvironment(options?: { env?: Record<string, string | undefined>; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; telemetry?: true | Telemetry }): Promise<DbClient>;
 export function classifyQuery(sql: unknown): 'primary' | 'balanced';
 export function routeFor(sql: unknown, requested?: 'auto' | 'primary' | 'balanced'): 'primary' | 'balanced';
