@@ -3,17 +3,18 @@ import * as mysql from 'mysql2/promise';
 import { validateProfile, redactedProfile } from '../config.mjs';
 import { asSqlError } from '../errors.mjs';
 import { resolveCredentials, credentialContext } from '../credential-provider.mjs';
-import { validateBundle, bundleExpired, bundleNeedsRefresh } from '../bundle.mjs';
+import { validateBundle as validateBundleShape, bundleExpired, bundleNeedsRefresh } from '../bundle.mjs';
 import { createRouteFactory } from './route-factory.mjs';
 import { classifyQuery, routeFor } from '../routing.mjs';
 import { compareBundleVersions } from '../routing/bundle-version.mjs';
 import { clientDrainTimeout } from '../lifecycle/drain-policy.mjs';
 import { createTelemetry } from '../telemetry.mjs';
 import { createTimedOperation } from './telemetry-wrapper.mjs';
+import { validateTokenContext } from './authorization-context.mjs';
 
 const olderVersion = (candidate, current) => compareBundleVersions(candidate, current) < 0;
 
-export async function createDb({ primary, balanced, bundle, credentialProvider, mysqlLib = mysql, log = defaultLog, routing = 'auto', identity, quarantineMs = 5000, drainTimeoutMs = 45000, now = () => Date.now(), telemetry } = {}) {
+export async function createDb({ primary, balanced, bundle, credentialProvider, mysqlLib = mysql, log = defaultLog, routing = 'auto', identity, tokenContext, quarantineMs = 5000, drainTimeoutMs = 45000, now = () => Date.now(), telemetry } = {}) {
   if (!primary || typeof primary !== 'object') throw new TypeError('primary connection profile is required');
   const credentials = await resolveCredentials(credentialProvider, credentialContext(primary, { identity }));
   let primaryConfig = validateProfile({ ...primary, ...credentials }, 'primary');
@@ -23,12 +24,13 @@ export async function createDb({ primary, balanced, bundle, credentialProvider, 
     primaryConfig = validateProfile({ ...primaryConfig, ...credentials }, 'primary');
     if (balancedConfig) balancedConfig = validateProfile({ ...balancedConfig, ...credentials }, 'balanced');
   }
+  const validateBundle = (candidate) => validateTokenContext(validateBundleShape(candidate), tokenContext);
   let activeBundle = bundle ? validateBundle(bundle) : undefined;
   const makeRoute = (route, fallback) => createRouteFactory({ bundle: activeBundle, now, mysqlLib, log, quarantineMs })(route, fallback);
   let primaryPool = makeRoute('primary', primaryConfig);
   let balancedPool = balancedConfig || activeBundle?.routes?.balanced ? makeRoute('balanced', balancedConfig ?? primaryConfig) : null;
   const choose = (sql, options = {}) => options.connection ?? (routeFor(sql, options.route ?? routing) === 'balanced' && balancedPool ? balancedPool : primaryPool);
-  const metrics = telemetry === true ? createTelemetry({ application: bundle?.application ?? identity ?? 'default', now }) : telemetry;
+  const metrics = telemetry === true ? createTelemetry({ application: bundle?.application ?? 'default', credentialName: bundle?.credentialName, database: bundle?.database, scopes: bundle?.scopes, now }) : telemetry;
   const timed = createTimedOperation({ metrics, now });
   const client = {
     async query(sql, values, options) { return timed(async () => { const selected = choose(sql, options); try { return await selected.query(sql, values); } catch (error) { const requestedRoute = options?.route ?? routing; if (error.retryable && balancedPool && routeFor(sql, requestedRoute) === 'balanced' && classifyQuery(sql) === 'balanced') { metrics?.record?.({ retry: true }); return balancedPool.query(sql, values); } throw error; } }); },

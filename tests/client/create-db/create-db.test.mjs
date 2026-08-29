@@ -167,6 +167,13 @@ test('applies explicit writer updates delivered through the routing stream', asy
   await client.close();
 });
 
+test('enforces the single-token database context on creation and refresh', async () => {
+  const scopedBundle = { ...bundle, application: 'billing', credentialName: 'core-writer', identity: 'client-1', scopes: ['read', 'write'] };
+  const client = await createDb({ primary: profile, bundle: scopedBundle, tokenContext: { application: 'billing', database: 'app', credentialName: 'core-writer', identity: 'client-1', scopes: ['read'] }, mysqlLib: driver() });
+  await expect(client.refresh({ ...scopedBundle, database: 'other' })).rejects.toThrow('database');
+  await client.close();
+});
+
 test('drains the affected node when a supervisor announces shutdown', async () => {
   const client = await createDb({ primary: profile, bundle: { ...bundle, writer: { host: 'writer', port: 3306 }, failover: [{ host: 'backup', port: 3306 }], routes: { primary: [{ host: 'writer', port: 3306 }, { host: 'backup', port: 3306 }], balanced: [] } }, mysqlLib: driver() });
   let update;

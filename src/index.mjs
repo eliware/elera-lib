@@ -1,4 +1,5 @@
 export { createDb } from './client/create-db.mjs';
+export { validateTokenContext } from './client/authorization-context.mjs';
 export { createDbFromBundle, profilesFromBundle } from './client/from-bundle.mjs';
 export { createDbFromEnvironment } from './client/environment.mjs';
 export { classifyQuery, routeFor } from './routing.mjs';

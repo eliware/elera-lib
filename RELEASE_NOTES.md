@@ -1,5 +1,27 @@
 # Release notes
 
+## 0.1.10 — Token-bound routing context
+
+### Added
+
+- Adds `validateTokenContext` for enforcing an application token's authorized
+  application, database, credential, identity, and scopes against a routing
+  bundle.
+- Applies that authorization check during initial client creation and every
+  subsequent bundle refresh.
+- Keeps routing-stream authorization token-only; database and application
+  selectors are not sent as query parameters.
+- Includes safe application, database, credential, and scope context in
+  opt-in in-memory telemetry without exposing tokens or passwords.
+
+### Validation
+
+- Adds focused coverage for matching contexts, rejected cross-database and
+  scope mismatches, refresh-time enforcement, and isolated token contexts.
+- Maintains 100% statements, branches, functions, and lines coverage with zero
+  lint warnings.
+- Typecheck, contract, syntax, and package dry-run checks pass.
+
 ## 0.1.9 — Standalone outage classification and complete operation telemetry
 
 ### Added

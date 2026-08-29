@@ -2,12 +2,12 @@ import { log as defaultLog } from '@eliware/common';
 import { compareBundleVersions } from './bundle-version.mjs';
 import { validateRoutingEvent } from './event-contract.mjs';
 
-export function createRoutingStream({ endpoint, token, application = 'default', fetchBundle, WebSocketImpl = globalThis.WebSocket, onUpdate, onError, reconnectMs = 1000, maxReconnectMs = 30000, heartbeatMs = 45000, now = () => Date.now(), telemetry } = {}) {
+export function createRoutingStream({ endpoint, token, fetchBundle, WebSocketImpl = globalThis.WebSocket, onUpdate, onError, reconnectMs = 1000, maxReconnectMs = 30000, heartbeatMs = 45000, now = () => Date.now(), telemetry } = {}) {
   if (!endpoint || typeof fetchBundle !== 'function') throw new TypeError('endpoint and fetchBundle are required');
   let socket; let closed = false; let timer; let heartbeat; let expectedVersion = 0; let delay = reconnectMs; let updateHandler = onUpdate; let mode = 'disconnected'; let plannedReconnect = false; let lastReconnectWasPlanned = false; let disconnectedAt; let reconnectDeadlineAt;
   const log = arguments[0]?.log ?? defaultLog;
-  const streamUrl = () => `${endpoint.replace(/^http/i, 'ws').replace(/\/$/, '')}/api/v1/routing/stream?application=${encodeURIComponent(application)}&token=${encodeURIComponent(token ?? '')}`;
-  async function fallback() { try { const bundle = await fetchBundle(application); if (closed) return; mode = 'rest'; updateHandler?.({ type: 'routing.resync', version: expectedVersion, bundle, receivedAt: now() }); } catch (error) { if (closed) return; mode = 'disconnected'; onError?.(error); log.warn?.('Routing REST fallback failed', { error }); } }
+  const streamUrl = () => `${endpoint.replace(/^http/i, 'ws').replace(/\/$/, '')}/api/v1/routing/stream?token=${encodeURIComponent(token ?? '')}`;
+  async function fallback() { try { const bundle = await fetchBundle(); if (closed) return; mode = 'rest'; updateHandler?.({ type: 'routing.resync', version: expectedVersion, bundle, receivedAt: now() }); } catch (error) { if (closed) return; mode = 'disconnected'; onError?.(error); log.warn?.('Routing REST fallback failed', { error }); } }
   function schedule() { if (closed || timer || (reconnectDeadlineAt !== undefined && now() >= reconnectDeadlineAt)) return; const wait = Math.min(delay, Math.max(0, reconnectDeadlineAt === undefined ? delay : reconnectDeadlineAt - now())); timer = setTimeout(() => { timer = undefined; void connect(); }, wait); delay = Math.min(maxReconnectMs, delay * 2); }
   async function connect() {
     if (closed || typeof WebSocketImpl !== 'function') { await fallback(); schedule(); return; }

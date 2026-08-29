@@ -2,9 +2,9 @@
 
 The alternative SQL client for Eliware applications. It provides generic
 primary/balanced MySQL or MariaDB routing without embedding Elera, HAProxy,
-backup, or GitOps policy. It is a v0.1.9 alternative to `@eliware/mysql`; the
+backup, or GitOps policy. It is a v0.1.10 alternative to `@eliware/mysql`; the
 existing package is intentionally unchanged. The current package version is
-0.1.9.
+0.1.10.
 
 `primary` is the preferred connection path. `balanced` is an optional alternate
 path. Both may accept writes; automatic routing sends only conservative,
@@ -34,7 +34,8 @@ Routing bundles passed to `createDbFromBundle` use the normalized shape
 `routes.primary` and `routes.balanced`, each containing ordered `{ host, port,
 weight }` nodes. A bundle may also carry an explicit `writer`, ordered
 `failover`, and `readers` assignment. The bundle carries `database`,
-`identity`, optional `credentials`, and `expiresAt`; `validateBundle` rejects
+`identity`, optional `application`, `credentialName`, `scopes`, and
+`credentials`, and `expiresAt`; `validateBundle` rejects
 expired, malformed, duplicated, or conflicting route data. The checked-in
 contract fixture documents the supervisor-facing wire representation
 separately.
@@ -48,6 +49,12 @@ host, available)`. These are generic client capabilities: the
 library does not know about supervisors, Elera, HAProxy, GitOps, backups, or
 CLI commands. Applications provide those integrations through ordinary
 configuration and callbacks.
+
+An application-scoped token should resolve to one application, database, and
+credential context. The library does not select databases or credentials from
+request arguments. Callers that already have that authorization context may
+pass `tokenContext` to `createDb`; bundle creation and refresh then reject
+cross-database, identity, credential, or scope mismatches.
 
 When a route node is drained, the client immediately stops assigning new work
 to that node while existing operations continue. The drain window defaults to
@@ -100,8 +107,10 @@ Applications may opt into generic in-memory telemetry with
 failures, retries, in-flight work, and latency are exposed through
 `client.telemetry` and sent over an attached routing stream once per second.
 Telemetry is observational only; it does not carry SQL or credentials.
-Reconnect, failover, and cumulative reconnect-delay counters are included in
-the telemetry snapshot.
+The snapshot may include the application, database, credential name, and
+scopes associated with the already-authorized client, plus reconnect, failover,
+and cumulative reconnect-delay counters. It never includes bearer tokens or
+passwords.
 
 `createMaterializer` supports bounded plaintext use for a caller-provided
 operation. It creates a mode-restricted temporary file and removes its entire
