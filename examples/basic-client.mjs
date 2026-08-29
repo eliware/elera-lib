@@ -1,13 +1,7 @@
-import { createDb } from '@eliware/elera-lib';
+import { createTelemetry, validateBundle } from '@eliware/elera-lib';
 
-// Set ELERA_API_ENDPOINT and ELERA_API_TOKEN before running this example.
-const db = await createDb();
+// Native SQL application examples live in @eliware/elera-client.
+const bundle = validateBundle(JSON.parse(process.env.ELERA_BUNDLE_JSON ?? '{}'));
+const telemetry = createTelemetry({ application: bundle.application, database: bundle.database });
 
-try {
-  const health = await db.health('primary');
-  if (!health.ok) throw new Error('primary SQL route is not healthy');
-  const [rows] = await db.query('SELECT 1 AS healthy');
-  console.log(JSON.stringify({ health, rows }));
-} finally {
-  await db.close();
-}
+console.log(JSON.stringify({ bundleVersion: bundle.bundleVersion, telemetry: telemetry.snapshot() }));

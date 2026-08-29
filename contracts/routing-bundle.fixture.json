@@ -1,11 +1,17 @@
 {
   "apiVersion": "v1",
+  "application": "billing",
+  "applicationId": "18446744073709551621",
+  "databaseId": "18446744073709551622",
+  "identityId": "18446744073709551623",
   "database": "billing",
   "identity": "billing-runtime",
   "credentials": { "username": "billing_runtime", "password": "fixture-only" },
   "writer": { "host": "sql0.internal", "port": 3306 },
   "failover": [{ "host": "sql1.internal", "port": 3306 }],
   "readers": [{ "host": "sql0.internal", "port": 3306, "weight": 100 }, { "host": "sql1.internal", "port": 3306, "weight": 80 }, { "host": "sql2.internal", "port": 3306, "weight": 60 }],
+  "nodeIdentity": "sql0.internal",
+  "ports": { "sql": 3306, "http": 8080 },
   "bundleVersion": 1,
   "expiresAt": "2099-01-01T00:00:00Z"
 }

@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { fetchRoutingBundle } from '../../src/routing/bundle-fetcher.mjs';
 
-const bundle = { database: 'app', identity: 'id', credentials: { username: 'u', password: 'p' }, routes: { primary: [{ host: 'db', port: 3306 }] }, expiresAt: '2099-01-01T00:00:00Z' };
+const bundle = { apiVersion: 'v1', application: 'app', database: 'app', identity: 'id', credentials: { username: 'u', password: 'p' }, writer: { host: 'db', port: 3306 }, readers: [], failover: [], bundleVersion: 1, nodeIdentity: 'db', ports: { sql: 3306, http: 8080 }, routes: { primary: [{ host: 'db', port: 3306 }] }, expiresAt: '2099-01-01T00:00:00Z' };
 
 test('fetches and validates an authenticated routing bundle', async () => {
   const fetchImpl = jest.fn(async () => ({ ok: true, json: async () => bundle }));

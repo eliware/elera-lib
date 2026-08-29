@@ -1,121 +1,21 @@
-import type { PoolOptions } from 'mysql2/promise';
-
-export interface ConnectionProfile {
-  host: string;
-  port?: number | string;
-  user?: string;
-  password?: string;
-  database: string;
-  options?: Partial<PoolOptions> & { socket?: string };
-}
-
-export interface RoutingNode { host: string; port: number | string; weight?: number; }
-export interface WriterAssignment { host: string; port: number | string; }
-export interface RoutingPorts { sql?: number | string; http?: number | string; ws?: number | string; [name: string]: number | string | undefined; }
-export interface NodeIdentity { id?: string; name?: string; address?: string; ports?: RoutingPorts; }
-export interface RoutingBundle {
-  apiVersion?: string;
-  applicationId?: string;
-  databaseId?: string;
-  identityId?: string;
-  database?: string;
-  identity?: string;
-  application?: string;
-  credentialName?: string;
-  scopes?: string[];
-  credentials?: { username?: string; password?: string };
-  bundleVersion?: number | string;
-  expiresAt: string;
-  refreshAfter?: string;
-  routes: { primary?: RoutingNode[]; balanced?: RoutingNode[] };
-  writer?: WriterAssignment;
-  failover?: WriterAssignment[];
-  readers?: WriterAssignment[];
-  nodeIdentity?: NodeIdentity;
-  ports?: RoutingPorts;
-}
-/** Application-facing configuration for the managed Elera client.
- * Managed applications provide only the supervisor/load-balancer endpoint and
- * their application-scoped bearer token. Bundle retrieval, credentials, and
- * SQL routing are library responsibilities.
- */
-export interface ManagedClientOptions {
-  endpoint?: string;
-  token?: string;
-  mysqlLib?: unknown;
-  log?: unknown;
-  routing?: 'auto' | 'primary' | 'balanced';
-  quarantineMs?: number;
-  drainTimeoutMs?: number;
-  now?: () => number;
-  telemetry?: true | Telemetry;
-}
-export interface CredentialProviderResult { user: string; password: string; }
-export type CredentialProvider = (context: { database: string; identity: string | null; route: string }) => Promise<CredentialProviderResult> | CredentialProviderResult;
-export type QueryFunction = (sql: string, values?: unknown) => Promise<any>;
-export interface DbOptions { route?: 'auto' | 'primary' | 'balanced'; connection?: unknown; }
+export interface RoutingNode { host: string; port: number | string; weight?: number; nodeId?: string; }
+export interface RoutingBundle { apiVersion?: string; applicationId?: string; databaseId?: string; identityId?: string; application?: string; database?: string; identity?: string; credentialName?: string; scopes?: string[]; credentials?: { username?: string; password?: string }; bundleVersion?: number | string; expiresAt: string; refreshAfter?: string; routes: { primary?: RoutingNode[]; balanced?: RoutingNode[] }; writer?: RoutingNode; failover?: RoutingNode[]; readers?: RoutingNode[]; nodeIdentity?: Record<string, unknown>; ports?: Record<string, number | string>; }
 export interface TelemetrySnapshot { type: 'client.telemetry'; application: string; credentialName?: string; database?: string; scopes?: string[]; queries: number; failures: number; retries: number; reconnects: number; failoverCount: number; reconnectDelayMs: number; inflight: number; totalLatencyMs: number; maxLatencyMs: number; avgLatencyMs: number; sentAt: string; }
-export interface Telemetry { begin(): number; record(event?: { latencyMs?: number; failed?: boolean; retry?: boolean; reconnect?: boolean; failover?: boolean }): void; recordReconnect(event?: { delayMs?: number; failover?: boolean }): void; snapshot(): TelemetrySnapshot; start(stream: Pick<RoutingStream, 'sendTelemetry'>): void; stop(): void; }
-
-export interface DbClient {
-  query(sql: string, values?: unknown, options?: DbOptions): Promise<unknown>;
-  execute(sql: string, values?: unknown, options?: DbOptions): Promise<unknown>;
-  transaction<T>(callback: (transaction: Pick<DbClient, 'query' | 'execute'>) => Promise<T>): Promise<T>;
-  health(route?: 'primary' | 'balanced'): Promise<{ ok: boolean; route: string; latencyMs: number; telemetry?: TelemetrySnapshot }>;
-  close(): Promise<void>;
-  refresh(bundle: RoutingBundle): Promise<{ bundleVersion: number | string | null; refreshRequired: boolean }>;
-  bundle(): RoutingBundle | undefined;
-  classify(sql: string): 'primary' | 'balanced';
-  attachRoutingStream(stream: RoutingStream): Promise<() => void>;
-  setNodeAvailability(route: 'primary' | 'balanced', host: string, available: boolean): void;
-  availability(): { state: 'available' | 'cluster-unavailable'; routes: { primary: boolean; balanced: boolean } };
-  drain(host: string, timeoutMs?: number): { host: string; timeoutMs: number; wait(): Promise<unknown[]>; forceClose(): Promise<unknown[]> };
-  nodeStates(): Array<{ host: string; port: number; route: 'primary' | 'balanced'; state: 'ready' | 'draining' | 'unavailable' | 'recovering'; active: number; available: boolean }>;
-  config: { primary: ConnectionProfile; balanced?: ConnectionProfile };
-  telemetry?: Telemetry;
-}
-
-export interface RoutingStream {
-  connect(): Promise<void>;
-  setOnUpdate(handler: (event: unknown) => void | Promise<void>): void;
-  close(): void;
-  sendTelemetry(payload: unknown): void;
-  setTelemetry?(telemetry?: Pick<Telemetry, 'recordReconnect'>): void;
-  state(): { connected: boolean; mode: 'websocket' | 'rest' | 'disconnected'; expectedVersion: number | string; endpoint: string; reconnectDeadlineAt?: number };
-}
-
-export type RoutingEvent = { type: 'routing.update' | 'routing.resync' | 'routing.drain' | 'routing.recovery'; node?: string; version?: number | string; [key: string]: unknown } | { type: 'routing.shutdown'; node?: string; reason?: string; reconnect?: boolean; reconnectDeadlineMs?: number; loadBalancerEndpoint?: string };
-export function validateRoutingEvent(event: unknown): RoutingEvent;
-
-export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; tokenContext?: { application?: string; database?: string; credentialName?: string; identity?: string; scopes?: string[] }; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number; telemetry?: true | Telemetry }): Promise<DbClient>;
-export function profilesFromBundle(bundle: RoutingBundle): { primary: ConnectionProfile; balanced?: ConnectionProfile };
-export function createDbFromBundle(options: { bundle: RoutingBundle; createClient?: typeof createDb; credentialProvider?: CredentialProvider; tokenContext?: { application?: string; database?: string; credentialName?: string; identity?: string; scopes?: string[] }; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number; telemetry?: true | Telemetry }): Promise<DbClient>;
-export function createDb(options?: ManagedClientOptions & { fetchImpl?: typeof fetch; fetchPath?: string; WebSocketImpl?: typeof WebSocket }): Promise<DbClient>;
-export function validateTokenContext(bundle: RoutingBundle, tokenContext?: { application?: string; database?: string; credentialName?: string; identity?: string; scopes?: string[] }): RoutingBundle;
-export function classifyQuery(sql: unknown): 'primary' | 'balanced';
-export function routeFor(sql: unknown, requested?: 'auto' | 'primary' | 'balanced'): 'primary' | 'balanced';
-export function validateProfile(profile: ConnectionProfile, name?: string): ConnectionProfile;
-export function redactedProfile(profile: ConnectionProfile): ConnectionProfile;
+export interface Telemetry { snapshot(): TelemetrySnapshot; begin(): number; record(event?: unknown): void; recordReconnect(event?: unknown): void; }
+export function validateBundle(bundle: RoutingBundle): RoutingBundle;
+export function bundleExpired(bundle: RoutingBundle, now?: number): boolean;
+export function bundleNeedsRefresh(bundle: RoutingBundle, now?: number): boolean;
+export function validateRoutingEvent(event: unknown): unknown;
+export function compareBundleVersions(left: number | string | undefined, right: number | string | undefined): number;
+export function writerAssignment(bundle: RoutingBundle): RoutingNode;
+export function failoverNodes(bundle: RoutingBundle): RoutingNode[];
+export function validateRoutingNode(node: RoutingNode, name?: string): RoutingNode;
+export function validateRoutingNodes(nodes: RoutingNode[], name?: string): RoutingNode[];
+export const CLIENT_DRAIN_TIMEOUT_MS: 45000;
+export function clientDrainTimeout(timeoutMs?: number): number;
+export function createTelemetry(options?: Record<string, unknown>): Telemetry;
 export class SqlClientError extends Error { code?: string; retryable?: boolean; cause?: unknown; }
 export class ClusterUnavailableError extends SqlClientError {}
 export class ServerUnavailableError extends SqlClientError {}
 export function classifyError(error: unknown): { retryable: boolean; code?: string };
 export function asSqlError(error: unknown): SqlClientError;
-export function validateBundle(bundle: RoutingBundle): RoutingBundle;
-export function bundleExpired(bundle: RoutingBundle, now?: number): boolean;
-export function bundleNeedsRefresh(bundle: RoutingBundle, now?: number): boolean;
-export function createAdminSql(options: { query: QueryFunction }): { transaction<T>(work: (context: { query: QueryFunction }) => Promise<T>): Promise<T>; migration(statements?: string[]): Promise<unknown> };
-export function createMigrationRunner(options: { query: QueryFunction; migrations?: Array<{ version: number; name: string; statements: string[] }> }): { status(): Promise<{ applied: unknown[] }>; migrate(): Promise<unknown> };
-export function selectRouteNodes(options: { bundle: RoutingBundle; route?: 'primary' | 'balanced'; now?: number }): RoutingNode[];
-export function createRoutingStream(options: { endpoint: string; token?: string; fetchBundle: () => Promise<RoutingBundle>; onUpdate?: (event: unknown) => void; onError?: (error: unknown) => void; reconnectMs?: number; maxReconnectMs?: number; heartbeatMs?: number; telemetry?: Pick<Telemetry, 'recordReconnect'> }): RoutingStream;
-export const DEFAULT_BUNDLE_PATH: '/api/v1/routing/bundle';
-export function fetchRoutingBundle(options: { endpoint: string; token: string; path?: string; fetchImpl?: typeof fetch; signal?: AbortSignal }): Promise<RoutingBundle>;
-export function writerAssignment(bundle: RoutingBundle): WriterAssignment;
-export function failoverNodes(bundle: RoutingBundle): WriterAssignment[];
-export function compareBundleVersions(left: number | string | undefined, right: number | string | undefined): number;
-export const CLIENT_DRAIN_TIMEOUT_MS: 45000;
-export function clientDrainTimeout(timeoutMs?: number): number;
-export function createQuiesceController(options?: { close?: () => Promise<void>; onChange?: (state: string) => void }): { state(): { state: string; active: number }; enter(): () => void; begin(): Promise<void>; end(): Promise<void>; close(): Promise<void> };
-export function createSqlVerifier(options: { query: QueryFunction }): { connectivity(): Promise<{ verified: boolean }>; schema(database: string): Promise<{ database: string; verified: boolean }>; account(user: string, host?: string): Promise<{ user: string; host: string; verified: boolean; grants: string[] }>; all(options?: { database?: string; user?: string; host?: string }): Promise<unknown> };
-export function createMaterializer(options?: Record<string, unknown>): unknown;
-export function createTelemetry(options?: { application?: string; credentialName?: string; database?: string; scopes?: string[]; intervalMs?: number; now?: () => number; setIntervalImpl?: typeof setInterval; clearIntervalImpl?: typeof clearInterval }): Telemetry;
