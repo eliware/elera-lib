@@ -30,6 +30,14 @@ should not rely on ambiguous single-endpoint aliases.
 See examples/basic-client.mjs for a complete consumer example using only the
 public package API. Its usage notes are in examples/README.md.
 
+For Elera-managed applications, the target configuration is only
+`ELERA_API_ENDPOINT` and `ELERA_API_TOKEN`; use `createManagedDbFromEnvironment()`
+or pass those values to `createManagedDb()`. The managed client contract is
+defined in `contracts/managed-client.md`; it will own initial bundle retrieval,
+credential materialization, and routing-stream setup. The direct-profile and
+bundle factories below remain generic APIs for callers that already manage
+those inputs themselves.
+
 Routing bundles passed to `createDbFromBundle` use the normalized shape
 `routes.primary` and `routes.balanced`, each containing ordered `{ host, port,
 weight }` nodes. A bundle may also carry an explicit `writer`, ordered

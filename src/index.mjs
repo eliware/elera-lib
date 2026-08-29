@@ -1,6 +1,7 @@
 export { createDb } from './client/create-db.mjs';
 export { validateTokenContext } from './client/authorization-context.mjs';
 export { createDbFromBundle, profilesFromBundle } from './client/from-bundle.mjs';
+export { createManagedDb, createManagedDbFromEnvironment, managedOptionsFromEnvironment } from './client/managed.mjs';
 export { createDbFromEnvironment } from './client/environment.mjs';
 export { classifyQuery, routeFor } from './routing.mjs';
 export { validateProfile, redactedProfile } from './config.mjs';
@@ -10,6 +11,7 @@ export { createAdminSql } from './admin/sql.mjs';
 export { createMigrationRunner } from './admin/migrations.mjs';
 export { selectRouteNodes } from './routing/node-set.mjs';
 export { createRoutingStream } from './routing/stream-client.mjs';
+export { fetchRoutingBundle, DEFAULT_BUNDLE_PATH } from './routing/bundle-fetcher.mjs';
 export { validateRoutingEvent } from './routing/event-contract.mjs';
 export { writerAssignment, failoverNodes } from './routing/assignment.mjs';
 export { compareBundleVersions } from './routing/bundle-version.mjs';
