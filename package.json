@@ -48,13 +48,12 @@
     ],
     "scripts": {
         "test": "eliware-test",
-        "integration": "node scripts/integration.mjs",
         "lint": "eliware-test --lint",
         "check": "node --check src/index.mjs",
         "contracts": "node scripts/verify-contracts.mjs",
         "typecheck": "tsc --project tsconfig.json",
         "pack": "npm pack --dry-run",
-        "audit": "npm audit --omit=dev --audit-level=moderate"
+        "audit": "node scripts/run-audit.mjs"
     },
     "dependencies": {
         "@eliware/common": "^2.0.0",

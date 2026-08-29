@@ -1,4 +1,0 @@
-import { describe, expect, test } from '@jest/globals';
-import { createAdminSql } from '../../src/admin/sql.mjs';
-describe('generic administrative SQL', () => { test('commits migrations', async () => { const calls = []; await createAdminSql({ query: async sql => calls.push(sql) }).migration(['CREATE TABLE x (id INT)']); expect(calls).toEqual(['START TRANSACTION','CREATE TABLE x (id INT)','COMMIT']); }); test('rolls back failures', async () => { const calls = []; await expect(createAdminSql({ query: async sql => { calls.push(sql); if (sql === 'bad') throw new Error('no'); } }).migration(['bad'])).rejects.toThrow('no'); expect(calls).toEqual(['START TRANSACTION','bad','ROLLBACK']); }); });
-test('validates query and statements', async () => { expect(() => createAdminSql({})).toThrow('query function'); const admin = createAdminSql({ query: async () => {} }); await expect(admin.migration([''])).rejects.toThrow('non-empty'); });

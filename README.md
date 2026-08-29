@@ -34,6 +34,9 @@ and helpers only.
 npm ci
 npm test
 npm run lint
+npm run check
 npm run typecheck
+npm run contracts
+npm run audit
 npm run pack
 ```

@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals';
-import * as api from '../src/index.mjs';
+import * as api from '../../src/index.mjs';
 
 test('exports only shared helpers and supported errors', () => {
   for (const name of ['validateBundle', 'validateRoutingEvent', 'compareBundleVersions', 'writerAssignment', 'failoverNodes', 'clientDrainTimeout', 'createTelemetry', 'SqlClientError', 'ClusterUnavailableError', 'ServerUnavailableError', 'classifyError', 'asSqlError']) {
