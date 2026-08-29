@@ -1,5 +1,43 @@
 # Release notes
 
+## 0.2.0 — Managed endpoint and token client
+
+### Breaking changes
+
+- Adds a new managed-client workflow; applications using it no longer provide
+  SQL hosts, database names, usernames, passwords, or routing profiles.
+- Managed bundle updates are now constrained to the authorization context
+  established by the initial bundle.
+
+### Added
+
+- Defines the managed application contract using only
+  `ELERA_API_ENDPOINT` and `ELERA_API_TOKEN`.
+- Adds authenticated `fetchRoutingBundle` REST retrieval with response
+  validation and a configurable bundle path.
+- Makes `createDb()` the sole application-facing managed workflow. It acquires the
+  initial bundle and attaches the routing stream automatically, using explicit
+  options or `ELERA_API_ENDPOINT` and `ELERA_API_TOKEN` by default.
+- Establishes application, database, identity, credential, and scope context
+  from the initial bundle and rejects cross-context updates.
+- Adds explicit routing-bundle metadata for application, database, and
+  identity IDs, node identity, and service ports.
+- Handles routing updates that temporarily remove all eligible writers or
+  readers without dereferencing missing routes.
+- Prevents concurrent stream connections and reconnects after a shutdown
+  deadline.
+
+### API boundary
+
+- The managed factory is the application-facing workflow and accepts only the
+  endpoint and application token.
+
+### Verification
+
+- Adds focused bundle-fetcher, managed-client, lifecycle, and
+  authorization-boundary tests.
+- Static syntax, schema, and diff validation pass for the committed changes.
+
 ## 0.1.11 — Public runtime declarations
 
 ### Changed
@@ -306,10 +344,9 @@ GitOps, backup, or CLI policy.
   policy.
 - Requires applications to provide their own credential and routing adapters.
 
-### Compatibility and validation
+### Validation
 
 - ESM package targeting Node.js 26 or newer.
 - TypeScript declarations are included with the package.
-- Existing `@eliware/mysql` is not modified or required.
 - Strict test coverage is maintained at 100% statements, branches, functions,
   and lines with zero lint warnings.
