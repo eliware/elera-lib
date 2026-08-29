@@ -40,8 +40,8 @@ export interface RoutingBundle {
  * SQL routing are library responsibilities.
  */
 export interface ManagedClientOptions {
-  endpoint: string;
-  token: string;
+  endpoint?: string;
+  token?: string;
   mysqlLib?: unknown;
   log?: unknown;
   routing?: 'auto' | 'primary' | 'balanced';
@@ -90,11 +90,8 @@ export function validateRoutingEvent(event: unknown): RoutingEvent;
 export function createDb(options: { primary: ConnectionProfile; balanced?: Partial<ConnectionProfile>; bundle?: RoutingBundle; tokenContext?: { application?: string; database?: string; credentialName?: string; identity?: string; scopes?: string[] }; credentialProvider?: CredentialProvider; identity?: string; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number; telemetry?: true | Telemetry }): Promise<DbClient>;
 export function profilesFromBundle(bundle: RoutingBundle): { primary: ConnectionProfile; balanced?: ConnectionProfile };
 export function createDbFromBundle(options: { bundle: RoutingBundle; createClient?: typeof createDb; credentialProvider?: CredentialProvider; tokenContext?: { application?: string; database?: string; credentialName?: string; identity?: string; scopes?: string[] }; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number; telemetry?: true | Telemetry }): Promise<DbClient>;
-export function createManagedDb(options: ManagedClientOptions & { fetchImpl?: typeof fetch; fetchPath?: string; WebSocketImpl?: typeof WebSocket }): Promise<DbClient>;
-export function managedOptionsFromEnvironment(env?: Record<string, string | undefined>): { endpoint: string; token: string };
-export function createManagedDbFromEnvironment(options?: { env?: Record<string, string | undefined>; fetchImpl?: typeof fetch; fetchPath?: string; WebSocketImpl?: typeof WebSocket; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; quarantineMs?: number; drainTimeoutMs?: number; now?: () => number; telemetry?: true | Telemetry }): Promise<DbClient>;
+export function createDb(options?: ManagedClientOptions & { fetchImpl?: typeof fetch; fetchPath?: string; WebSocketImpl?: typeof WebSocket }): Promise<DbClient>;
 export function validateTokenContext(bundle: RoutingBundle, tokenContext?: { application?: string; database?: string; credentialName?: string; identity?: string; scopes?: string[] }): RoutingBundle;
-export function createDbFromEnvironment(options?: { env?: Record<string, string | undefined>; mysqlLib?: unknown; log?: unknown; routing?: 'auto' | 'primary' | 'balanced'; bundle?: RoutingBundle; credentialProvider?: CredentialProvider; identity?: string; telemetry?: true | Telemetry }): Promise<DbClient>;
 export function classifyQuery(sql: unknown): 'primary' | 'balanced';
 export function routeFor(sql: unknown, requested?: 'auto' | 'primary' | 'balanced'): 'primary' | 'balanced';
 export function validateProfile(profile: ConnectionProfile, name?: string): ConnectionProfile;

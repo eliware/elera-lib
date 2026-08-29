@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { fetchRoutingBundle } from '../../src/routing/bundle-fetcher.mjs';
 
 const bundle = { database: 'app', identity: 'id', credentials: { username: 'u', password: 'p' }, routes: { primary: [{ host: 'db', port: 3306 }] }, expiresAt: '2099-01-01T00:00:00Z' };

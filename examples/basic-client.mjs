@@ -1,8 +1,7 @@
-import { createDbFromEnvironment } from '@eliware/elera-lib';
+import { createDb } from '@eliware/elera-lib';
 
-// Set MYSQL_PRIMARY_HOST, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE
-// before running this example. The same public API works with a routing bundle.
-const db = await createDbFromEnvironment();
+// Set ELERA_API_ENDPOINT and ELERA_API_TOKEN before running this example.
+const db = await createDb();
 
 try {
   const health = await db.health('primary');

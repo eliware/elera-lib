@@ -1,7 +1,7 @@
 # Managed client contract
 
 This is the application-facing contract for Elera-managed SQL access. It is
-separate from the generic direct-profile API so applications do not need to
+separate from low-level programmatic APIs so applications do not need to
 know physical SQL hosts, database names, SQL usernames, passwords, or cluster
 topology.
 
@@ -24,7 +24,7 @@ credential, and scope boundary; a cross-context update is rejected.
 
 ## Library responsibilities
 
-The managed client will:
+The managed client:
 
 1. Retrieve the initial routing bundle over the authenticated REST API.
 2. Materialize the returned SQL credentials internally.
@@ -37,9 +37,10 @@ The application receives the normal SQL client interface. It does not need to
 construct a bundle, provide a credential provider, or configure primary and
 balanced SQL hosts.
 
-The corresponding library entry points are `createManagedDb({ endpoint, token })`
-and `createManagedDbFromEnvironment()`. The latter reads only
-`ELERA_API_ENDPOINT` and `ELERA_API_TOKEN`.
+The corresponding library entry point is `createDb({ endpoint, token })`.
+Both properties are optional when `ELERA_API_ENDPOINT` and
+`ELERA_API_TOKEN` are present in the process environment. The constructor
+reads those variables automatically when arguments are omitted.
 The optional transport and driver arguments exist for testing and deployment
 integration; applications normally provide only the two required values.
 
@@ -50,6 +51,6 @@ credential material, writer/readers/failover routes, node identity and port
 data, version, expiry, and refresh metadata. These values are consumed by the
 library and are not application configuration.
 
-The generic direct-profile and `createDbFromBundle` APIs remain available for
-library consumers that already have those inputs, but they are not the
-recommended managed-application workflow.
+Low-level bundle and profile APIs remain available for internal composition and
+testing. They are not application configuration and are not used by the
+managed application workflow.

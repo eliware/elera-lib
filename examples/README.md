@@ -1,13 +1,13 @@
 # Elera library example
 
-basic-client.mjs is a minimal consumer application. It imports only the
-public @eliware/elera-lib package API, opens a bounded SQL client from
-environment configuration, performs a health check and query, and closes the
-client in a finally block.
+`basic-client.mjs` is a minimal managed consumer application. It imports only
+the public `@eliware/elera-lib` package API, opens a SQL client from the Elera
+endpoint and application token, performs a health check and query, and closes
+the client in a `finally` block.
 
-Run it from a published-package consumer project with:
+Run it with:
 
-    MYSQL_PRIMARY_HOST=127.0.0.1 MYSQL_USER=app MYSQL_PASSWORD=secret MYSQL_DATABASE=app node examples/basic-client.mjs
+    ELERA_API_ENDPOINT=http://supervisor-or-load-balancer:8080 ELERA_API_TOKEN=application-token node examples/basic-client.mjs
 
-The example is intentionally infrastructure-neutral. It does not contain
-Docker, Kubernetes, Supervisor, CLI, Galera, or test-lab setup.
+The example is infrastructure-neutral. It contains no Docker, Kubernetes,
+Supervisor, CLI, Galera, or test-lab setup.

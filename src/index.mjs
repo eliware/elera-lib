@@ -1,8 +1,6 @@
-export { createDb } from './client/create-db.mjs';
+export { createDb } from './client/managed.mjs';
 export { validateTokenContext } from './client/authorization-context.mjs';
 export { createDbFromBundle, profilesFromBundle } from './client/from-bundle.mjs';
-export { createManagedDb, createManagedDbFromEnvironment, managedOptionsFromEnvironment } from './client/managed.mjs';
-export { createDbFromEnvironment } from './client/environment.mjs';
 export { classifyQuery, routeFor } from './routing.mjs';
 export { validateProfile, redactedProfile } from './config.mjs';
 export { SqlClientError, ClusterUnavailableError, ServerUnavailableError, classifyError, asSqlError } from './errors.mjs';

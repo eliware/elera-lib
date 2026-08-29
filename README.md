@@ -1,42 +1,33 @@
 # @eliware/elera-lib
 
 The alternative SQL client for Eliware applications. It provides generic
-primary/balanced MySQL or MariaDB routing without embedding Elera, HAProxy,
-backup, or GitOps policy. It is a v0.1.11 alternative to `@eliware/mysql`; the
-existing package is intentionally unchanged. The current package version is
-0.1.11.
+primary/balanced MySQL or MariaDB routing without embedding HAProxy, backup, or
+GitOps policy. The managed endpoint/token API is targeted for 0.2.0.
 
 `primary` is the preferred connection path. `balanced` is an optional alternate
 path. Both may accept writes; automatic routing sends only conservative,
 single-statement read queries to `balanced`. Transactions always use `primary`.
 
 ```js
-import { createDbFromEnvironment } from '@eliware/elera-lib';
-const db = await createDbFromEnvironment();
+import { createDb } from '@eliware/elera-lib';
+const db = await createDb();
 await db.query('SELECT 1');
 await db.close();
 ```
 
-Environment variables: `MYSQL_PRIMARY_HOST` (or `MYSQL_HOST`),
-`MYSQL_PRIMARY_PORT` (or `MYSQL_PORT`), optional `MYSQL_BALANCED_HOST`,
-optional `MYSQL_BALANCED_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, and
-`MYSQL_DATABASE`. `MYSQL_SOCKET` optionally selects a Unix-domain socket for
-the primary connection, which is useful for local socket-authenticated MariaDB
-accounts. Pool settings may be supplied with `MYSQL_CONNECT_TIMEOUT`,
-`MYSQL_ACQUIRE_TIMEOUT`, `MYSQL_CONNECTION_LIMIT`, `MYSQL_QUEUE_LIMIT`, and
-`MYSQL_SSL`. Configure primary and balanced routes explicitly; applications
-should not rely on ambiguous single-endpoint aliases.
+Managed applications configure only `ELERA_API_ENDPOINT` and
+`ELERA_API_TOKEN`. Call `createDb({ endpoint, token })` explicitly or omit
+either value when it is available in the process environment.
 
 See examples/basic-client.mjs for a complete consumer example using only the
 public package API. Its usage notes are in examples/README.md.
 
 For Elera-managed applications, the target configuration is only
-`ELERA_API_ENDPOINT` and `ELERA_API_TOKEN`; use `createManagedDbFromEnvironment()`
-or pass those values to `createManagedDb()`. The managed client contract is
-defined in `contracts/managed-client.md`; it will own initial bundle retrieval,
-credential materialization, and routing-stream setup. The direct-profile and
-bundle factories below remain generic APIs for callers that already manage
-those inputs themselves.
+`ELERA_API_ENDPOINT` and `ELERA_API_TOKEN`; call `createDb()` to use those
+values automatically, or pass them explicitly with `createDb({ endpoint,
+token })`. The managed client contract is
+defined in `contracts/managed-client.md`; it owns initial bundle retrieval,
+credential materialization, and routing-stream setup.
 
 Routing bundles passed to `createDbFromBundle` use the normalized shape
 `routes.primary` and `routes.balanced`, each containing ordered `{ host, port,
@@ -126,7 +117,8 @@ temporary directory in a `finally` block; this limits lifetime and cleanup but
 does not hide plaintext from the caller. The library does not persist secrets,
 age keys, or supervisor-specific artifact metadata.
 
-The package exports the SQL client and environment/bundle factories, query
+The package exports the managed SQL client and internal bundle composition
+primitives, query
 classification and route selection, routing-bundle validation, generic REST
 and WebSocket routing adapters, SQL administration and verification helpers,
 and lifecycle helpers for quiescing and temporary materialization. These

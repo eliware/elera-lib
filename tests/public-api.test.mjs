@@ -3,7 +3,7 @@ import * as api from '../src/index.mjs';
 
 test('exports the complete generic client surface', () => {
   for (const name of [
-    'createDb', 'createDbFromBundle', 'createDbFromEnvironment', 'validateProfile',
+    'createDb', 'createDbFromBundle', 'validateProfile',
     'redactedProfile', 'validateBundle', 'createRoutingStream', 'writerAssignment',
     'failoverNodes', 'createAdminSql', 'createMigrationRunner', 'createSqlVerifier',
     'createQuiesceController', 'createMaterializer', 'createTelemetry',
