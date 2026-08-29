@@ -11,6 +11,13 @@ export class ClusterUnavailableError extends SqlClientError {
   }
 }
 
+export class ServerUnavailableError extends SqlClientError {
+  constructor(message = 'The SQL server is unavailable', options = {}) {
+    super(message, { code: 'SERVER_UNAVAILABLE', retryable: false, ...options });
+    this.name = 'ServerUnavailableError';
+  }
+}
+
 export function classifyError(error) {
   const code = error?.code;
   if (['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'PROTOCOL_CONNECTION_LOST', 'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR'].includes(code)) return { code: 'CONNECTION_ERROR', retryable: true };

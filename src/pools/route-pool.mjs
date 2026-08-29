@@ -1,11 +1,11 @@
-import { ClusterUnavailableError } from '../errors.mjs';
+import { ClusterUnavailableError, ServerUnavailableError } from '../errors.mjs';
 
-export function createRoutePool(nodes, { preferred = false } = {}) {
+export function createRoutePool(nodes, { preferred = false, unavailableError = nodes.length === 1 ? ServerUnavailableError : ClusterUnavailableError } = {}) {
   let cursor = 0;
   const candidates = () => nodes.filter((node) => node.available);
   const choose = () => {
     const available = candidates();
-    if (!available.length) throw new ClusterUnavailableError('no eligible SQL nodes available');
+    if (!available.length) throw new unavailableError('no eligible SQL nodes available');
     if (preferred) return available[0];
     const total = available.reduce((sum, node) => sum + Math.max(0, node.weight), 0);
     if (!total) return available[cursor++ % available.length];

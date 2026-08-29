@@ -69,6 +69,7 @@ export function validateProfile(profile: ConnectionProfile, name?: string): Conn
 export function redactedProfile(profile: ConnectionProfile): ConnectionProfile;
 export class SqlClientError extends Error { code?: string; retryable?: boolean; cause?: unknown; }
 export class ClusterUnavailableError extends SqlClientError {}
+export class ServerUnavailableError extends SqlClientError {}
 export function classifyError(error: unknown): { retryable: boolean; code?: string };
 export function asSqlError(error: unknown): SqlClientError;
 export function validateBundle(bundle: RoutingBundle): RoutingBundle;

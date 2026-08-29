@@ -192,7 +192,24 @@ test('reports cluster-unavailable when the standalone route is drained', async (
   expect(client.availability()).toMatchObject({ state: 'available', routes: { primary: true } });
   client.drain('only-node', 1000);
   expect(client.availability()).toMatchObject({ state: 'cluster-unavailable', routes: { primary: false } });
-  await expect(client.query('SELECT 1', undefined, { route: 'primary' })).rejects.toMatchObject({ code: 'CLUSTER_UNAVAILABLE' });
+  await expect(client.query('SELECT 1', undefined, { route: 'primary' })).rejects.toMatchObject({ code: 'SERVER_UNAVAILABLE' });
+  await client.close();
+});
+
+test('reports server-unavailable for a drained standalone server', async () => {
+  const client = await createDb({ primary: profile, bundle: { ...bundle, writer: { host: 'db', port: 3306 }, failover: [], routes: { primary: [{ host: 'db', port: 3306 }], balanced: [] } }, mysqlLib: driver() });
+  client.drain('db');
+  await expect(client.query('SELECT 1')).rejects.toMatchObject({ code: 'SERVER_UNAVAILABLE' });
+  await client.close();
+});
+
+test('records execute and transaction operations in telemetry', async () => {
+  const telemetry = { begin: jest.fn(() => 10), record: jest.fn(), start: jest.fn(), stop: jest.fn() };
+  const client = await createDb({ primary: profile, mysqlLib: driver(), telemetry, now: () => 14 });
+  await client.execute('INSERT INTO app VALUES (?)', ['x']);
+  await client.transaction(async (tx) => tx.query('SELECT 1'));
+  expect(telemetry.begin).toHaveBeenCalledTimes(2);
+  expect(telemetry.record).toHaveBeenCalledTimes(2);
   await client.close();
 });
 
