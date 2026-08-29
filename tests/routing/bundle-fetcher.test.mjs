@@ -10,7 +10,19 @@ test('fetches and validates an authenticated routing bundle', async () => {
 });
 
 test('rejects missing credentials, failed responses, and malformed JSON', async () => {
+  await expect(fetchRoutingBundle({ token: 't', fetchImpl: async () => ({ ok: true, json: async () => bundle }) })).rejects.toThrow('endpoint');
+  await expect(fetchRoutingBundle({ endpoint: 'http://vip', token: 't', fetchImpl: null })).rejects.toThrow('fetch implementation');
   await expect(fetchRoutingBundle({ endpoint: 'http://vip', fetchImpl: jest.fn() })).rejects.toThrow('token');
   await expect(fetchRoutingBundle({ endpoint: 'http://vip', token: 't', fetchImpl: async () => ({ ok: false, status: 401 }) })).rejects.toThrow('401');
   await expect(fetchRoutingBundle({ endpoint: 'http://vip', token: 't', fetchImpl: async () => ({ ok: true, json: async () => { throw new Error('bad'); } }) })).rejects.toThrow('valid JSON');
+});
+
+test('normalizes endpoints with a trailing slash and accepts a custom path', async () => {
+  const fetchImpl = jest.fn(async () => ({ ok: true, json: async () => bundle }));
+  await fetchRoutingBundle({ endpoint: 'http://vip:8080/', token: 'token', path: '/custom', fetchImpl });
+  expect(fetchImpl.mock.calls[0][0]).toBe('http://vip:8080/custom');
+});
+
+test('rejects an absent HTTP response', async () => {
+  await expect(fetchRoutingBundle({ endpoint: 'http://vip', token: 'token', fetchImpl: async () => undefined })).rejects.toThrow('HTTP 0');
 });

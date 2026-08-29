@@ -237,3 +237,10 @@ test('merges writer-only updates with the active route sets', async () => {
   expect(client.nodeStates().find((node) => node.route === 'primary').host).toBe('writer-only');
   await client.close();
 });
+
+test('drains the primary pool when a refreshed bundle has no writer', async () => {
+  const client = await createDb({ primary: profile, bundle, mysqlLib: driver() });
+  await client.refresh({ ...bundle, writer: undefined, routes: { primary: [], balanced: bundle.routes.balanced }, bundleVersion: 2 });
+  expect(client.availability().state).toBe('cluster-unavailable');
+  await client.close();
+});
