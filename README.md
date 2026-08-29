@@ -2,9 +2,9 @@
 
 The alternative SQL client for Eliware applications. It provides generic
 primary/balanced MySQL or MariaDB routing without embedding Elera, HAProxy,
-backup, or GitOps policy. It is a v0.1.8 alternative to `@eliware/mysql`; the
+backup, or GitOps policy. It is a v0.1.9 alternative to `@eliware/mysql`; the
 existing package is intentionally unchanged. The current package version is
-0.1.8.
+0.1.9.
 
 `primary` is the preferred connection path. `balanced` is an optional alternate
 path. Both may accept writes; automatic routing sends only conservative,
@@ -61,8 +61,10 @@ automatically.
 `client.availability()` reports whether a primary route is usable. It returns
 `state: 'cluster-unavailable'` when every primary candidate is draining or
 unavailable; the `routes` fields report primary and balanced availability
-independently. New operations in that state fail with the exported
-`ClusterUnavailableError` using code `CLUSTER_UNAVAILABLE`.
+independently. A single-node route fails with the exported
+`ServerUnavailableError` using code `SERVER_UNAVAILABLE`; a multi-node route
+with no eligible candidates fails with `ClusterUnavailableError` using code
+`CLUSTER_UNAVAILABLE`.
 
 When an attached routing stream receives a `routing.shutdown` event, the
 client drains the identified node, performs a REST bundle resynchronization,
@@ -94,11 +96,12 @@ contents. The stream reports `websocket`, `rest`, or `disconnected` mode so
 callers can observe transport health without implementing transport policy.
 
 Applications may opt into generic in-memory telemetry with
-`createDb({ ..., telemetry: true })`. Query counts, failures, retries,
-in-flight work, and latency are exposed through `client.telemetry` and sent
-over an attached routing stream once per second. Telemetry is observational
-only; it does not carry SQL or credentials. Reconnect, failover, and cumulative
-reconnect-delay counters are included in the telemetry snapshot.
+`createDb({ ..., telemetry: true })`. Query, execute, and transaction counts,
+failures, retries, in-flight work, and latency are exposed through
+`client.telemetry` and sent over an attached routing stream once per second.
+Telemetry is observational only; it does not carry SQL or credentials.
+Reconnect, failover, and cumulative reconnect-delay counters are included in
+the telemetry snapshot.
 
 `createMaterializer` supports bounded plaintext use for a caller-provided
 operation. It creates a mode-restricted temporary file and removes its entire

@@ -1,5 +1,18 @@
 # Release notes
 
+## 0.1.9 — Standalone outage classification and complete operation telemetry
+
+### Added
+
+- Exposes `ServerUnavailableError` with the stable `SERVER_UNAVAILABLE` code when a standalone SQL route has no eligible server.
+- Keeps multi-node route exhaustion classified as `CLUSTER_UNAVAILABLE`.
+- Records telemetry for `execute()` and transaction operations alongside query latency and failure metrics.
+
+### Validation
+
+- Adds regression coverage for standalone drain classification and operation telemetry.
+- Maintains 100% statements, branches, functions, and lines coverage with zero lint warnings.
+
 ## 0.1.8 — Explicit outage state and recovery observability
 
 ### Added
