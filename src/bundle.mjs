@@ -29,6 +29,7 @@ export function validateBundle(bundle) {
   if (bundle.bundleVersion === undefined || !['string', 'number'].includes(typeof bundle.bundleVersion)) throw new TypeError('routing bundle bundleVersion is required');
   validatePorts(bundle.ports);
   if (!bundle.expiresAt || Number.isNaN(Date.parse(bundle.expiresAt))) throw new TypeError('routing bundle expiresAt is required');
+  if (Date.parse(bundle.expiresAt) <= Date.now()) throw new TypeError('routing bundle expiresAt must be in the future');
   const writer = validateRoutingNode(bundle.writer, 'routing bundle writer');
   const failover = validateRoutingNodes(bundle.failover, 'routing bundle failover');
   if (writer && failover.some((node) => node.host === writer.host && node.port === writer.port)) throw new TypeError('routing bundle failover duplicates writer');

@@ -1,7 +1,7 @@
 {
     "name": "@eliware/elera-lib",
     "version": "0.3.1",
-    "description": "Shared Elera routing contracts, validation, and lifecycle helpers",
+    "description": "Shared Elera routing contracts and validation",
     "keywords": [
         "eliware",
         "elera",
@@ -51,9 +51,7 @@
         "pack": "npm pack --dry-run",
         "audit": "node scripts/run-audit.mjs"
     },
-    "dependencies": {
-        "@eliware/snowflake": "^2.0.0"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@eliware/test": "^2.1.3",
         "@types/node": "^26.4.0",

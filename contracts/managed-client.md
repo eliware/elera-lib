@@ -24,14 +24,17 @@ drains, recovery, and shutdown. Event handling and transport orchestration are
 owned by the consuming client or supervisor; this package supplies contracts
 and validation only.
 
-## Shared helpers
+## Shared boundary
 
-The public package provides complete bundle validation, routing-event
-validation, and the shared client drain policy. Type declarations describe
-the shared bundle and telemetry shapes, but runtime telemetry collection,
-version comparison, writer/failover calculation, SQL errors, bundle retrieval,
-SQL pools, credential materialization, Galera management, and CLI or
-supervisor workflows belong to their owning packages.
+The public package provides complete bundle validation and routing-event
+validation. Client lifecycle policy, runtime telemetry collection, version
+comparison, writer/failover calculation, SQL errors, bundle retrieval, SQL
+pools, credential materialization, Galera management, and CLI or supervisor
+workflows belong to their owning packages.
+
+Type declarations in this package describe only shared contract data. Client
+and supervisor telemetry types remain in those owning packages unless they are
+later adopted by at least two repositories as a common contract.
 
 See `README.md` for the complete export boundary and
 `contracts/routing-bundle.schema.json` for the machine-readable contract.
