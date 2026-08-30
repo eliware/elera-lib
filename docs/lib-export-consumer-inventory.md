@@ -11,7 +11,6 @@ at least two repositories genuinely use it.
 | --- | --- | --- |
 | `validateBundle` | `elera-client`, `elera` | Shared bundle contract |
 | `validateRoutingEvent` | `elera-client`, `elera` | Shared event contract |
-| `clientDrainTimeout` | `elera-client`, `elera` | Shared lifecycle policy |
 
 `src/index.mjs` is the only public barrel. No application SDK, SQL pool,
 supervisor orchestration, CLI administration, telemetry collector, or stream
@@ -19,16 +18,18 @@ transport is exported from this package.
 
 ## Repository summary
 
-- `elera-client` directly consumes the three shared exports above.
-- `elera` directly consumes the three shared exports above.
+- `elera-client` directly consumes the two shared exports above and owns its
+  client-specific drain timeout policy.
+- `elera` directly consumes the two shared exports above and owns its local
+  supervisor drain timeout policy.
 - `elera-cli` has no current runtime import from `elera-lib`.
 - `elera-example` now uses `@eliware/elera-client` for application behavior and
   retains only the shared bundle type import from `elera-lib`.
 
 ## Boundary decisions
 
-- Bundle and event schemas, validation, and the generic drain-timeout policy
-  remain shared because both the client and supervisor consume them.
+- Bundle and event schemas and validation remain shared because both the client
+  and supervisor consume them.
 - Client errors, bundle expiry/version logic, SQL pools, route selection,
   WebSocket/REST orchestration, and client telemetry remain in
   `elera-client`.

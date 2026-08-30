@@ -17,7 +17,6 @@ None. Application-facing transport and orchestration belong to
 ## Implementation modules
 
 - `src/bundle.mjs`
-- `src/lifecycle/drain-policy.mjs`
 - `src/lifecycle/materializer.mjs`
 - `src/routing/bundle-fetcher.mjs`
 - `src/routing/event-contract.mjs`
@@ -26,7 +25,6 @@ None. Application-facing transport and orchestration belong to
 ## Focused source/test mapping
 
 - `src/bundle.mjs` → `tests/bundle.test.mjs`
-- `src/lifecycle/drain-policy.mjs` → `tests/lifecycle/drain-policy.test.mjs`
 - `src/lifecycle/materializer.mjs` → `tests/lifecycle/materializer.test.mjs`
 - `src/routing/bundle-fetcher.mjs` → `tests/routing/bundle-fetcher.test.mjs`
 - `src/routing/event-contract.mjs` → `tests/routing/event-contract.test.mjs`
