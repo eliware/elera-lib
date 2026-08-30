@@ -1,6 +1,6 @@
 {
     "name": "@eliware/elera-lib",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "Shared Elera routing contracts, validation, and lifecycle helpers",
     "keywords": [
         "eliware",
