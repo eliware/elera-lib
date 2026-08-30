@@ -1,5 +1,25 @@
 # Release notes
 
+## 0.3.1 — Shared-boundary cleanup
+
+### Changed
+
+- Removes the unused public routing-stream transport from the shared package;
+  stream orchestration remains owned by `@eliware/elera-client`.
+- Removes the unused `@eliware/common` runtime dependency and keeps only the
+  shared runtime dependency required by the materializer.
+- Aligns the README, shared contract documentation, source/test inventory, and
+  consumer inventory with the current three-export public API.
+- Updates the bundled example to demonstrate bundle validation without
+  application SQL-client or telemetry-runtime behavior.
+
+### Verification
+
+- Restores focused node-validation coverage at the matching source path.
+- Confirms all in-scope implementation modules have focused tests, with no
+  non-barrel Istanbul ignores, local links, or repository-specific paths.
+- Tests, lint, typecheck, contract validation, audit, and package dry-run pass.
+
 ## 0.3.0 — Shared protocol and helper boundary
 
 ### Breaking changes
