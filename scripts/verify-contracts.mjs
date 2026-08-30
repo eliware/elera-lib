@@ -8,7 +8,7 @@ const digest = (value) => createHash('sha256').update(JSON.stringify(value)).dig
 const schema = await readJson('routing-bundle.schema.json');
 const fixture = await readJson('routing-bundle.fixture.json');
 const expected = {
-  schema: 'f6d4d3eb6c0fd7df05664a419b8fb08e2d9ea8159ca6267dde770cdcdf153dc8',
+  schema: 'b7e12f5973cb1dc3292c7fc6518351160de3192e35043aa29276915091fc3b22',
   fixture: '971429b561de4b184d015a9401ce2d2be9a102de334f1c1c7d483a3f55bd2526'
 };
 const ajv = new Ajv({ allErrors: true, strict: true, allowUnionTypes: true });

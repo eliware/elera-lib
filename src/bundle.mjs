@@ -1,6 +1,11 @@
 import { validateRoutingNode, validateRoutingNodes } from './routing/node-validation.mjs';
 const routes = ['primary', 'balanced'];
 const requiredText = (value, name) => { if (typeof value !== 'string' || value.length === 0) throw new TypeError(`${name} is required`); };
+const optionalText = (value, name) => { if (value !== undefined) requiredText(value, name); };
+const optionalScopes = (scopes) => {
+  if (scopes === undefined) return;
+  if (!Array.isArray(scopes) || scopes.some((scope) => typeof scope !== 'string' || scope.length === 0)) throw new TypeError('routing bundle scopes must be an array of non-empty strings');
+};
 const validatePorts = (ports) => {
   if (!ports || typeof ports !== 'object') throw new TypeError('routing bundle ports are required');
   for (const name of ['sql', 'http']) validateRoutingNode({ host: name, port: ports[name] }, `routing bundle ports.${name}`);
@@ -10,8 +15,13 @@ export function validateBundle(bundle) {
   if (!bundle || typeof bundle !== 'object') throw new TypeError('routing bundle is required');
   if (bundle.apiVersion !== 'v1') throw new TypeError('routing bundle apiVersion must be v1');
   requiredText(bundle.application, 'routing bundle application');
+  optionalText(bundle.applicationId, 'routing bundle applicationId');
   requiredText(bundle.database, 'routing bundle database');
+  optionalText(bundle.databaseId, 'routing bundle databaseId');
   requiredText(bundle.identity, 'routing bundle identity');
+  optionalText(bundle.identityId, 'routing bundle identityId');
+  optionalText(bundle.credentialName, 'routing bundle credentialName');
+  optionalScopes(bundle.scopes);
   requiredText(bundle.nodeIdentity, 'routing bundle nodeIdentity');
   if (!bundle.credentials || typeof bundle.credentials !== 'object') throw new TypeError('routing bundle credentials are required');
   requiredText(bundle.credentials.username, 'routing bundle credentials.username');

@@ -14,3 +14,10 @@ test('rejects each missing required bundle field', () => {
   expect(() => validateBundle({ ...valid, ports: { sql: 0, http: 8080 } })).toThrow();
   expect(() => validateBundle({ ...valid, expiresAt: undefined })).toThrow();
 });
+test('validates optional identity and scope metadata when present', () => {
+  expect(validateBundle({ ...valid, applicationId: 'app-id', databaseId: 'db-id', identityId: 'identity-id', credentialName: 'runtime', scopes: ['database:read'] })).toBeDefined();
+  for (const field of ['applicationId', 'databaseId', 'identityId', 'credentialName']) expect(() => validateBundle({ ...valid, [field]: '' })).toThrow();
+  expect(() => validateBundle({ ...valid, scopes: 'database:read' })).toThrow();
+  expect(() => validateBundle({ ...valid, scopes: [''] })).toThrow();
+  expect(() => validateBundle({ ...valid, scopes: [42] })).toThrow();
+});
