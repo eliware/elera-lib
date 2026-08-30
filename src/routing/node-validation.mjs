@@ -5,7 +5,6 @@ export function validateRoutingNode(node, name = 'routing node') {
   if (node.weight !== undefined && (!Number.isFinite(Number(node.weight)) || Number(node.weight) < 0)) throw new TypeError(`${name} weight is invalid`);
   return { ...node, host: node.host.trim(), port };
 }
-
 export function validateRoutingNodes(nodes, name) {
   if (!Array.isArray(nodes)) throw new TypeError(`${name} must be an array`);
   const validated = nodes.map((node, index) => validateRoutingNode(node, `${name}[${index}]`));

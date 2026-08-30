@@ -1,7 +1,7 @@
 # Elera library example
 
-`basic-client.mjs` demonstrates the shared `@eliware/elera-lib` contract
-helpers. Native SQL application examples belong to `@eliware/elera-client`.
+`basic-client.mjs` demonstrates the shared `@eliware/elera-lib` bundle-validation
+helper. Native SQL application examples belong to `@eliware/elera-client`.
 
 Run it with a complete bundle:
 

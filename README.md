@@ -1,12 +1,10 @@
 # @eliware/elera-lib
 
-`@eliware/elera-lib` is Elera's shared protocol and helper package. It contains
-the contracts and policy primitives used by the supervisor, CLI, and
-`@eliware/elera-client`.
+`@eliware/elera-lib` is Elera's lean shared protocol package. It contains only
+contracts and policy primitives currently consumed by multiple Elera repos.
 
-It provides routing-bundle validation, version comparison, writer assignment,
-ordered failover helpers, routing-event validation, shared SQL and availability
-errors, the client drain policy, and transport-neutral in-memory telemetry.
+It provides routing-bundle validation, routing-event validation, and the shared
+client drain policy.
 
 Application code that needs native SQL connections must install
 `@eliware/elera-client`. SQL pools, credentials, WebSocket connections,
@@ -19,14 +17,13 @@ writer, readers, ordered failover nodes, application/database/identity scope,
 credentials, version, and expiry. `validateBundle` rejects malformed,
 expired, duplicated, or conflicting route data.
 
-Routing events are validated before consumers act on them. Shared errors
-distinguish an unavailable server from an unavailable cluster. The drain policy
-caps client drain windows at 45 seconds. Telemetry is observational and never
-contains bearer tokens, passwords, SQL, or connection pools.
+Routing events are validated before consumers act on them. The drain policy
+caps client drain windows at 45 seconds. Telemetry contracts are observational
+and never contain bearer tokens, passwords, SQL, or connection pools.
 
-The supervisor and CLI own policy, persistence, authentication, provisioning,
-recovery, and transport orchestration. `elera-lib` supplies reusable contracts
-and helpers only.
+The supervisor owns topology and assignment policy; the CLI owns administration;
+and `elera-client` owns SQL pools and application behavior. `elera-lib` supplies
+only reusable contracts and helpers shared across those boundaries.
 
 ## Development
 

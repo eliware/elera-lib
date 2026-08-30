@@ -15,7 +15,7 @@
         "telemetry",
         "websocket",
         "protocol-contracts",
-        "mysql-client"
+        "shared-library"
     ],
     "repository": {
         "type": "git",
@@ -56,7 +56,6 @@
         "audit": "node scripts/run-audit.mjs"
     },
     "dependencies": {
-        "@eliware/common": "^2.0.0",
         "@eliware/snowflake": "^2.0.0"
     },
     "devDependencies": {

@@ -26,11 +26,12 @@ and validation only.
 
 ## Shared helpers
 
-The public package provides bundle and node validation, version comparison,
-writer/failover calculation, shared SQL errors, client drain policy, and
-transport-neutral telemetry. It does not retrieve bundles, open SQL pools,
-materialize application credentials, provision databases, manage Galera, or
-implement CLI and supervisor workflows.
+The public package provides complete bundle validation, routing-event
+validation, and the shared client drain policy. Type declarations describe
+the shared bundle and telemetry shapes, but runtime telemetry collection,
+version comparison, writer/failover calculation, SQL errors, bundle retrieval,
+SQL pools, credential materialization, Galera management, and CLI or
+supervisor workflows belong to their owning packages.
 
 See `README.md` for the complete export boundary and
 `contracts/routing-bundle.schema.json` for the machine-readable contract.
