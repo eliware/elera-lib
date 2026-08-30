@@ -30,19 +30,12 @@ None. Application-facing transport and orchestration belong to
 - `src/lifecycle/materializer.mjs` → `tests/lifecycle/materializer.test.mjs`
 - `src/routing/bundle-fetcher.mjs` → `tests/routing/bundle-fetcher.test.mjs`
 - `src/routing/event-contract.mjs` → `tests/routing/event-contract.test.mjs`
-- `src/routing/node-validation.mjs` → no focused test currently present
+- `src/routing/node-validation.mjs` → `tests/routing/node-validation.test.mjs`
 
 ## Cross-cutting tests
 
 - `tests/cross-cutting/public-api.test.mjs` verifies the public entrypoint
   exports and excludes application-specific APIs.
-
-## Current exception
-
-`src/routing/node-validation.mjs` is a private helper used by bundle
-validation, but its former focused test was removed during the boundary
-refactor. Add `tests/routing/node-validation.test.mjs` before declaring the
-source-to-test convention alignment complete.
 
 ## Audit rules
 

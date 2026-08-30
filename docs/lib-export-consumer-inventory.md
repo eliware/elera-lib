@@ -22,8 +22,8 @@ transport is exported from this package.
 - `elera-client` directly consumes the three shared exports above.
 - `elera` directly consumes the three shared exports above.
 - `elera-cli` has no current runtime import from `elera-lib`.
-- `elera-example` still contains stale imports of the old application-facing
-  API and must migrate to `@eliware/elera-client`.
+- `elera-example` now uses `@eliware/elera-client` for application behavior and
+  retains only the shared bundle type import from `elera-lib`.
 
 ## Boundary decisions
 
@@ -43,6 +43,6 @@ transport is exported from this package.
   it from the shared package; stream transport is client-owned.
 - `validateRoutingNode` and related routing internals remain private to their
   owning implementation and are not public shared exports.
-- The example application’s stale imports are a consumer migration issue, not
-  justification for expanding the shared public API.
+- The example application does not justify expanding the shared public API;
+  application behavior remains in `@eliware/elera-client`.
 - Re-run this inventory whenever exports or direct consumer imports change.

@@ -1,20 +1,16 @@
 {
     "name": "@eliware/elera-lib",
     "version": "0.3.0",
-    "description": "Shared Elera routing, event, lifecycle, telemetry, validation, and protocol helpers",
+    "description": "Shared Elera routing contracts, validation, and lifecycle helpers",
     "keywords": [
         "eliware",
         "elera",
-        "mysql",
-        "mariadb",
-        "galera",
         "protocol",
         "contracts",
         "routing",
-        "failover",
-        "telemetry",
-        "websocket",
-        "protocol-contracts",
+        "lifecycle",
+        "validation",
+        "routing-contracts",
         "shared-library"
     ],
     "repository": {
