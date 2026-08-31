@@ -1,4 +1,4 @@
-import { validateRoutingNode, validateRoutingNodes } from '../../src/routing/node-validation.mjs';
+import { validateRoutingNode, validateRoutingNodes } from '../../../src/routing/node-validation.mjs';
 
 test('normalizes a valid node', () => {
   expect(validateRoutingNode({ host: '  node-a ', port: 3306, weight: 2 })).toEqual({ host: 'node-a', port: 3306, weight: 2 });
