@@ -12,6 +12,7 @@
   "readers": [{ "host": "sql0.internal", "port": 3306, "weight": 100 }, { "host": "sql1.internal", "port": 3306, "weight": 80 }, { "host": "sql2.internal", "port": 3306, "weight": 60 }],
   "nodeIdentity": "sql0.internal",
   "ports": { "sql": 3306, "http": 8080 },
+  "routes": { "primary": [{ "host": "sql0.internal", "port": 3306 }], "balanced": [{ "host": "sql1.internal", "port": 3306, "weight": 80 }] },
   "bundleVersion": 1,
   "expiresAt": "2099-01-01T00:00:00Z"
 }

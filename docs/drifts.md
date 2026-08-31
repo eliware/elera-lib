@@ -23,9 +23,14 @@ the implementation.
   generation remains owned by the supervisor/CLI layers.
 - [x] Removed telemetry declarations from the public shared package; telemetry
   types remain owned by the client and supervisor packages.
-- [ ] Re-run the export-consumer inventory after the preceding boundary
+- [x] Re-run the export-consumer inventory after the preceding boundary
   decisions and confirm every retained public export has at least two runtime
+  consumers. Verified 2026-08-30; both retained exports have multiple runtime
   consumers.
+
+- [x] Reconcile schema/runtime/type differences for route requiredness and port
+  normalization; the shared contract now requires both route arrays and integer
+  ports, and includes the credential-free routing.topology event.
 
 ## Verified alignment
 

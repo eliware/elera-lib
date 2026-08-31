@@ -1,7 +1,8 @@
 # @eliware/elera-lib
 
-`@eliware/elera-lib` is Elera's lean shared protocol package. It contains only
-contracts and pure helpers currently consumed by multiple Elera repos.
+`@eliware/elera-lib` is Elera's lean shared protocol package. Its public API
+contains only contracts and pure helpers currently consumed by multiple Elera
+repos; internal modules remain non-public until their ownership is resolved.
 
 It provides routing-bundle validation and routing-event validation.
 

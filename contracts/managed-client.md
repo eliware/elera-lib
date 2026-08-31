@@ -20,9 +20,9 @@ validation.
 ## Routing events
 
 `validateRoutingEvent()` defines the shared event boundary for routing updates,
-drains, recovery, and shutdown. Event handling and transport orchestration are
-owned by the consuming client or supervisor; this package supplies contracts
-and validation only.
+topology, drains, recovery, and shutdown. Event handling and transport
+orchestration are owned by the consuming client or supervisor; this package
+supplies contracts and validation only.
 
 ## Shared boundary
 

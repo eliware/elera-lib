@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eliware.dev/contracts/bundle-payload.schema.json",
+  "type": "object",
+  "required": ["apiVersion", "application", "database", "identity", "credentials", "writer", "readers", "failover", "bundleVersion", "expiresAt", "nodeIdentity", "ports", "routes"],
+  "properties": {
+    "apiVersion": { "const": "v1" },
+    "application": { "type": "string", "minLength": 1 },
+    "applicationId": { "type": "string", "minLength": 1 },
+    "database": { "type": "string", "minLength": 1 },
+    "databaseId": { "type": "string", "minLength": 1 },
+    "identity": { "type": "string", "minLength": 1 },
+    "identityId": { "type": "string", "minLength": 1 },
+    "credentialName": { "type": "string", "minLength": 1 },
+    "scopes": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "credentials": { "type": "object", "required": ["username", "password"], "properties": { "username": { "type": "string", "minLength": 1 }, "password": { "type": "string" } }, "additionalProperties": false },
+    "writer": { "$ref": "#/$defs/node" },
+    "readers": { "$ref": "#/$defs/nodes" },
+    "failover": { "$ref": "#/$defs/nodes" },
+    "routes": { "$ref": "#/$defs/routes" },
+    "bundleVersion": { "type": ["string", "number"] },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "refreshAfter": { "type": "string", "format": "date-time" },
+    "nodeIdentity": { "type": "string", "minLength": 1 },
+    "ports": { "$ref": "#/$defs/ports" }
+  },
+  "$defs": {
+    "node": { "type": "object", "required": ["host", "port"], "properties": { "host": { "type": "string", "minLength": 1 }, "port": { "type": "integer", "minimum": 1, "maximum": 65535 }, "weight": { "type": "number", "minimum": 0 }, "nodeId": { "type": "string", "minLength": 1 } }, "additionalProperties": false },
+    "nodes": { "type": "array", "items": { "$ref": "#/$defs/node" } },
+    "routes": { "type": "object", "required": ["primary", "balanced"], "properties": { "primary": { "$ref": "#/$defs/nodes" }, "balanced": { "$ref": "#/$defs/nodes" } }, "additionalProperties": false },
+    "ports": { "type": "object", "required": ["sql", "http"], "properties": { "sql": { "type": "integer", "minimum": 1, "maximum": 65535 }, "http": { "type": "integer", "minimum": 1, "maximum": 65535 }, "ws": { "type": "integer", "minimum": 1, "maximum": 65535 } }, "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 65535 } }
+  }
+}

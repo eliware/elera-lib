@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eliware.dev/contracts/routing-event.schema.json",
+  "type": "object",
+  "oneOf": [{ "$ref": "#/$defs/update" }, { "$ref": "#/$defs/topology" }, { "$ref": "#/$defs/context" }, { "$ref": "#/$defs/shutdown" }],
+  "$defs": {
+    "envelope": { "type": "object", "required": ["type", "version", "generatedAt"], "properties": { "type": { "type": "string" }, "version": { "type": "integer", "minimum": 0 }, "generatedAt": { "type": "string", "format": "date-time" } } },
+    "update": { "type": "object", "allOf": [{ "$ref": "#/$defs/envelope" }, { "$ref": "bundle-payload.schema.json" }], "unevaluatedProperties": false },
+    "topology": { "type": "object", "allOf": [{ "$ref": "#/$defs/envelope" }, { "type": "object", "required": ["type", "node", "context", "topology"], "properties": { "type": { "const": "routing.topology" }, "version": { "type": "integer", "minimum": 1 }, "node": { "type": "string", "minLength": 1 }, "context": { "type": "object", "required": ["nodeIdentity", "ports", "clusterCondition"], "properties": { "nodeIdentity": { "type": "object" }, "ports": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 65535 } }, "clusterCondition": { "type": "string", "minLength": 1 }, "refreshAfter": { "type": "string", "format": "date-time" } }, "additionalProperties": false }, "topology": { "type": "object", "required": ["nodes"], "properties": { "nodes": { "type": "array", "items": { "type": "object", "required": ["nodeId", "address", "sqlPort", "state", "draining"], "properties": { "nodeId": { "type": "string", "minLength": 1 }, "address": { "type": "string", "minLength": 1 }, "sqlPort": { "type": "integer", "minimum": 1, "maximum": 65535 }, "state": { "type": "string", "minLength": 1 }, "draining": { "type": "boolean" } }, "additionalProperties": false } } }, "additionalProperties": false } } }], "unevaluatedProperties": false },
+    "context": { "type": "object", "allOf": [{ "$ref": "#/$defs/envelope" }, { "type": "object", "required": ["node", "context"], "properties": { "type": { "enum": ["routing.drain", "routing.recovery"] }, "node": { "type": "string", "minLength": 1 }, "context": { "type": "object" } } }], "unevaluatedProperties": false },
+    "shutdown": { "type": "object", "allOf": [{ "$ref": "#/$defs/envelope" }, { "type": "object", "required": ["node", "reason", "reconnectDeadlineMs"], "properties": { "type": { "const": "routing.shutdown" }, "node": { "type": "string", "minLength": 1 }, "reason": { "type": "string", "minLength": 1 }, "reconnectDeadlineMs": { "type": "number", "minimum": 0 }, "loadBalancerEndpoint": { "type": "string", "format": "uri" } } }], "unevaluatedProperties": false }
+  }
+}
