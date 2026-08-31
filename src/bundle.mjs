@@ -17,6 +17,7 @@ export function validateBundle(bundle) {
   requiredText(bundle.application, 'routing bundle application');
   optionalText(bundle.applicationId, 'routing bundle applicationId');
   requiredText(bundle.database, 'routing bundle database');
+  requiredText(bundle.physicalDatabase, 'routing bundle physicalDatabase');
   optionalText(bundle.databaseId, 'routing bundle databaseId');
   requiredText(bundle.identity, 'routing bundle identity');
   optionalText(bundle.identityId, 'routing bundle identityId');

@@ -11,8 +11,8 @@ const fixture = await readJson('routing-bundle.fixture.json');
 const eventSchema = await readJson('routing-event.schema.json');
 const expected = {
   schema: 'e066403ef67e6fb8a325735674748e420c03e66a2554db30f7fd170c590d8932',
-  payloadSchema: 'a2a8b4402bc08628225f5dd21915f6c0853ef51a53512d60b130ca1a3097dbdb',
-  fixture: '9c195596673d9f59013758cdf47fee1dbac37af5e8be006f0530395c587539ed',
+  payloadSchema: 'b14ce1de319e299d210e93bcd5bb6f2bb1c666513e75c2e0bc3b5add1d482565',
+  fixture: 'c86d7d6989e16e7f77c916646fe08d8152c9fa11113521abdec1d331352fc898',
   eventSchema: '74d4da95c398129ecabdf89465b86b8843e4db07d243b68d2c3b32bab24a6df1'
 };
 const ajv = new Ajv({ allErrors: true, strict: true, allowUnionTypes: true });

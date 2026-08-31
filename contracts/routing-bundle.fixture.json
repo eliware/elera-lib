@@ -5,6 +5,7 @@
   "databaseId": "18446744073709551622",
   "identityId": "18446744073709551623",
   "database": "billing",
+  "physicalDatabase": "elera_db_18446744073709551622",
   "identity": "billing-runtime",
   "credentials": { "username": "billing_runtime", "password": "fixture-only" },
   "writer": { "host": "sql0.internal", "port": 3306 },
