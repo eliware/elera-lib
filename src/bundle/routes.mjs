@@ -1,8 +1,8 @@
-import { validateBundleEndpointNodes } from './endpoint-nodes.mjs';
-import { validateBundleRouteNodes } from './route-nodes.mjs';
+import { validateBundleEndpointConflicts } from './endpoint-conflicts.mjs';
+import { validateBundleRouteLists } from './route-lists.mjs';
 
 export function validateBundleRoutes(bundle) {
   if (!bundle.routes || typeof bundle.routes !== 'object') throw new TypeError('routing bundle routes are required');
-  validateBundleEndpointNodes(bundle);
-  validateBundleRouteNodes(bundle);
+  validateBundleEndpointConflicts(bundle);
+  validateBundleRouteLists(bundle);
 }
