@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals';
-import { validateRoutingEvent } from '../../../src/routing/event-contract.mjs';
+import { validateRoutingEvent } from '../../../../src/routing/event-contract.mjs';
 
 test('validates credential-free topology events', () => {
   const event = { type: 'routing.topology', version: 1, generatedAt: '2099-01-01T00:00:00.000Z', node: 'elera-0', context: { nodeIdentity: { name: 'elera-0' }, ports: { sql: 3306, http: 8080 }, clusterCondition: 'Primary', refreshAfter: '2099-01-01T00:01:00.000Z' }, topology: { nodes: [{ nodeId: 'elera-0', address: '10.0.0.1', sqlPort: 3306, state: 'ready', draining: false }] } };
