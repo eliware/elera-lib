@@ -51,9 +51,8 @@
         "pack": "npm pack --dry-run",
         "audit": "node scripts/run-audit.mjs"
     },
-    "dependencies": {},
     "devDependencies": {
-        "@eliware/test": "^2.1.3",
+        "@eliware/test": "^2.2.0",
         "@types/node": "^26.4.0",
         "ajv": "^8.20.0",
         "ajv-formats": "^3.0.1",
