@@ -1,6 +1,6 @@
 import { validateEnvelope } from './envelope.mjs';
 import { validateUpdateEvent } from './update.mjs';
-import { validateContextEvent, validateShutdownEvent } from './lifecycle.mjs';
+import { validateContextEvent, validateShutdownEvent } from './lifecycle/index.mjs';
 import { validateTopologyEvent } from './topology/index.mjs';
 
 export function validateRoutingEvent(event) {

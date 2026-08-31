@@ -1,8 +1,6 @@
 import { expect, test } from '@jest/globals';
-import { validateRoutingEvent } from '../../../src/routing/event-contract.mjs';
-
+import { validateRoutingEvent } from '../../../../src/routing/event-contract.mjs';
 const envelope = { version: 1, generatedAt: '2030-01-01T00:00:00Z' };
-
 test('validates shutdown handoff fields', () => {
   expect(validateRoutingEvent({ ...envelope, type: 'routing.shutdown', node: 'elera-0', reason: 'maintenance', reconnectDeadlineMs: 1000, loadBalancerEndpoint: 'http://vip' })).toMatchObject({ node: 'elera-0' });
   expect(validateRoutingEvent({ ...envelope, type: 'routing.shutdown', node: 'elera-0', reason: 'maintenance', reconnectDeadlineMs: 0 })).toMatchObject({ node: 'elera-0' });
