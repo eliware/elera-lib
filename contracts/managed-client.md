@@ -7,9 +7,10 @@ connections belong to `@eliware/elera-client`.
 ## Routing bundles
 
 The supervisor publishes a complete `v1` bundle containing application,
-database, identity, credentials, writer, readers, ordered failover nodes,
-bundle version, expiry, node identity, and service ports. The normalized route
-arrays are `routes.primary` and `routes.balanced`.
+logical `database`, generated physical SQL schema `physicalDatabase`, identity,
+credentials, writer, readers, ordered failover nodes, bundle version, future
+expiry, node identity, and service ports. The normalized route arrays are
+`routes.primary` and `routes.balanced`.
 
 `validateBundle()` rejects missing required fields, malformed nodes or ports,
 expired timestamps, duplicate writer/failover nodes, and invalid route arrays.

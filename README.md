@@ -11,11 +11,13 @@ Application code that needs native SQL connections must install
 database selection, backups, CLI commands, and supervisor orchestration are
 not part of this package.
 
-Routing bundles use normalized `routes.primary` and `routes.balanced` arrays
-containing ordered `{ host, port, weight }` nodes. A bundle may also carry a
-writer, readers, ordered failover nodes, application/database/identity scope,
-credentials, version, and expiry. `validateBundle` rejects malformed,
-expired, duplicated, or conflicting route data.
+Routing bundles preserve the logical `database` label used for authorization
+and display and carry the generated physical SQL schema in `physicalDatabase`.
+They require normalized `routes.primary` and `routes.balanced` arrays containing
+ordered `{ host, port, weight }` nodes. Bundles also carry application and
+identity scope, credentials, version, node identity, service ports, and a
+future `expiresAt` timestamp. `validateBundle` rejects malformed, expired,
+duplicated, or conflicting route data.
 
 Routing events are validated before consumers act on them. Client and
 supervisor lifecycle policies remain in their owning repositories. Telemetry
