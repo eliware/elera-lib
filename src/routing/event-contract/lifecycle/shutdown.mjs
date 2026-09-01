@@ -6,8 +6,7 @@ export function validateShutdownEvent(event) {
   if (event.loadBalancerEndpoint !== undefined) {
     let url;
     try { url = new URL(event.loadBalancerEndpoint); } catch { throw new TypeError('routing shutdown endpoint must be an HTTP URL'); }
-    if (!['http:', 'https:'].includes(url.protocol)) throw new TypeError('routing shutdown endpoint must be an HTTP URL');
-    // Intentional: this is routing metadata only; the library never dereferences the endpoint.
+    if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash) throw new TypeError('routing shutdown endpoint must be a plain HTTP URL');
   }
   return event;
 }
