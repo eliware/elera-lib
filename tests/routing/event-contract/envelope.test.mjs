@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals';
-import { validateRoutingEvent } from '../../../src/routing/event-contract.mjs';
+import { validateRoutingEvent } from '../../../src/routing/event-contract/index.mjs';
 
 const envelope = { version: 1, generatedAt: '2030-01-01T00:00:00Z' };
 

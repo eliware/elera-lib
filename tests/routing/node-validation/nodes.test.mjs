@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals';
-import { validateRoutingNodes } from '../../../src/routing/node-validation.mjs';
+import { validateRoutingNodes } from '../../../src/routing/node-validation/index.mjs';
 
 test('validates node lists, including empty lists and duplicate detection', () => {
   expect(validateRoutingNodes([], 'readers')).toEqual([]);

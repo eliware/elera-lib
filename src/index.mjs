@@ -1,2 +1,2 @@
-export { validateBundle } from './bundle.mjs';
-export { validateRoutingEvent } from './routing/event-contract.mjs';
+export { validateBundle } from './bundle/index.mjs';
+export { validateRoutingEvent } from './routing/event-contract/index.mjs';

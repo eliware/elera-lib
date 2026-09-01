@@ -1,4 +1,4 @@
-const requiredText = (value, name) => { if (typeof value !== 'string' || value.length === 0) throw new TypeError(`${name} is required`); };
+const requiredText = (value, name) => { if (typeof value !== 'string' || value.trim().length === 0) throw new TypeError(`${name} is required`); };
 
 export function validateBundleIdentityFields(bundle) {
   requiredText(bundle.identity, 'routing bundle identity');

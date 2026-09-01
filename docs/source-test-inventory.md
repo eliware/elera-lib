@@ -1,40 +1,13 @@
 # Elera library source-to-test inventory
 
-This inventory reflects the current working tree. The public entrypoint barrel
-is excluded from focused implementation coverage; it is covered by the public
-API test. Every other production module has a focused test at the matching
-path under `tests/`.
+The canonical public entrypoint is `src/index.mjs`. Internal modules are
+imported from their canonical `index.mjs` files; compatibility entrypoints and
+legacy re-export barrels are intentionally not provided.
 
-## Barrels
+Tests mirror the source tree under `tests/` without a redundant `src/`
+segment. Each production module has a matching test path, including focused
+tests for orchestration and public entrypoints. The declaration surface is
+covered by `tests/index.d.ts` and the typecheck gate.
 
-- `src/index.mjs`
-
-## Entrypoints and orchestrators
-
-None. Application-facing transport and orchestration belong to
-`@eliware/elera-client`.
-
-## Implementation modules
-
-- `src/bundle.mjs`
-- `src/routing/event-contract.mjs`
-- `src/routing/node-validation.mjs`
-
-## Focused source/test mapping
-
-- `src/bundle.mjs` → `tests/bundle.test.mjs`
-- `src/routing/event-contract.mjs` → `tests/routing/event-contract.test.mjs`
-- `src/routing/node-validation.mjs` → `tests/routing/node-validation.test.mjs`
-
-## Cross-cutting tests
-
-- `tests/cross-cutting/public-api.test.mjs` verifies the public entrypoint
-  exports and excludes application-specific APIs.
-
-## Audit rules
-
-- Paths mirror the source tree without the `src/` segment.
-- Barrels receive public-export tests rather than focused implementation tests.
-- Cross-cutting tests supplement focused tests; they do not replace them.
-- Regenerate this inventory whenever source or test modules are added, moved,
-  deleted, or reclassified.
+Update this inventory whenever source or test modules are added, moved,
+deleted, or reclassified.

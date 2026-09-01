@@ -10,4 +10,8 @@ const result = spawnSync(npm, ['audit', '--omit=dev', '--audit-level=moderate', 
 });
 
 if (result.error) throw result.error;
-process.exit(result.status ?? 1);
+if (result.status === null) {
+  console.error(`npm audit terminated by signal ${result.signal ?? 'unknown'}`);
+  process.exit(1);
+}
+process.exit(result.status);
