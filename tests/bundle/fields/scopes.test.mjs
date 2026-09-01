@@ -5,5 +5,6 @@ test('validates scopes', () => {
   expect(validateBundle({ ...valid, scopes: ['database:read'] })).toBeDefined();
   expect(() => validateBundle({ ...valid, scopes: 'database:read' })).toThrow();
   expect(() => validateBundle({ ...valid, scopes: [''] })).toThrow();
+  expect(() => validateBundle({ ...valid, scopes: ['   '] })).toThrow();
   expect(() => validateBundle({ ...valid, scopes: [42] })).toThrow();
 });

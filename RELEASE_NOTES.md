@@ -6,10 +6,9 @@
 
 - Removes the unused public routing-stream transport from the shared package;
   stream orchestration remains owned by `@eliware/elera-client`.
-- Removes the unused `@eliware/common` runtime dependency and keeps only the
-  shared runtime dependency required by the materializer.
+- Removes the unused `@eliware/common` runtime dependency.
 - Aligns the README, shared contract documentation, source/test inventory, and
-  consumer inventory with the current three-export public API.
+  consumer inventory with the current two-export public API.
 - Updates the bundled example to demonstrate bundle validation without
   application SQL-client or telemetry-runtime behavior.
 
@@ -18,7 +17,8 @@
 - Restores focused node-validation coverage at the matching source path.
 - Confirms all in-scope implementation modules have focused tests, with no
   non-barrel Istanbul ignores, local links, or repository-specific paths.
-- Tests, lint, typecheck, contract validation, audit, and package dry-run pass.
+- Tests, lint, typecheck, contract validation, audit, and package dry-run with
+  lifecycle scripts disabled pass.
 
 ## 0.3.0 — Shared protocol and helper boundary
 
@@ -36,7 +36,9 @@
 
 - Makes routing-bundle validation enforce the complete shared contract,
   including application, database, identity, credentials, writer, readers,
-  failover, version, expiry, node identity, and service ports.
+  failover, version, expiry, node identity, service ports, and optional scopes.
+  Additional service-port keys are intentionally accepted and individually
+  validated so the shared contract can add endpoints without a breaking change.
 - Aligns the checked-in routing schema and fixture with the shared wire
   contract.
 - Synchronizes the public runtime exports and TypeScript declarations with the

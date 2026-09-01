@@ -23,14 +23,15 @@ transport is exported from this package.
 - `elera` directly consumes the two shared exports above and owns its local
   supervisor drain timeout policy.
 - `elera-cli` has no current runtime import from `elera-lib`.
-- `elera-example` now uses `@eliware/elera-client` for application behavior and
-  retains only the shared bundle type import from `elera-lib`.
+- `elera-example` uses `@eliware/elera-client` for application behavior; this
+  repository's validation-only example imports `validateBundle` directly from
+  `@eliware/elera-lib`.
 
 ## Boundary decisions
 
 - Bundle and event schemas and validation remain shared because both the client
   and supervisor consume them.
-- Client errors, bundle expiry/version logic, SQL pools, route selection,
+- Client errors, bundle refresh policy, SQL pools, route selection,
   WebSocket/REST orchestration, and client telemetry remain in
   `elera-client`.
 - Supervisor assignment, database administration, Galera lifecycle, and
@@ -42,8 +43,8 @@ transport is exported from this package.
 
 - `createRoutingStream` was removed because no repository directly consumes
   it from the shared package; stream transport is client-owned.
-- `validateRoutingNode` and related routing internals remain private to their
-  owning implementation and are not public shared exports.
+- `validateRoutingNode` and related routing internals remain private helpers for
+  shared contract enforcement and are not public shared exports.
 - The example application does not justify expanding the shared public API;
   application behavior remains in `@eliware/elera-client`.
 - Re-run this inventory whenever exports or direct consumer imports change.

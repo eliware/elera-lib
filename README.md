@@ -14,12 +14,18 @@ not part of this package.
 Routing bundles preserve the logical `database` label used for authorization
 and display and carry the generated physical SQL schema in `physicalDatabase`.
 They require normalized `routes.primary` and `routes.balanced` arrays containing
-ordered `{ host, port, weight }` nodes. Bundles also carry application and
-identity scope, credentials, version, node identity, service ports, and a
+ordered `{ host, port }` nodes with optional `nodeId` and optional finite,
+non-negative `weight`; validation trims host values while preserving optional
+`nodeId` values as supplied.
+Bundles also carry application and identity scope, credentials, version, node
+identity, service ports, and a
 future `expiresAt` timestamp. `validateBundle` rejects malformed, expired,
-duplicated, or conflicting route data.
+duplicated within a role list, or writer/failover-conflicting route data;
+independent role views may intentionally overlap.
 
-Routing events are validated before consumers act on them. Client and
+Routing events are validated before consumers act on them. Envelope-only events
+are returned unchanged; update events return a new object with normalized bundle
+fields. Client and
 supervisor lifecycle policies remain in their owning repositories. Telemetry
 is owned by the client and supervisor rather than this package.
 

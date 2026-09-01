@@ -12,11 +12,20 @@ credentials, writer, readers, ordered failover nodes, bundle version, future
 expiry, node identity, and service ports. The normalized route arrays are
 `routes.primary` and `routes.balanced`.
 
+Route nodes contain `host` and `port`; `host` is trimmed during normalization,
+while optional `nodeId` is preserved as supplied. Nodes may have finite,
+non-negative numeric `weight`. Route lists are shape-validated views; endpoint
+overlap between reader and route views is intentional and is not treated as a
+conflict. Additional bundle service ports use the same integer-port validation;
+their keys are opaque non-empty service-name strings.
+
 `validateBundle()` rejects missing required fields, malformed nodes or ports,
-expired timestamps, duplicate writer/failover nodes, and invalid route arrays.
-Consumers must validate a complete bundle before using it. Partial routing
-events must be merged with the active complete bundle by the consumer before
-validation.
+expired timestamps, writer/failover overlap, and invalid route arrays. Reader
+and route-view overlap is allowed because those lists are independent views.
+Consumers must validate a complete bundle before using it. Update events carry
+a complete replacement bundle. Completeness is enforced by delegating their
+bundle fields to `validateBundle()`; consumers decide how to merge any
+application-specific state outside this contract.
 
 ## Routing events
 

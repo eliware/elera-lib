@@ -24,9 +24,10 @@ the implementation.
 - [x] Removed telemetry declarations from the public shared package; telemetry
   types remain owned by the client and supervisor packages.
 - [x] Re-run the export-consumer inventory after the preceding boundary
-  decisions and confirm every retained public export has at least two runtime
-  consumers. Verified 2026-08-30; both retained exports have multiple runtime
-  consumers.
+  decisions and confirm every retained public export has at least two external
+  runtime consumers. Verified 2026-08-30; both retained exports have multiple
+  external consumers. The bundled example is intentionally excluded because it
+  is a validation smoke example, not an external repository consumer.
 
 - [x] Reconcile schema/runtime/type differences for route requiredness and port
   normalization; the shared contract now requires both route arrays and integer

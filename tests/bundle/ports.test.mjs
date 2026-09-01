@@ -6,4 +6,5 @@ test('validates service ports', () => {
   expect(() => validateBundle({ ...valid, ports: { sql: '3306', http: 8080 } })).toThrow('port');
   expect(validateBundle({ ...valid, ports: { sql: 3306, http: 8080, ws: 9000 } })).toBeTruthy();
   expect(() => validateBundle({ ...valid, ports: { sql: 3306 } })).toThrow('http');
+  expect(() => validateBundle({ ...valid, ports: { sql: 3306, http: 8080, '   ': 9000 } })).toThrow('name');
 });
