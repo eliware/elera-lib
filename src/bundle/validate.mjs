@@ -11,8 +11,12 @@ export function validateBundle(bundle) {
   // Intentional: the public API accepts parsed JSON contracts, so direct callers using Date/Map/etc. are rejected too.
   assertJsonValue(bundle);
   let normalized;
-  // Intentional: clone only after the explicit JSON-value check so validators never mutate caller-owned data.
-  normalized = structuredClone(bundle);
+  // Intentional: Node.js 26 is the supported runtime, so structuredClone is guaranteed and avoids mutating caller-owned data.
+  try {
+    normalized = structuredClone(bundle);
+  } catch {
+    throw new TypeError('routing bundle must contain cloneable JSON-compatible values');
+  }
   validateBundleApiVersion(normalized);
   validateBundleFields(normalized);
   validateBundlePorts(normalized.ports);
