@@ -4,7 +4,9 @@ Checklist against the revised Core Flow, supervisor plan, and applicable
 repository conventions. This records findings only; it does not itself change
 the implementation.
 
-Last reviewed 2026-09-01 against the current worktree; “validation gates” means
+Last reviewed 2026-09-01 against the current worktree. Earlier dates in the
+consumer and source inventories record those inventories' own runs; they are
+not this document's review date. “Validation gates” means
 the repository's configured test, lint, syntax, contract, typecheck, audit, and
 package dry-run commands.
 
@@ -48,5 +50,5 @@ package dry-run commands.
 - [x] No non-barrel Istanbul ignores were found.
 - [x] No local links, copied consumer source, or repository-specific imports
   exist inside the library.
-- [x] Typecheck, contracts, audit, syntax, package dry-run, and the test suite
-  passed in the latest local verification run before this audit.
+- [x] Tests, lint, typecheck, contracts, audit, syntax, and package dry-run
+  passed in the latest local verification run on 2026-09-01 before this audit.

@@ -13,8 +13,8 @@ expiry, node identity, and service ports. The normalized route arrays are
 `routes.primary` and `routes.balanced`.
 
 All bundle node roles and route nodes contain `host` and `port`, with optional
-`nodeId` and finite, non-negative numeric `weight`; `host` is trimmed during
-normalization, while optional `nodeId` is preserved as supplied. Route lists are shape-validated views; endpoint
+`nodeId` and finite, non-negative numeric `weight`; `host` and optional
+`nodeId` are trimmed during normalization. Route lists are shape-validated views; endpoint
 overlap between reader and route views is intentional and is not treated as a
 conflict. Additional bundle service ports use the same integer-port validation;
 their keys are opaque non-empty service-name strings.

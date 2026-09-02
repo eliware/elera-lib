@@ -1,5 +1,51 @@
 # Release notes
 
+## 1.0.0 — Contract boundary and validation hardening
+
+This major release establishes the lean shared-library boundary. It contains
+breaking changes and is not backward-compatible with the pre-1.0 API.
+
+### Breaking changes
+
+- Reduces the public runtime API to `validateBundle` and
+  `validateRoutingEvent`.
+- Removes the managed SQL client, transports, lifecycle policy, telemetry,
+  materialization, bundle fetching, and application-specific helpers from this
+  package; those concerns remain in their owning repositories.
+- Reorganizes all implementation modules and tests into focused, matching
+  subfolder structures. The former monolithic bundle, routing-event, lifecycle,
+  and node-validation modules are removed.
+- Adds the generated `physicalDatabase` bundle field and separates logical
+  database identity from the physical SQL schema name.
+
+### Contracts and validation
+
+- Adds machine-readable bundle-payload and routing-event schemas and aligns the
+  checked-in fixtures with runtime validation and TypeScript declarations.
+- Validates complete bundle metadata, required route arrays, service ports,
+  endpoint conflicts, expiry and optional refresh timestamps, credentials,
+  scopes, node identity, and route normalization.
+- Adds routing update, topology, drain, recovery, and shutdown event contracts,
+  including detached snapshots, UTC timestamp validation, topology contexts and
+  availability records, and shutdown endpoint syntax checks.
+- Rejects non-finite numbers, accessors, symbols, cyclic values, sparse arrays,
+  unsupported prototypes, unsafe descriptors, and oversized serialized
+  contracts at the shared validation boundary.
+- Normalizes host and node identifiers by trimming them and preserves only
+  contract-defined fields in returned detached values.
+
+### Quality and documentation
+
+- Fully decomposes the test suite to mirror `src/` and adds focused regression
+  coverage for edge cases and failure paths.
+- Reaches 100×4 coverage across the full instrumented implementation, with
+  zero lint warnings.
+- Updates the README, contract documentation, examples, release history,
+  source/test inventories, consumer inventory, and drift checklist to document
+  the current ownership and export boundaries.
+- Removes unused runtime dependencies and updates contract verification,
+  auditing, package checks, and development guidance for the new boundary.
+
 ## 0.3.1 — Shared-boundary cleanup
 
 ### Changed
@@ -8,16 +54,18 @@
   stream orchestration remains owned by `@eliware/elera-client`.
 - Removes the unused `@eliware/common` runtime dependency.
 - Aligns the README, shared contract documentation, source/test inventory, and
-  consumer inventory with the current two-export public API.
-- Updates the bundled example to demonstrate bundle validation without
-  application SQL-client or telemetry-runtime behavior.
+  consumer inventory with the current two-export public API. The older sections
+  below remain historical records only.
+- Updates the bundled example to demonstrate bundle validation only; it does
+  not implement application SQL-client behavior or telemetry.
 
 This release describes the current lean two-export package boundary. Older
 release sections below are historical records of capabilities removed before
 this boundary was established.
 
-All sections below 0.3.1 are historical and do not describe the current public
-runtime API or package ownership.
+The 0.3.0 section below is historical and does not describe the current public
+runtime API or package ownership; its claims are retained only as a release
+record.
 
 ### Verification
 
@@ -32,6 +80,9 @@ runtime API or package ownership.
 > Historical: this release preceded the final 0.3.1 cleanup. Lifecycle,
 > telemetry, and error helpers mentioned below were later moved to their
 > owning packages.
+
+The following entries are historical records of the 0.3.0 package state and
+are not current implementation or ownership commitments.
 
 ### Breaking changes
 
