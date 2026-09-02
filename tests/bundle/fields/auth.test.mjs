@@ -7,4 +7,5 @@ test('validates credentials', () => {
   expect(() => validateBundle({ ...valid, credentials: { username: 'u', password: undefined } })).toThrow();
   expect(() => validateBundle({ ...valid, credentials: 'bad' })).toThrow();
   expect(() => validateBundle({ ...valid, credentials: { username: 'u', password: 1 } })).toThrow();
+  expect(() => validateBundle({ ...valid, credentials: { username: 'u', password: 'p', extra: true } })).toThrow('field is unknown');
 });

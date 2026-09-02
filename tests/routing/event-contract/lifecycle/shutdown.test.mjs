@@ -19,8 +19,8 @@ test('validates shutdown handoff fields', () => {
 test('rejects unsafe endpoint forms and accepts valid public variants', () => {
   const base = { ...envelope, type: 'routing.shutdown', node: 'n', reason: 'r', reconnectDeadlineMs: 1 };
   expect(validateRoutingEvent({ ...base, loadBalancerEndpoint: 'https://example.com:443/path' })).toMatchObject({ node: 'n' });
-  for (const endpoint of ['http://localhost', 'http://service.local', 'http://127.0.0.1', 'http://10.0.0.1', 'http://user:pass@example.com', 'http://example.com/?x=1', 'http://example.com/#x', 'http://2130706433']) expect(() => validateRoutingEvent({ ...base, loadBalancerEndpoint: endpoint })).toThrow('plain HTTP');
-  expect(validateRoutingEvent({ ...base, loadBalancerEndpoint: 'http://[::1]' })).toMatchObject({ node: 'n' });
+  for (const endpoint of ['http://localhost', 'http://localhost.', 'http://service.local', 'http://127.0.0.1', 'http://10.0.0.1', 'http://0.0.0.0', 'http://[::]', 'http://user:pass@example.com', 'http://example.com/?x=1', 'http://example.com/#x', 'http://2130706433']) expect(() => validateRoutingEvent({ ...base, loadBalancerEndpoint: endpoint })).toThrow('plain HTTP');
+  expect(() => validateRoutingEvent({ ...base, loadBalancerEndpoint: 'http://[::1]' })).toThrow('plain HTTP');
 });
 
 test('covers endpoint port and literal checks directly', () => {

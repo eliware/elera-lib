@@ -17,5 +17,5 @@ test('covers endpoint conflict branches directly', () => {
   expect(validateBundleEndpointConflicts(bundle)).toBe(bundle);
   expect(() => validateBundleEndpointConflicts({ writer: null, failover: [], readers: [{ host: 'r', port: 2 }] })).toThrow();
   expect(() => validateBundleEndpointConflicts({ writer: { host: 'w', port: 1 }, failover: [{ host: 'w', port: 1 }], readers: [] })).toThrow('duplicates writer');
-  expect(() => validateBundleEndpointConflicts({ writer: { host: 'w', port: 1 }, failover: [], readers: [{ host: 'w', port: 1 }] })).toThrow('contain duplicates');
+  expect(validateBundleEndpointConflicts({ writer: { host: 'w', port: 1 }, failover: [], readers: [{ host: 'w', port: 1 }] }).readers).toEqual([{ host: 'w', port: 1 }]);
 });

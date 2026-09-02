@@ -13,13 +13,14 @@ test('validates topology context', () => {
   expect(() => validateRoutingEvent({ ...event, context: { ...event.context, extra: true } })).toThrow('context field');
   expect(() => validateRoutingEvent({ ...event, context: { ...event.context, nodeIdentity: [] } })).toThrow('nodeIdentity');
   expect(() => validateRoutingEvent({ ...event, context: { ...event.context, nodeIdentity: {} } })).toThrow('nodeIdentity');
+  expect(() => validateRoutingEvent({ ...event, context: { ...event.context, nodeIdentity: { name: 'n', metadata: {} } } })).toThrow('nodeIdentity field');
   expect(() => validateRoutingEvent({ ...event, context: { ...event.context, ports: [] } })).toThrow('ports');
   expect(() => validateRoutingEvent({ ...event, context: { ...event.context, ports: { sql: 3306 } } })).toThrow('ports.http');
   expect(() => validateRoutingEvent({ ...event, context: { ...event.context, ports: { sql: 3306, http: 8080, mysql: 3306 } } })).toThrow('ports field');
 });
 
-test('accepts optional ws and metadata with millisecond timestamps', () => {
-  expect(validateRoutingEvent({ ...event, context: { ...event.context, ports: { sql: 3306, http: 8080, ws: 9000 }, nodeIdentity: { name: 'n', metadata: { role: 'primary' } }, refreshAfter: '2099-01-01T00:01:00.000Z' } })).toBeDefined();
+test('accepts optional ws and millisecond refresh timestamps', () => {
+  expect(validateRoutingEvent({ ...event, context: { ...event.context, ports: { sql: 3306, http: 8080, ws: 9000 }, refreshAfter: '2099-01-01T00:01:00.000Z' } })).toBeDefined();
 });
 
 test('covers context without optional refreshAfter', () => {

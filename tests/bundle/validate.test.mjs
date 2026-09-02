@@ -12,8 +12,14 @@ test('normalizes unexpected clone failures', () => {
   finally { globalThis.structuredClone = originalClone; }
 });
 
-test('rejects cloneable values that cannot be JSON serialized', () => {
-  expect(() => validateBundle({ value: 1n })).toThrow('JSON-compatible');
+test('rejects non-enumerable bundle fields before detachment', () => {
+  const bundle = {};
+  Object.defineProperty(bundle, 'extra', { value: true });
+  expect(() => validateBundle(bundle)).toThrow('field is unknown');
+});
+
+test('rejects cloneable BigInt values that cannot be JSON serialized', () => {
+  expect(() => validateBundle({ value: BigInt(1) })).toThrow('JSON-compatible');
 });
 
 test('rejects non-finite numbers before JSON serialization can normalize them', () => {
