@@ -16,6 +16,9 @@ This release describes the current lean two-export package boundary. Older
 release sections below are historical records of capabilities removed before
 this boundary was established.
 
+All sections below 0.3.1 are historical and do not describe the current public
+runtime API or package ownership.
+
 ### Verification
 
 - Restores focused node-validation coverage at the matching source path.
@@ -32,8 +35,8 @@ this boundary was established.
 
 ### Breaking changes
 
-- Narrows `@eliware/elera-lib` to shared Elera contracts, validation, routing,
-  lifecycle, telemetry, and error helpers.
+- Narrows `@eliware/elera-lib` to shared Elera contracts and validation helpers;
+  lifecycle, telemetry, and error policy remain outside this package.
 - Removes the managed SQL client, SQL pools, credential providers, and
   application-facing database orchestration from this package. Those concerns
   belong to `@eliware/elera-client` or repository-specific implementations.
@@ -51,8 +54,8 @@ this boundary was established.
   contract.
 - Synchronizes the public runtime exports and TypeScript declarations with the
   reduced shared-library boundary.
-- Keeps REST/WebSocket transport behavior, routing failover, lifecycle policy,
-  and telemetry primitives transport- and application-policy-neutral.
+- Keeps transport behavior, routing failover, lifecycle policy, and telemetry
+  outside this generic contracts-and-validation package.
 
 ### Verification
 
@@ -108,8 +111,9 @@ this boundary was established.
 
 ### Changed
 
-- Publishes declarations for the existing `profilesFromBundle`,
-  `createDbFromBundle`, and `validateTokenContext` exports.
+- Historically published declarations for `profilesFromBundle`,
+  `createDbFromBundle`, and `validateTokenContext`; those exports were later
+  removed during the shared-boundary cleanup.
 - Keeps runtime behavior unchanged while aligning declarations with the
   supported JavaScript entry point.
 
@@ -257,7 +261,7 @@ policy remain outside the package.
 
 ### Fixed and hardened
 
-- Compares numeric and string bundle versions numerically and rejects stale
+- (Historical) Compared numeric and string bundle versions numerically and rejected stale
   updates, including versions such as `v10` versus `v9`.
 - Validates routing hosts, ports, weights, duplicate nodes, and writer/failover
   overlap before pool creation.

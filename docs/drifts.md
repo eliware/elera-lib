@@ -4,12 +4,16 @@ Checklist against the revised Core Flow, supervisor plan, and applicable
 repository conventions. This records findings only; it does not itself change
 the implementation.
 
+Last reviewed 2026-09-01 against the current worktree; “validation gates” means
+the repository's configured test, lint, syntax, contract, typecheck, audit, and
+package dry-run commands.
+
 ## Current status
 
 - [x] Ownership and dependency cleanup are complete locally.
 - [x] Public exports and source/test inventory reflect the lean shared boundary.
 - [x] Final validation gates pass in the latest local verification run:
-  tests 100×4, lint, syntax, contracts, typecheck, audit, and package dry-run.
+  tests, lint, syntax, contracts, typecheck, audit, and package dry-run.
 
 ## Actionable drifts
 
@@ -44,5 +48,5 @@ the implementation.
 - [x] No non-barrel Istanbul ignores were found.
 - [x] No local links, copied consumer source, or repository-specific imports
   exist inside the library.
-- [x] Typecheck, contracts, audit, syntax, package dry-run, and 100×4 tests
+- [x] Typecheck, contracts, audit, syntax, package dry-run, and the test suite
   passed in the latest local verification run before this audit.

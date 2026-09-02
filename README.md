@@ -4,6 +4,7 @@
 contains only contracts and pure helpers currently consumed by multiple Elera
 repos; internal modules remain non-public until their ownership is resolved.
 
+Its only public runtime exports are `validateBundle` and `validateRoutingEvent`.
 It provides routing-bundle validation and routing-event validation.
 
 Application code that needs native SQL connections must install
@@ -19,7 +20,7 @@ non-negative `weight`; validation trims host values while preserving optional
 `nodeId` values as supplied.
 Bundles also carry application and identity scope, credentials, version, node
 identity, service ports, and a
-future `expiresAt` timestamp. `validateBundle` rejects malformed, expired,
+required future `expiresAt` timestamp. `validateBundle` rejects malformed, expired,
 duplicated within a role list or writer/failover-conflicting route data;
 independent role views may intentionally overlap.
 
@@ -29,9 +30,9 @@ not accepted.
 Bundle `nodeIdentity` is a required string; topology-event `nodeIdentity` is a
 separate opaque object because the two contracts serve different wire formats.
 
-Routing events are validated before consumers act on them. Envelope-only events
-are returned unchanged; update events return a new object with normalized bundle
-fields. Client and
+Routing events are validated before consumers act on them. All validated events
+are returned as detached normalized objects; update events additionally return
+normalized bundle fields. Client and
 supervisor lifecycle policies remain in their owning repositories. Telemetry
 is owned by the client and supervisor rather than this package.
 
