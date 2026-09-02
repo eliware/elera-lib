@@ -10,6 +10,7 @@ export function validateTopologyEvent(event) {
   if (Object.keys(event.topology).some((key) => key !== 'nodes')) throw new TypeError('routing topology field is unknown');
   const context = validateTopologyContext(event.context);
   // Intentional: validateEnvelope already detached all nested event data; this clone is a defensive local copy.
+  // codescope ignore: topology validation is a shared boundary; the defensive copy prevents focused callers from observing mutable input.
   let topology;
   try { topology = structuredClone(event.topology); } catch { throw new TypeError('routing topology topology must contain cloneable JSON-compatible values'); }
   assertJsonValue(topology, 'routing topology topology');

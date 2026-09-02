@@ -27,6 +27,11 @@ a complete replacement bundle. Completeness is enforced by delegating their
 bundle fields to `validateBundle()`; consumers decide how to merge any
 application-specific state outside this contract.
 
+Non-finite numbers are rejected before serialization rather than being
+converted to `null`. The 1 MiB serialized limit is enforced by the shared
+validator after detachment; transport/application layers may impose earlier
+resource limits.
+
 ## Routing events
 
 `validateRoutingEvent()` defines the shared event boundary for routing updates,

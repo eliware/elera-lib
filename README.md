@@ -24,6 +24,12 @@ required future `expiresAt` timestamp. `validateBundle` rejects malformed, expir
 duplicated within a role list or writer/failover-conflicting route data;
 independent role views may intentionally overlap.
 
+Bundle validation rejects non-finite numbers (`NaN`, `Infinity`, and
+`-Infinity`) before JSON serialization; they are not normalized to `null`.
+The shared validator enforces the 1 MiB serialized contract limit after
+detachment. Applications and transports remain responsible for pre-allocation
+resource limits.
+
 `bundleVersion` is strictly a non-negative safe integer; numeric strings are
 not accepted.
 

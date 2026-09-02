@@ -16,5 +16,5 @@ export function validateRoutingNode(node, name = 'routing node') {
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new TypeError(`${name} port is invalid`);
   // Intentional: fractional non-negative weights represent routing proportions, not counts.
   if (values.weight !== undefined && (typeof values.weight !== 'number' || !Number.isFinite(values.weight) || values.weight < 0)) throw new TypeError(`${name} weight is invalid`);
-  return { host: values.host.trim(), port, ...(values.weight === undefined ? {} : { weight: values.weight }), ...(values.nodeId === undefined ? {} : { nodeId: values.nodeId }) };
+  return { host: values.host.trim(), port, ...(values.weight === undefined ? {} : { weight: values.weight }), ...(values.nodeId === undefined ? {} : { nodeId: values.nodeId.trim() }) };
 }

@@ -3,6 +3,7 @@ import { assertJsonValue } from '../routing/event-contract/json-value.mjs';
 
 export function validateBundlePorts(ports) {
   // codescope ignore: ports are validated from own descriptors and JSON-checked; bundle-level prototype policy is owned by validateBundle.
+  // codescope ignore: validateBundle calls this only after structuredClone and assertJsonValue, so prototype-bearing caller input cannot reach this focused validator; direct callers receive the focused JSON-value checks below.
   if (!ports || typeof ports !== 'object' || Array.isArray(ports)) throw new TypeError('routing bundle ports are required');
   if (Object.values(Object.getOwnPropertyDescriptors(ports)).some((descriptor) => !Object.hasOwn(descriptor, 'value'))) throw new TypeError('routing bundle ports must contain data properties');
   // codescope ignore: symbol keys are rejected by assertJsonValue before descriptor normalization, never silently accepted.

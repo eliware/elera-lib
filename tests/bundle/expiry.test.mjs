@@ -9,3 +9,13 @@ test('validates expiry', () => {
   expect(() => validateBundle({ ...valid, expiresAt: 'bad' })).toThrow();
   expect(() => validateBundle({ ...valid, expiresAt: '2030-02-30T00:00:00Z' })).toThrow();
 });
+
+test('accepts both supported UTC precisions', () => {
+  expect(validateBundle({ ...valid, expiresAt: '2099-01-01T00:00:00.000Z' }).expiresAt).toBe('2099-01-01T00:00:00.000Z');
+});
+
+test('validates optional refreshAfter', () => {
+  expect(validateBundle({ ...valid, refreshAfter: '2099-01-01T00:00:00Z' }).refreshAfter).toBe('2099-01-01T00:00:00Z');
+  expect(() => validateBundle({ ...valid, refreshAfter: 'bad' })).toThrow('refreshAfter');
+  expect(() => validateBundle({ ...valid, refreshAfter: '2000-01-01T00:00:00Z' })).toThrow('future');
+});

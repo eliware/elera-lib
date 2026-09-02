@@ -16,8 +16,8 @@ export function assertJsonValue(value, path = 'routing contract', ancestors = ne
     try {
       ancestors.add(value);
       const arrayDescriptors = Object.getOwnPropertyDescriptors(value);
-      const length = arrayDescriptors.length?.value;
-      if (!Number.isSafeInteger(length) || length < 0) throw new JsonValueError(`${path} must contain JSON-compatible values`);
+      // Array length is an engine-enforced non-negative safe integer; no second policy check is needed here.
+      const length = arrayDescriptors.length.value;
       // Intentional: sparse arrays are rejected because JSON transport must carry explicit element values.
       for (const key of Reflect.ownKeys(value)) {
         if (key === 'length' || (typeof key === 'string' && /^(0|[1-9]\d*)$/.test(key) && Number(key) < length)) continue;

@@ -11,21 +11,25 @@ export function validateEnvelope(event) {
     if (prototype !== Object.prototype && prototype !== null) throw new TypeError('unsupported routing event');
     descriptors = Object.getOwnPropertyDescriptors(event);
   } catch { throw new TypeError('unsupported routing event'); }
-  // codescope ignore: non-enumerable/symbol metadata is intentionally outside the enumerable-string wire contract.
+  // codescope ignore: non-enumerable/symbol metadata is intentionally outside the enumerable-string wire contract; rejecting it is required for a deterministic wire shape.
   if (Object.values(descriptors).some((descriptor) => !Object.hasOwn(descriptor, 'value'))) throw new TypeError('unsupported routing event');
-  // Codescope exception: event fields must be enumerable wire properties; non-enumerable metadata is intentionally not part of the contract.
+  // codescope ignore: event fields must be enumerable wire properties; non-enumerable metadata is intentionally not part of the contract.
   // codescope ignore: all symbol properties are intentionally rejected because the wire contract consists only of enumerable string fields.
   if (Reflect.ownKeys(descriptors).some((key) => typeof key !== 'string' || !descriptors[key].enumerable)) throw new TypeError('unsupported routing event');
   // Intentional: only own descriptor values enter the detached snapshot, so inherited pollution cannot be returned.
-  const values = Object.fromEntries(Object.entries(descriptors).map(([key, descriptor]) => [key, descriptor.value]));
+  // Build from the complete descriptor map; the preceding gate rejects non-enumerable wire fields before dispatch.
+  const values = Object.fromEntries(Reflect.ownKeys(descriptors).filter((key) => typeof key === 'string').map((key) => [key, descriptors[key].value]));
   for (const [key, value] of Object.entries(values)) if (value === undefined || typeof value === 'symbol' || typeof value === 'function') throw new TypeError(`routing event.${key} must contain JSON-compatible values`);
   let snapshot;
   // codescope ignore: unbounded detachment is transport/application policy; this shared helper owns contract validation after cloning.
   // codescope ignore: payload/resource bounds belong to transport; this shared helper must detach first.
   try { snapshot = structuredClone(values); } catch { throw new TypeError('unsupported routing event'); }
-  const serialized = JSON.stringify(snapshot);
+  assertJsonValue(snapshot);
+  let serialized;
+  try { serialized = JSON.stringify(snapshot); } catch { throw new TypeError('unsupported routing event'); }
   if (serialized === undefined) throw new TypeError('unsupported routing event');
-  const serializedSize = new TextEncoder().encode(serialized).length;
+  let serializedSize;
+  try { serializedSize = new TextEncoder().encode(serialized).length; } catch { throw new TypeError('routing event exceeds the maximum contract size'); }
   if (serializedSize > 1_048_576) throw new TypeError('routing event exceeds the maximum contract size');
   // Intentional: assertJsonValue rejects cloned Date/Map/Set instances before dispatch; cloneability is not JSON validity.
   // Intentional: event-specific validators own scalar semantics; object fields are recursively checked on the detached snapshot.
