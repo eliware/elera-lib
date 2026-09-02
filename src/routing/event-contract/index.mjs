@@ -4,9 +4,10 @@ import { validateContextEvent, validateShutdownEvent } from './lifecycle/index.m
 import { validateTopologyEvent } from './topology/index.mjs';
 
 export function validateRoutingEvent(event) {
-  validateEnvelope(event);
-  if (event.type === 'routing.topology') return validateTopologyEvent(event);
-  if (event.type === 'routing.update') return validateUpdateEvent(event);
-  if (event.type === 'routing.drain' || event.type === 'routing.recovery') return validateContextEvent(event);
-  return validateShutdownEvent(event);
+  const normalizedEvent = validateEnvelope(event);
+  const type = normalizedEvent.type;
+  if (type === 'routing.topology') return validateTopologyEvent(normalizedEvent);
+  if (type === 'routing.update') return validateUpdateEvent(normalizedEvent);
+  if (type === 'routing.drain' || type === 'routing.recovery') return validateContextEvent(normalizedEvent);
+  return validateShutdownEvent(normalizedEvent);
 }

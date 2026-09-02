@@ -12,6 +12,10 @@
 - Updates the bundled example to demonstrate bundle validation without
   application SQL-client or telemetry-runtime behavior.
 
+This release describes the current lean two-export package boundary. Older
+release sections below are historical records of capabilities removed before
+this boundary was established.
+
 ### Verification
 
 - Restores focused node-validation coverage at the matching source path.
@@ -21,6 +25,10 @@
   lifecycle scripts disabled pass.
 
 ## 0.3.0 — Shared protocol and helper boundary
+
+> Historical: this release preceded the final 0.3.1 cleanup. Lifecycle,
+> telemetry, and error helpers mentioned below were later moved to their
+> owning packages.
 
 ### Breaking changes
 
@@ -94,6 +102,9 @@
 - Static syntax, schema, and diff validation pass for the committed changes.
 
 ## 0.1.11 — Public runtime declarations
+
+> Historical: these declarations belonged to an earlier pre-cleanup package
+> and are not part of the current runtime API.
 
 ### Changed
 
@@ -338,6 +349,10 @@ CLI, Galera, backup, or GitOps policy to the library.
   lint warnings.
 
 ## 0.1.0 — Baseline release
+
+> Historical: this baseline predates the shared-boundary cleanup. The listed
+> SQL client, transport, telemetry, administration, and materialization APIs
+> were subsequently removed from `elera-lib`.
 
 `@eliware/elera-lib` is a generic MariaDB/MySQL client library for applications
 that need multiple connection routes without embedding supervisor, HAProxy,

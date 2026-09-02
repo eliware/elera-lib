@@ -7,4 +7,5 @@ test('validates expiry', () => {
   expect(() => validateBundle({ ...valid, expiresAt: '2000-01-01T00:00:00Z' })).toThrow('future');
   expect(() => validateBundle({ ...valid, expiresAt: undefined })).toThrow();
   expect(() => validateBundle({ ...valid, expiresAt: 'bad' })).toThrow();
+  expect(() => validateBundle({ ...valid, expiresAt: '2030-02-30T00:00:00Z' })).toThrow();
 });

@@ -3,6 +3,8 @@ import { validateRoutingNode } from '../../../src/routing/node-validation/index.
 
 test('normalizes a valid node', () => {
   expect(validateRoutingNode({ host: '  node-a ', port: 3306, weight: 2 })).toEqual({ host: 'node-a', port: 3306, weight: 2 });
+  expect(validateRoutingNode({ host: 'node-a', port: 3306 })).toEqual({ host: 'node-a', port: 3306 });
+  expect(validateRoutingNode({ host: 'node-a', port: 3306, nodeId: 'node-a' })).toEqual({ host: 'node-a', port: 3306, nodeId: 'node-a' });
 });
 
 test('rejects missing, empty, and invalid node fields', () => {
@@ -16,4 +18,6 @@ test('rejects missing, empty, and invalid node fields', () => {
   expect(() => validateRoutingNode({ host: 'node', port: 3306, extra: true })).toThrow('field is unknown');
   expect(() => validateRoutingNode({ host: 'node', port: 3306, nodeId: '' })).toThrow('nodeId');
   expect(() => validateRoutingNode({ host: 'node', port: 3306, nodeId: 42 })).toThrow('nodeId');
+  expect(() => validateRoutingNode({ get host() { return 'node'; }, port: 3306 })).toThrow('data properties');
+  expect(() => validateRoutingNode(new Proxy({}, { ownKeys() { throw new Error('proxy failure'); } }))).toThrow('data properties');
 });

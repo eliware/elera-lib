@@ -8,8 +8,8 @@ the implementation.
 
 - [x] Ownership and dependency cleanup are complete locally.
 - [x] Public exports and source/test inventory reflect the lean shared boundary.
-- [x] Final validation gates pass: tests 100×4, lint, syntax, contracts,
-  typecheck, audit, and package dry-run.
+- [x] Final validation gates pass in the latest local verification run:
+  tests 100×4, lint, syntax, contracts, typecheck, audit, and package dry-run.
 
 ## Actionable drifts
 
@@ -45,4 +45,4 @@ the implementation.
 - [x] No local links, copied consumer source, or repository-specific imports
   exist inside the library.
 - [x] Typecheck, contracts, audit, syntax, package dry-run, and 100×4 tests
-  passed before this audit.
+  passed in the latest local verification run before this audit.

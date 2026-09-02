@@ -12,4 +12,6 @@ test('rejects unsupported and malformed event envelopes', () => {
   for (const field of ['version', 'generatedAt']) expect(() => validateRoutingEvent({ ...base, [field]: undefined })).toThrow();
   expect(() => validateRoutingEvent({ ...base, version: -1 })).toThrow('version');
   expect(() => validateRoutingEvent({ ...base, generatedAt: 'bad' })).toThrow('generatedAt');
+  expect(() => validateRoutingEvent({ get type() { return 'routing.drain'; }, version: 1, generatedAt: '2030-01-01T00:00:00Z' })).toThrow('unsupported');
+  expect(() => validateRoutingEvent(new Proxy({}, { ownKeys() { throw new Error('proxy failure'); } }))).toThrow('unsupported');
 });

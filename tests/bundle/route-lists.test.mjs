@@ -7,6 +7,7 @@ test('validates normalized route lists', () => {
   expect(() => validateBundleRouteLists({ routes: [] })).toThrow('routes');
   expect(() => validateBundle({ ...valid, routes: [] })).toThrow('routes');
   expect(() => validateBundle({ ...valid, routes: true })).toThrow('routes');
+  expect(() => validateBundle({ ...valid, routes: { primary: [], balanced: [], typo: [] } })).toThrow('unknown');
   expect(validateBundle({ ...valid, routes: { primary: [], balanced: [{ host: 'b', port: 65535, weight: 0 }] } })).toBeTruthy();
   expect(() => validateBundle({ ...valid, routes: { primary: 'bad' } })).toThrow();
   expect(() => validateBundle({ ...valid, routes: { primary: [], balanced: 'bad' } })).toThrow('balanced');
@@ -14,5 +15,5 @@ test('validates normalized route lists', () => {
   expect(() => validateBundle({ ...valid, routes: { primary: [{ host: 'a', port: 0 }] } })).toThrow();
   expect(() => validateBundle({ ...valid, routes: { primary: [{ host: 'a', port: 3306, weight: -1 }] } })).toThrow();
   expect(() => validateBundle({ ...valid, routes: { primary: [], balanced: [{ host: 'b', port: 70000 }] } })).toThrow();
-  expect(() => validateBundle({ ...valid, routes: undefined })).toThrow('routes');
+  expect(() => validateBundle({ ...valid, routes: undefined })).toThrow('JSON-compatible');
 });

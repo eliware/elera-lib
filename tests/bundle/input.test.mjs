@@ -7,4 +7,7 @@ test('validates bundle input', () => {
   expect(() => validateBundleInput([])).toThrow('object');
   expect(() => validateBundleInput({ unexpected: true })).toThrow('unknown');
   expect(() => validateBundleInput(new Date())).toThrow('plain');
+  expect(() => validateBundleInput(new Proxy({}, { getPrototypeOf() { throw new Error('proxy failure'); } }))).toThrow('plain');
+  expect(() => validateBundleInput(new Proxy({}, { ownKeys() { throw new Error('proxy failure'); } }))).toThrow('plain');
+  expect(() => validateBundleInput(new Proxy({}, { getPrototypeOf() { throw new TypeError('proxy failure'); } }))).toThrow('plain');
 });

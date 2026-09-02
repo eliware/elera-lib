@@ -19,7 +19,7 @@
     "readers": { "$ref": "#/$defs/nodes" },
     "failover": { "$ref": "#/$defs/nodes" },
     "routes": { "$ref": "#/$defs/routes" },
-    "bundleVersion": { "type": ["string", "number"] },
+    "bundleVersion": { "type": "integer", "minimum": 0 },
     "expiresAt": { "type": "string", "format": "date-time" },
     "refreshAfter": { "type": "string", "format": "date-time" },
     "nodeIdentity": { "type": "string", "minLength": 1 },

@@ -2,7 +2,7 @@ import { expect, test } from '@jest/globals';
 import { validateRoutingEvent } from '../../../../src/routing/event-contract/index.mjs';
 const event = { type: 'routing.topology', version: 1, generatedAt: '2099-01-01T00:00:00.000Z', node: 'elera-0', context: { nodeIdentity: { name: 'elera-0' }, ports: { sql: 3306, http: 8080 }, clusterCondition: 'Primary', refreshAfter: '2099-01-01T00:01:00.000Z' }, topology: { nodes: [] } };
 test('validates topology context', () => {
-  expect(validateRoutingEvent(event)).toBe(event);
+  expect(validateRoutingEvent(event)).toEqual(event);
   expect(() => validateRoutingEvent({ ...event, context: null })).toThrow('context');
   expect(() => validateRoutingEvent({ ...event, context: { ...event.context, nodeIdentity: null } })).toThrow('nodeIdentity');
   expect(() => validateRoutingEvent({ ...event, context: { ...event.context, ports: null } })).toThrow('ports');

@@ -20,8 +20,14 @@ non-negative `weight`; validation trims host values while preserving optional
 Bundles also carry application and identity scope, credentials, version, node
 identity, service ports, and a
 future `expiresAt` timestamp. `validateBundle` rejects malformed, expired,
-duplicated within a role list, or writer/failover-conflicting route data;
+duplicated within a role list or writer/failover-conflicting route data;
 independent role views may intentionally overlap.
+
+`bundleVersion` is strictly a non-negative safe integer; numeric strings are
+not accepted.
+
+Bundle `nodeIdentity` is a required string; topology-event `nodeIdentity` is a
+separate opaque object because the two contracts serve different wire formats.
 
 Routing events are validated before consumers act on them. Envelope-only events
 are returned unchanged; update events return a new object with normalized bundle

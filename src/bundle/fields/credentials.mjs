@@ -1,4 +1,4 @@
-const requiredText = (value, name) => { if (typeof value !== 'string' || value.trim().length === 0) throw new TypeError(`${name} is required`); };
+import { requiredText } from './required-text.mjs';
 
 export function validateBundleCredentials(credentials) {
   if (!credentials || typeof credentials !== 'object') throw new TypeError('routing bundle credentials are required');
