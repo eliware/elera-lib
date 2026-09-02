@@ -1,7 +1,7 @@
 # `elera-lib` public export inventory
 
 This inventory reflects direct source imports in the Elera repositories on
-2026-08-29. Tests and documentation are noted separately from runtime
+2026-09-02. Tests and documentation are noted separately from runtime
 consumers. The strict boundary rule is that a helper belongs here only when
 at least two repositories genuinely use it.
 
@@ -48,3 +48,5 @@ transport is exported from this package.
 - The example application does not justify expanding the shared public API;
   application behavior remains in `@eliware/elera-client`.
 - Re-run this inventory whenever exports or direct consumer imports change.
+- The 1.1.0 release retains the same two-export public boundary; its additional
+  changes are internal validation hardening and add no consumer imports.

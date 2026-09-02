@@ -10,5 +10,9 @@ exercise a module indirectly through its owning public validator when that is
 the module's only supported boundary. The declaration surface is covered by
 `tests/index.d.ts` and the typecheck gate.
 
+As of the 1.1.0 validation-boundary review, the tree contains 65 source modules
+and 65 matching test modules. The parity check maps each `src/**/*.mjs` path to
+`tests/**/*.test.mjs`; there are no unmatched source or test paths.
+
 Update this inventory whenever source or test modules are added, moved,
 deleted, or reclassified.

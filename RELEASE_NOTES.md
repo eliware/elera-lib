@@ -1,5 +1,30 @@
 # Release notes
 
+## 1.1.0 — Validation boundary hardening
+
+### Changed
+
+- Fully decomposes bundle, routing-event, topology, lifecycle, JSON-value, and
+  node-validation implementations into focused modules with matching tests.
+- Preserves the documented independence of reader and route-view endpoints while
+  continuing to reject writer/failover conflicts and duplicates within a role.
+- Rejects unknown credential fields and unknown topology identity fields.
+
+### Security and correctness
+
+- Validates bundle, event payload, and topology-context descriptors before
+  detachment so getters, symbols, and non-enumerable fields cannot be silently
+  dropped by `structuredClone`.
+- Rejects IPv6 loopback, unspecified IPv4/IPv6 addresses, and trailing-dot
+  localhost shutdown endpoints.
+- Corrects release contract verification exceptions and documents the checked-in
+  schema and fixture inputs.
+
+### Verification
+
+- Full test suite passes with 100×4 coverage and zero lint warnings.
+- `codescope release` passes with no reported issues.
+
 ## 1.0.0 — Contract boundary and validation hardening
 
 This major release establishes the lean shared-library boundary. It contains

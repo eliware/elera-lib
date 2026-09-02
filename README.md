@@ -25,8 +25,8 @@ ordered `{ host, port }` nodes with optional `nodeId` and optional finite,
 non-negative `weight`; validation trims host values and optional `nodeId`
 values during normalization.
 Bundles also carry application and identity scope, credentials, version, node
-identity, service ports, and a
-required future `expiresAt` timestamp. `validateBundle` rejects malformed, expired,
+identity, service ports, and a required future `expiresAt` timestamp.
+`validateBundle` rejects malformed, expired,
 duplicates within a role list or writer/failover-conflicting route data;
 reader and route-view endpoints may intentionally overlap because those are
 independent views.

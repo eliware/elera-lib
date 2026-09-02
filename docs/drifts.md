@@ -4,7 +4,7 @@ Checklist against the revised Core Flow, supervisor plan, and applicable
 repository conventions. This records findings only; it does not itself change
 the implementation.
 
-Last reviewed 2026-09-01 against the current worktree. Earlier dates in the
+Last reviewed 2026-09-02 against the current worktree. Earlier dates in the
 consumer and source inventories record those inventories' own runs; they are
 not this document's review date. “Validation gates” means
 the repository's configured test, lint, syntax, contract, typecheck, audit, and
@@ -31,13 +31,19 @@ package dry-run commands.
   types remain owned by the client and supervisor packages.
 - [x] Re-run the export-consumer inventory after the preceding boundary
   decisions and confirm every retained public export has at least two external
-  runtime consumers. Verified 2026-08-30; both retained exports have multiple
+  runtime consumers. Verified 2026-09-02; both retained exports have multiple
   external consumers. The bundled example is intentionally excluded because it
   is a validation smoke example, not an external repository consumer.
 
 - [x] Reconcile schema/runtime/type differences for route requiredness and port
   normalization; the shared contract now requires both route arrays and integer
   ports, and includes the credential-free routing.topology event.
+- [x] Harden pre-detachment descriptor checks so accessors, symbols, and
+  non-enumerable fields cannot be silently discarded by `structuredClone`.
+- [x] Reject undeclared credential and topology-identity fields, and reject
+  IPv6 loopback, unspecified addresses, and trailing-dot localhost shutdown
+  endpoints.
+- [x] Confirm `codescope release` passes with no reported issues.
 
 ## Verified alignment
 
@@ -50,5 +56,5 @@ package dry-run commands.
 - [x] No non-barrel Istanbul ignores were found.
 - [x] No local links, copied consumer source, or repository-specific imports
   exist inside the library.
-- [x] Tests, lint, typecheck, contracts, audit, syntax, and package dry-run
-  passed in the latest local verification run on 2026-09-01 before this audit.
+- [x] Tests, lint, typecheck, contracts, audit, syntax, package dry-run, and
+  `codescope release` passed in the latest local verification run on 2026-09-02.

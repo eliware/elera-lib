@@ -14,10 +14,11 @@ expiry, node identity, and service ports. The normalized route arrays are
 
 All bundle node roles and route nodes contain `host` and `port`, with optional
 `nodeId` and finite, non-negative numeric `weight`; `host` and optional
-`nodeId` are trimmed during normalization. Route lists are shape-validated views; endpoint
-overlap between reader and route views is intentional and is not treated as a
-conflict. Additional bundle service ports use the same integer-port validation;
-their keys are opaque non-empty service-name strings.
+`nodeId` are trimmed during normalization. Credentials and topology identities
+reject undeclared fields. Route lists are shape-validated views; endpoint overlap
+between reader and route views is intentional and is not treated as a conflict.
+Additional bundle service ports use the same integer-port validation; their keys
+are opaque non-empty service-name strings.
 
 `validateBundle()` rejects missing required fields, malformed nodes or ports,
 expired timestamps, writer/failover overlap, and invalid route arrays. Reader
@@ -30,7 +31,8 @@ application-specific state outside this contract.
 Non-finite numbers are rejected before serialization rather than being
 converted to `null`. The 1 MiB serialized limit is enforced by the shared
 validator after detachment; transport/application layers may impose earlier
-resource limits.
+resource limits. Shutdown endpoints reject local and unspecified address forms,
+including IPv4/IPv6 loopback, unspecified literals, and trailing-dot localhost.
 
 ## Routing events
 
