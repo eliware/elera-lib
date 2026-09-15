@@ -12,7 +12,7 @@ test('accepts JSON values and rejects non-JSON objects', () => {
   expect(() => assertJsonValue(cyclic)).toThrow('cyclic');
   const cyclicArray = []; cyclicArray.push(cyclicArray);
   expect(() => assertJsonValue(cyclicArray)).toThrow('JSON-compatible');
-  expect(() => assertJsonValue(new Array(1))).toThrow('JSON-compatible');
+  expect(() => assertJsonValue(Array.from({ length: 1 }))).toThrow('JSON-compatible');
   let deep = {};
   for (let index = 0; index < 101; index += 1) deep = { nested: deep };
   expect(() => assertJsonValue(deep)).toThrow('nesting depth');

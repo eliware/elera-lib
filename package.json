@@ -52,7 +52,7 @@
         "audit": "node scripts/run-audit.mjs"
     },
     "devDependencies": {
-        "@eliware/test": "^2.3.0",
+        "@eliware/test": "^5.0.0",
         "@types/node": "^26.4.1",
         "ajv": "8.20.0",
         "ajv-formats": "3.0.1",
