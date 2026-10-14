@@ -1,12 +1,12 @@
 # Documentation
 
-This directory contains end-user documentation for `@eliware/elera-lib`.
-
-## Contents
-
-- [Usage](usage.md)
-- [Troubleshooting](troubleshooting.md)
-
-Audience: library users. Prerequisites: a supported runtime and configured
-project. Expected result: documented library operations complete without
-undocumented environment assumptions.
+- [bundle-contract](bundle-contract.md)
+- [drifts](drifts.md)
+- [lib-export-consumer-inventory](lib-export-consumer-inventory.md)
+- [release-history](release-history.md)
+- [routing-events](routing-events.md)
+- [source-test-inventory](source-test-inventory.md)
+- [specifications-out-of-scope](specifications-out-of-scope.md)
+- [specifications-requirements](specifications-requirements.md)
+- [troubleshooting](troubleshooting.md)
+- [usage](usage.md)

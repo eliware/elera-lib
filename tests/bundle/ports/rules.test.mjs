@@ -1,6 +1,6 @@
-import { expect, test } from '@jest/globals';
-import * as subject from '../../../src/bundle/ports/rules.mjs';
+import { expect, test } from "@jest/globals";
+import * as subject from "../../../src/bundle/ports/rules.mjs";
 
-test('rules has a focused mirrored test module', () => {
+test("rules has a focused mirrored test module", () => {
   expect(Object.keys(subject).length).toBeGreaterThan(0);
 });

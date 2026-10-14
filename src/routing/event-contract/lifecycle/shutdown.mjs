@@ -1,5 +1,5 @@
-import { validateShutdownEndpoint } from './shutdown/endpoint.mjs';
-import { validateShutdownFields } from './shutdown/fields.mjs';
+import { validateShutdownEndpoint } from "./shutdown/endpoint.mjs";
+import { validateShutdownFields } from "./shutdown/fields.mjs";
 
 export function validateShutdownEvent(event) {
   validateShutdownFields(event);

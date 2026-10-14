@@ -1,6 +1,6 @@
-import { validateRoutingNode } from './node.mjs';
+import { validateRoutingNode } from "./node.mjs";
 
-export function validateRoutingNodes(nodes, name = 'routing nodes') {
+export function validateRoutingNodes(nodes, name = "routing nodes") {
   if (!Array.isArray(nodes)) throw new TypeError(`${name} must be an array`);
   const validated = [];
   const endpoints = new Set();

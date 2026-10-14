@@ -1,6 +1,6 @@
-import { expect, test } from '@jest/globals';
-import * as subject from '../../../../../src/routing/event-contract/topology/context/identity.mjs';
+import { expect, test } from "@jest/globals";
+import * as subject from "../../../../../src/routing/event-contract/topology/context/identity.mjs";
 
-test('identity has a focused mirrored test module', () => {
+test("identity has a focused mirrored test module", () => {
   expect(Object.keys(subject).length).toBeGreaterThan(0);
 });

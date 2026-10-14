@@ -7,10 +7,10 @@ at least two repositories genuinely use it.
 
 ## Public runtime exports
 
-| Export | Runtime consumers | Ownership |
-| --- | --- | --- |
-| `validateBundle` | `elera-client`, `elera` | Shared bundle contract |
-| `validateRoutingEvent` | `elera-client`, `elera` | Shared event contract |
+| Export                 | Runtime consumers       | Ownership              |
+| ---------------------- | ----------------------- | ---------------------- |
+| `validateBundle`       | `elera-client`, `elera` | Shared bundle contract |
+| `validateRoutingEvent` | `elera-client`, `elera` | Shared event contract  |
 
 `src/index.mjs` is the only public barrel. No application SDK, SQL pool,
 supervisor orchestration, CLI administration, telemetry collector, or stream

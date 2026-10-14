@@ -1,11 +1,15 @@
-import { expect, test } from '@jest/globals';
-import { validateRoutingEvent } from '../../../../src/routing/event-contract/index.mjs';
-const envelope = { version: 1, generatedAt: '2030-01-01T00:00:00Z' };
-test('validates drain and recovery context events', () => {
-  const base = { ...envelope, type: 'routing.drain', node: 'n', context: {} };
+import { expect, test } from "@jest/globals";
+import { validateRoutingEvent } from "../../../../src/routing/event-contract/index.mjs";
+import { validateContextEvent } from "../../../../src/routing/event-contract/lifecycle/context.mjs";
+const envelope = { version: 1, generatedAt: "2030-01-01T00:00:00Z" };
+test("validates drain and recovery context events", () => {
+  const base = { ...envelope, type: "routing.drain", node: "n", context: {} };
   expect(validateRoutingEvent(base)).toEqual(base);
-  expect(validateRoutingEvent({ ...base, type: 'routing.recovery', context: { reason: 'up' } })).toBeTruthy();
-  expect(() => validateRoutingEvent({ ...base, node: '' })).toThrow('node');
-  expect(() => validateRoutingEvent({ ...base, context: [] })).toThrow('context');
-  expect(() => validateRoutingEvent({ ...base, extra: true })).toThrow('unknown');
+  expect(
+    validateRoutingEvent({ ...base, type: "routing.recovery", context: { reason: "up" } }),
+  ).toBeTruthy();
+  expect(() => validateRoutingEvent({ ...base, node: "" })).toThrow("node");
+  expect(() => validateRoutingEvent({ ...base, context: [] })).toThrow("context");
+  expect(() => validateRoutingEvent({ ...base, extra: true })).toThrow("unknown");
+  expect(validateContextEvent(base)).toEqual(base);
 });

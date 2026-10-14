@@ -1,6 +1,8 @@
-import { expect, test } from '@jest/globals';
-import * as subject from '../../../src/bundle/ports/index.mjs';
+import { expect, test } from "@jest/globals";
+import { validateBundlePorts } from "../../../src/bundle/ports/index.mjs";
 
-test('index has a focused mirrored test module', () => {
-  expect(Object.keys(subject).length).toBeGreaterThan(0);
+test("validates bundle ports", () => {
+  expect(() => validateBundlePorts({ sql: 3306, http: 8080 })).not.toThrow();
+  expect(() => validateBundlePorts({ sql: 0, http: 8080 })).toThrow();
+  expect(() => validateBundlePorts({ sql: 3306, http: 8080, extra: true })).toThrow();
 });

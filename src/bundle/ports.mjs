@@ -1,1 +1,5 @@
-export { validateBundlePorts } from './ports/index.mjs';
+import { validateBundlePorts as validate } from "./ports/index.mjs";
+
+export function validateBundlePorts(input) {
+  return validate(input);
+}

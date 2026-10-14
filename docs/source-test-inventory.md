@@ -1,18 +1,7 @@
-# Elera library source-to-test inventory
+# Source and test inventory
 
-The canonical public entrypoint is `src/index.mjs`. Internal modules are
-imported from their canonical `index.mjs` files; compatibility entrypoints and
-legacy re-export barrels are intentionally not provided.
+The public entry point is `src/index.mjs`. It exports `validateBundle` and `validateRoutingEvent`.
 
-Tests mirror the source tree under `tests/` without a redundant `src/`
-segment. Each production module has a matching test path; a focused test may
-exercise a module indirectly through its owning public validator when that is
-the module's only supported boundary. The declaration surface is covered by
-`tests/index.d.ts` and the typecheck gate.
+Each of the 59 runtime modules under `src/` has one matching test under `tests/`. Run `npm test` to check source and test parity, test behavior, and coverage.
 
-As of the 1.1.0 validation-boundary review, the tree contains 65 source modules
-and 65 matching test modules. The parity check maps each `src/**/*.mjs` path to
-`tests/**/*.test.mjs`; there are no unmatched source or test paths.
-
-Update this inventory whenever source or test modules are added, moved,
-deleted, or reclassified.
+The package declarations are in `src/index.d.ts`. Run `npm run typecheck` to check them.

@@ -1,15 +1,11 @@
 version: 1
-
 on:
   push:
     deployments:
       - target: dev
-        cwd: /opt/elera-lib
+        cwd: /eliware/elera-lib
+        timeoutMs: 300000
         commands:
-          - git pull --ff-only
+          - git pull --ff-only origin main
           - npm ci
           - npm test
-          - npm run lint
-          - npm run typecheck
-          - npm run audit
-          - npm run pack

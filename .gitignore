@@ -1,7 +1,13 @@
 node_modules/
+.git/
 coverage/
 dist/
-.env
-.env.*
-!.env.example
+build/
+generated/
+artifacts/
+test-results/
+.env*
+!.env*.example
+.DS_Store
+Thumbs.db
 runtime/

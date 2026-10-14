@@ -1,8 +1,8 @@
-import { validateTopologyEnvelope } from './envelope.mjs';
-import { validateTopologyContext } from './context.mjs';
-import { validateTopologyNodes } from './nodes.mjs';
-import { detachTopologyPayload } from './payload.mjs';
-import { validateTopologyShape } from './shape.mjs';
+import { validateTopologyEnvelope } from "./envelope.mjs";
+import { validateTopologyContext } from "./context.mjs";
+import { validateTopologyNodes } from "./nodes.mjs";
+import { detachTopologyPayload } from "./payload.mjs";
+import { validateTopologyShape } from "./shape.mjs";
 
 export function validateTopologyEvent(event) {
   validateTopologyEnvelope(event);

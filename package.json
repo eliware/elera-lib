@@ -1,83 +1,116 @@
 {
-    "name": "@eliware/elera-lib",
-    "version": "1.1.0",
-    "description": "Shared Elera routing contracts and validation",
-    "keywords": [
-        "eliware",
-        "elera",
-        "protocol",
-        "contracts",
-        "routing",
-        "lifecycle",
-        "validation",
-        "routing-contracts",
-        "shared-library"
+  "name": "@eliware/elera-lib",
+  "version": "12.0.0",
+  "type": "module",
+  "description": "Shared Elera routing contracts and validation",
+  "keywords": [
+    "eliware",
+    "elera",
+    "protocol",
+    "contracts",
+    "routing",
+    "lifecycle",
+    "validation",
+    "routing-contracts",
+    "shared-library"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "main": "./src/index.mjs",
+  "files": [
+    "src/",
+    "docs/",
+    "README.md",
+    "AGENTS.md",
+    "LICENSE",
+    "RELEASE_NOTES.md",
+    "examples/",
+    "specs/",
+    ".env.example"
+  ],
+  "scripts": {
+    "test": "eliware-test",
+    "lint": "eliware-test --lint",
+    "check": "node --check src/index.mjs",
+    "contracts": "node test-fixtures/verify-contracts.mjs",
+    "typecheck": "tsc --project tsconfig.json",
+    "pack": "eliware-test --pack",
+    "audit": "eliware-test --audit",
+    "format": "eliware-test --format",
+    "format:check": "eliware-test --format-check"
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "devDependencies": {
+    "@eliware/test": "^12.0.0",
+    "@types/node": "^26.6.5",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "typescript": "^7.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.mjs"
     ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/eliware/elera-lib.git"
-    },
-    "homepage": "https://github.com/eliware/elera-lib#readme",
-    "bugs": {
-        "url": "https://github.com/eliware/elera-lib/issues"
-    },
-    "license": "Apache-2.0",
-    "type": "module",
-    "sideEffects": false,
-    "engines": {
-        "node": ">=26"
-    },
-    "exports": {
-        ".": {
-            "types": "./src/index.d.ts",
-            "import": "./src/index.mjs"
-        }
-    },
-    "files": [
-        "src",
-        "contracts",
-        "examples",
-        "README.md",
-        "RELEASE_NOTES.md",
-        "LICENSE",
-        "THIRD-PARTY-NOTICES.md"
+    "collectCoverageFrom": [
+      "src/**/*.mjs"
     ],
-    "scripts": {
-        "test": "eliware-test",
-        "lint": "eliware-test --lint",
-        "check": "node --check src/index.mjs",
-        "contracts": "node scripts/verify-contracts.mjs",
-        "typecheck": "tsc --project tsconfig.json",
-        "pack": "npm pack --dry-run",
-        "audit": "node scripts/run-audit.mjs"
-    },
-    "devDependencies": {
-        "@eliware/test": "^5.0.0",
-        "@types/node": "^26.4.1",
-        "ajv": "8.20.0",
-        "ajv-formats": "3.0.1",
-        "typescript": "^7.0.2"
-    },
-    "publishConfig": {
-        "access": "public"
-    },
-    "prettier": {
-      "printWidth": 100,
-      "tabWidth": 2,
-      "useTabs": false,
-      "semi": true,
-      "singleQuote": false,
-      "quoteProps": "as-needed",
-      "jsxSingleQuote": false,
-      "trailingComma": "all",
-      "bracketSpacing": true,
-      "bracketSameLine": false,
-      "arrowParens": "always",
-      "proseWrap": "preserve",
-      "endOfLine": "lf"
-    },
-    "eliware": {
-      "id": "E-210",
-      "apply": ["general", "library", "npm-published"]
+    "coverageReporters": [
+      "text",
+      "json-summary"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
     }
+  },
+  "prettier": {
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": false,
+    "quoteProps": "as-needed",
+    "jsxSingleQuote": false,
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "bracketSameLine": false,
+    "arrowParens": "always",
+    "proseWrap": "preserve",
+    "endOfLine": "lf"
+  },
+  "author": "Eliware <eliware@eliware.org>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eliware/elera-lib.git"
+  },
+  "homepage": "https://github.com/eliware/elera-lib#readme",
+  "bugs": {
+    "url": "https://github.com/eliware/elera-lib/issues"
+  },
+  "eliware": {
+    "id": "E-1320",
+    "apply": [
+      "general",
+      "library",
+      "npm-published"
+    ]
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.mjs"
+    }
+  }
 }

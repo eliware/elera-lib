@@ -1,7 +1,7 @@
-import { expect, test } from '@jest/globals';
-import * as api from '../src/index.mjs';
+import { expect, test } from "@jest/globals";
+import * as api from "../src/index.mjs";
 
-test('exports only the public validation API', () => {
+test("exports only the public validation API", () => {
   expect(api.validateBundle).toBeDefined();
   expect(api.validateRoutingEvent).toBeDefined();
   expect(api.createDb).toBeUndefined();

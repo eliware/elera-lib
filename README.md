@@ -1,68 +1,89 @@
-# @eliware/elera-lib
+# [![eliware.org](https://eliware.org/logos/brand.png)](https://discord.gg/M6aTR9eTwN)
 
-Documentation: [docs](docs/README.md) · [specifications](specs/README.md) · [examples](examples/README.md)
+## @eliware/elera-lib [![npm](https://img.shields.io/npm/v/@eliware/elera-lib)](https://www.npmjs.com/package/@eliware/elera-lib) [![License](https://img.shields.io/github/license/eliware/elera-lib)](https://github.com/eliware/elera-lib/blob/main/LICENSE) [![CI](https://github.com/eliware/elera-lib/actions/workflows/ci.yaml/badge.svg)](https://github.com/eliware/elera-lib/actions/workflows/ci.yaml)
 
-`@eliware/elera-lib` is Elera's lean shared protocol package. Its public API
-contains only contracts and pure helpers currently consumed by multiple Elera
-repos; internal modules remain non-public until their ownership is resolved.
+Shared Elera routing contracts and validation
 
-Its only public runtime exports are `validateBundle` and `validateRoutingEvent`.
-`validateBundle` validates and normalizes routing-bundle data, while
-`validateRoutingEvent` validates and normalizes the shapes of routing updates,
-topology, lifecycle, and shutdown events. Consumers own all resulting event
-handling and runtime behavior.
+## Table of Contents
 
-For bundles, `validateBundle` normalizes the ordered `routes.primary` and
-`routes.balanced` arrays described below.
+- [Features](#features)
+- [Requirements](#requirements)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Development](#development)
+- [Testing](#testing)
+- [Troubleshooting](#troubleshooting)
+- [Security](#security)
+- [API](#api)
+- [Packaging](#packaging)
+- [Examples](#examples)
+- [Support](#support)
+- [Links](#links)
+- [License](#license)
 
-Application code that needs native SQL connections must install
-`@eliware/elera-client`. SQL pools, credentials, WebSocket connections,
-database selection, backups, CLI commands, and supervisor orchestration are
-not part of this package.
+## Features
 
-Routing bundles preserve the logical `database` label used for authorization
-and display and carry the generated physical SQL schema in `physicalDatabase`.
-They require normalized `routes.primary` and `routes.balanced` arrays containing
-ordered `{ host, port }` nodes with optional `nodeId` and optional finite,
-non-negative `weight`; validation trims host values and optional `nodeId`
-values during normalization.
-Bundles also carry application and identity scope, credentials, version, node
-identity, service ports, and a required future `expiresAt` timestamp.
-`validateBundle` rejects malformed, expired,
-duplicates within a role list or writer/failover-conflicting route data;
-reader and route-view endpoints may intentionally overlap because those are
-independent views.
+Validate routing bundles and routing events. The package does not connect to databases or manage routing transport.
 
-Bundle validation rejects non-finite numbers (`NaN`, `Infinity`, and
-`-Infinity`) before JSON serialization; they are not normalized to `null`.
-The shared validator enforces the 1 MiB serialized contract limit after
-detachment. Applications and transports remain responsible for pre-allocation
-resource limits.
+## Requirements
 
-`bundleVersion` is strictly a non-negative safe integer; numeric strings are
-not accepted.
+Use Node.js 26 or later.
 
-Bundle `nodeIdentity` is a required string; topology-event `nodeIdentity` is a
-separate opaque object because the two contracts serve different wire formats.
+## Setup
 
-Routing events are validated before consumers act on them. The library returns
-detached normalized event objects; update events additionally return normalized
-bundle fields. Event handling, client and supervisor lifecycle policies, and
-telemetry remain in their owning repositories.
+Install the public package with `npm install @eliware/elera-lib`.
 
-The supervisor owns topology and assignment policy; the CLI owns administration;
-and `elera-client` owns SQL pools and application behavior. `elera-lib` supplies
-only reusable contracts and helpers shared across those boundaries.
+## Usage
+
+Import `validateBundle` or `validateRoutingEvent` from `@eliware/elera-lib`. Read the [documentation index](docs/README.md), [API usage](docs/usage.md), [bundle fields](docs/bundle-contract.md), and [routing events](docs/routing-events.md).
+Read [release notes](RELEASE_NOTES.md) for released changes. Read [specifications](specs/README.md) for repository requirements.
 
 ## Development
 
-```bash
-npm ci
-npm test
-npm run lint
-npm run check
-npm run typecheck
-npm run contracts
-npm run audit
-npm run pack
-```
+Run `npm ci` to install the locked development packages.
+
+## Testing
+
+Run `npm test` to validate the repository.
+
+## Troubleshooting
+
+Run `npm ci` from the repository root. Then run `npm test`.
+Fix the first reported error before you run the test again.
+
+## Security
+
+Do not log credentials or tokens. Do not commit secrets or live routing data.
+
+## API
+
+Read [API usage](docs/usage.md) for the supported functions.
+
+## Packaging
+
+Run `npm run pack` to check package contents.
+
+## Examples
+
+Read [examples](examples/README.md) for a complete bundle example.
+
+## Support
+
+For help, questions, or to chat with the author and community, visit:
+
+[![Discord](https://eliware.org/logos/discord_96.png)](https://discord.gg/M6aTR9eTwN)[![eliware.org](https://eliware.org/logos/eliware_96.png)](https://discord.gg/M6aTR9eTwN)
+
+**[eliware.org on Discord](https://discord.gg/M6aTR9eTwN)**
+
+## Links
+
+- [Home Page](https://eliware.org)
+- [GitHub Org](https://github.com/eliware)
+- [GitHub Repo](https://github.com/eliware/elera-lib)
+- [Bug Reports](https://github.com/eliware/elera-lib/issues)
+- [npm](https://www.npmjs.com/package/@eliware/elera-lib)
+- [Discord](https://discord.gg/M6aTR9eTwN)
+
+## License
+
+[MIT © Eliware](LICENSE)

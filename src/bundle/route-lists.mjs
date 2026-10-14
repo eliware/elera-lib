@@ -1,14 +1,17 @@
-import { validateRoutingNodes } from '../routing/node-validation/index.mjs';
+import { validateRoutingNodes } from "../routing/node-validation/nodes.mjs";
 
 export function validateBundleRouteLists(bundle) {
-  if (!bundle.routes || typeof bundle.routes !== 'object' || Array.isArray(bundle.routes)) throw new TypeError('routing bundle routes are required');
+  if (!bundle.routes || typeof bundle.routes !== "object" || Array.isArray(bundle.routes))
+    throw new TypeError("routing bundle routes are required");
   const routes = {};
   // Route sets intentionally overlap role views: primary may contain writer and balanced may contain readers.
   // Intentional: route-list validation checks shape and node validity only; endpoint ownership belongs to the role views.
-  const routeNames = new Set(['primary', 'balanced']);
-  for (const key of Object.keys(bundle.routes)) if (!routeNames.has(key)) throw new TypeError('routing bundle routes field is unknown');
+  const routeNames = new Set(["primary", "balanced"]);
+  for (const key of Object.keys(bundle.routes))
+    if (!routeNames.has(key)) throw new TypeError("routing bundle routes field is unknown");
   for (const route of routeNames) {
-    if (!Array.isArray(bundle.routes[route])) throw new TypeError(`bundle.routes.${route} must be an array`);
+    if (!Array.isArray(bundle.routes[route]))
+      throw new TypeError(`bundle.routes.${route} must be an array`);
     routes[route] = validateRoutingNodes(bundle.routes[route], `routing bundle ${route}`);
   }
   bundle.routes = routes;

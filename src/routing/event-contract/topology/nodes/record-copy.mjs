@@ -1,7 +1,12 @@
-import { assertJsonValue } from '../../json-value.mjs';
+import { assertJsonValue } from "../../json-value/index.mjs";
 
 export function detachAvailabilityRecord(record) {
-  assertJsonValue(record, 'routing topology availability record');
-  try { return structuredClone(record); }
-  catch { throw new TypeError('routing topology availability record must contain cloneable JSON-compatible values'); }
+  assertJsonValue(record, "routing topology availability record");
+  try {
+    return structuredClone(record);
+  } catch {
+    throw new TypeError(
+      "routing topology availability record must contain cloneable JSON-compatible values",
+    );
+  }
 }

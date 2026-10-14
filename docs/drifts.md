@@ -1,5 +1,3 @@
-# Elera alignment
+# Convention status
 
-`elera-lib` is aligned with the Elera core docs as of
-`2026-09-02T01:22:46-04:00`, checked by elera-lib dev and confirmed by
-elera-lab dev.
+This repository uses convention version 12.0. Run `npm test` to check the maintained conventions and repository rules.
