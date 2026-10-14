@@ -4,19 +4,35 @@
 
 ### Breaking changes
 
-- Remove `clientDrainTimeout` from the public API. Keep `validateBundle` and `validateRoutingEvent` as the supported exports. Move client drain policy to its owner.
+- Remove `clientDrainTimeout` from the public API. Keep `validateBundle` and `validateRoutingEvent` as the supported exports.
+- Move client drain policy to its owner package.
+
+### Added
+
+- Add TypeScript declarations for both public validators.
+- Add bundle and routing-event schemas. Check schema fixtures against each schema.
+- Add end-user guides for setup, API use, bundle fields, events, and troubleshooting.
+- Add focused tests for all runtime modules. Require full line, branch, statement, and function coverage.
 
 ### Changed
 
-- Validate detached routing bundle and event data. Reject unknown fields, unsafe object properties, invalid timestamps, and unsupported JSON values.
-- Keep the bundle and event schemas in sync with runtime validation and checked-in fixtures.
-- Add direct tests for every source module. Require full statement, branch, function, and line coverage.
-- Align package metadata, npm package contents, CI, and Knit commands with convention version 12.0.
-- Add end-user docs for setup, the public API, bundle fields, routing events, and errors.
+- Split bundle and event validation into focused modules. Keep the two public exports stable.
+- Validate detached JSON data. Reject unknown fields, accessors, symbols, cycles, sparse arrays, invalid dates, and invalid values.
+- Validate bundle fields, ports, routes, expiry dates, and node conflicts.
+- Validate update, topology, drain, recovery, and shutdown events.
+- Align package metadata, dependencies, package contents, CI, and Knit workflows with convention 12.0.
+- Update the README and examples to show the supported package scope.
+
+### Fixed
+
+- Match schema rules to runtime rules for node identity, event types, deadline values, and safe bundle versions.
+- Require update events to include a valid event type and timestamp.
+- Keep the expiry test valid after 2030.
 
 ### Security
 
-- Reject invalid shutdown endpoints, including local, private, and unspecified addresses. Require consumers to apply their own connection policy.
+- Reject invalid shutdown URLs and local, private, or unspecified address literals.
+- Require consumers to apply connection and network policy at the live connection boundary.
 
 ## 0.3.1 — 2026-08-29
 
