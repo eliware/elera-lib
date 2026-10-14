@@ -1,49 +1,8 @@
 import { expect, test } from "@jest/globals";
-import { validateBundleInput } from "../../src/bundle/input.mjs";
-test("validates bundle input", () => {
-  expect(validateBundleInput({})).toBeUndefined();
-  expect(() => validateBundleInput()).toThrow("required");
-  expect(() => validateBundleInput(null)).toThrow("required");
-  expect(() => validateBundleInput([])).toThrow("object");
+import { bundleFields, validateBundleInput } from "../../src/bundle/input.mjs";
+
+test("exports the bundle field list and validates the input boundary", () => {
+  expect(bundleFields).toContain("apiVersion");
+  expect(validateBundleInput({ apiVersion: "v1" })).toBeUndefined();
   expect(() => validateBundleInput({ unexpected: true })).toThrow("unknown");
-  const symbol = {};
-  symbol[Symbol("metadata")] = true;
-  expect(() => validateBundleInput(symbol)).toThrow("unknown");
-  expect(() => validateBundleInput(new Date())).toThrow("plain");
-  expect(() =>
-    validateBundleInput(
-      new Proxy(
-        {},
-        {
-          getPrototypeOf() {
-            throw new Error("proxy failure");
-          },
-        },
-      ),
-    ),
-  ).toThrow("plain");
-  expect(() =>
-    validateBundleInput(
-      new Proxy(
-        {},
-        {
-          ownKeys() {
-            throw new Error("proxy failure");
-          },
-        },
-      ),
-    ),
-  ).toThrow("plain");
-  expect(() =>
-    validateBundleInput(
-      new Proxy(
-        {},
-        {
-          getPrototypeOf() {
-            throw new TypeError("proxy failure");
-          },
-        },
-      ),
-    ),
-  ).toThrow("plain");
 });

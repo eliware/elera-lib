@@ -1,6 +1,24 @@
 import { expect, test } from "@jest/globals";
-import * as subject from "../../../src/bundle/input/prototype.mjs";
+import { assertPlainBundle } from "../../../src/bundle/input/prototype.mjs";
 
-test("prototype has a focused mirrored test module", () => {
-  expect(Object.keys(subject).length).toBeGreaterThan(0);
+test("accepts ordinary and null-prototype bundles", () => {
+  expect(assertPlainBundle({})).toBeUndefined();
+  expect(assertPlainBundle(Object.create(null))).toBeUndefined();
+});
+
+test("rejects custom and inaccessible prototypes", () => {
+  class Bundle {}
+  expect(() => assertPlainBundle(new Bundle())).toThrow("plain object");
+  expect(() =>
+    assertPlainBundle(
+      new Proxy(
+        {},
+        {
+          getPrototypeOf() {
+            throw new Error("failed");
+          },
+        },
+      ),
+    ),
+  ).toThrow("plain object");
 });

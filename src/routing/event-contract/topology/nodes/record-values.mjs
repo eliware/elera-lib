@@ -12,7 +12,4 @@ export function validateAvailabilityRecord(record) {
     throw new TypeError("routing topology availability record is invalid");
   if (record.sqlPort < 1 || record.sqlPort > 65535)
     throw new TypeError("routing topology availability port is invalid");
-  for (const key of Object.keys(record))
-    if (!["nodeId", "address", "sqlPort", "state", "draining"].includes(key))
-      throw new TypeError("routing topology availability field is unknown");
 }

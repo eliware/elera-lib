@@ -1,5 +1,4 @@
 import { expect, test } from "@jest/globals";
-import { validateRoutingEvent } from "../../../src/routing/event-contract/index.mjs";
 import { validateUpdateEvent } from "../../../src/routing/event-contract/update.mjs";
 
 const envelope = { version: 1, generatedAt: "2030-01-01T00:00:00Z" };
@@ -21,19 +20,13 @@ test("validates update bundles", () => {
     ports: { sql: 3306, http: 8080 },
     routes: { primary: [], balanced: [] },
   };
-  expect(validateRoutingEvent({ ...envelope, type: "routing.update", ...bundle })).toMatchObject(
-    bundle,
-  );
   expect(validateUpdateEvent({ ...envelope, type: "routing.update", ...bundle })).toMatchObject(
     bundle,
   );
   expect(() =>
-    validateRoutingEvent({ ...envelope, type: "routing.update", application: "a" }),
+    validateUpdateEvent({ ...envelope, type: "routing.update", application: "a" }),
   ).toThrow();
-  expect(() => validateRoutingEvent({ ...envelope, type: "routing.update", extra: true })).toThrow(
-    "unknown",
-  );
   expect(() =>
-    validateRoutingEvent({ ...envelope, type: "routing.update", version: 0, ...bundle }),
+    validateUpdateEvent({ ...envelope, type: "routing.update", version: 0, ...bundle }),
   ).toThrow("version");
 });

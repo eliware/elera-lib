@@ -1,6 +1,12 @@
 import { expect, test } from "@jest/globals";
-import * as subject from "../../../../../src/routing/event-contract/topology/nodes/duplicates.mjs";
+import { assertUniqueAvailabilityNodes } from "../../../../../src/routing/event-contract/topology/nodes/duplicates.mjs";
 
-test("duplicates has a focused mirrored test module", () => {
-  expect(Object.keys(subject).length).toBeGreaterThan(0);
+test("accepts unique availability node IDs", () => {
+  expect(assertUniqueAvailabilityNodes([{ nodeId: "a" }, { nodeId: "b" }])).toBeUndefined();
+});
+
+test("rejects duplicate availability node IDs", () => {
+  expect(() => assertUniqueAvailabilityNodes([{ nodeId: "a" }, { nodeId: "a" }])).toThrow(
+    "duplicate nodeId",
+  );
 });

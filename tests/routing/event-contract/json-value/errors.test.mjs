@@ -1,6 +1,10 @@
 import { expect, test } from "@jest/globals";
-import * as subject from "../../../../src/routing/event-contract/json-value/errors.mjs";
+import {
+  JsonValueError,
+  MAX_JSON_DEPTH,
+} from "../../../../src/routing/event-contract/json-value/errors.mjs";
 
-test("errors has a focused mirrored test module", () => {
-  expect(Object.keys(subject).length).toBeGreaterThan(0);
+test("exposes the JSON error type and depth limit", () => {
+  expect(new JsonValueError("bad value")).toBeInstanceOf(TypeError);
+  expect(MAX_JSON_DEPTH).toBe(100);
 });

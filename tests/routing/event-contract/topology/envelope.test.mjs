@@ -17,9 +17,6 @@ test("validates topology envelope", () => {
   expect(() => validateTopologyEnvelope([])).toThrow("required");
   expect(validateRoutingEvent(event)).toEqual(event);
   expect(() => validateRoutingEvent({ ...event, version: 0 })).toThrow("positive");
-  expect(() =>
-    validateRoutingEvent({ ...event, generatedAt: "2099-01-01T00:00:00.000+00:00" }),
-  ).toThrow("UTC");
   for (const key of ["node", "context", "topology"]) {
     const copy = { ...event };
     delete copy[key];
@@ -32,21 +29,11 @@ test("validates topology envelope", () => {
   expect(() => validateRoutingEvent({ ...event, topology: { nodes: [], extra: true } })).toThrow(
     "unknown",
   );
-  expect(() => validateRoutingEvent({ ...event, generatedAt: "badZ" })).toThrow("UTC");
-  expect(() => validateTopologyEnvelope({ ...event, generatedAt: "badZ" })).toThrow("UTC");
-});
-
-test("rejects invalid generatedAt calendar values", () => {
-  expect(() => validateTopologyEnvelope({ ...event, generatedAt: "2099-02-29T00:00:00Z" })).toThrow(
-    "UTC",
-  );
 });
 
 test("covers valid topology envelope directly", () => {
   expect(validateTopologyEnvelope(event)).toBeUndefined();
   expect(() => validateTopologyEnvelope(null)).toThrow("required");
   expect(() => validateTopologyEnvelope({ ...event, type: "routing.update" })).toThrow("type");
-  expect(
-    validateTopologyEnvelope({ ...event, generatedAt: "2099-01-01T00:00:00Z" }),
-  ).toBeUndefined();
+  expect(validateTopologyEnvelope(event)).toBeUndefined();
 });

@@ -1,6 +1,8 @@
 import { expect, test } from "@jest/globals";
-import * as subject from "../../../../src/routing/event-contract/json-value/arrays.mjs";
+import { validateArray } from "../../../../src/routing/event-contract/json-value/arrays.mjs";
 
-test("arrays has a focused mirrored test module", () => {
-  expect(Object.keys(subject).length).toBeGreaterThan(0);
+test("rejects cycles in nested arrays", () => {
+  const cycle = [];
+  cycle.push(cycle);
+  expect(() => validateArray(cycle, "value", new WeakSet(), 0)).toThrow("cyclic");
 });
