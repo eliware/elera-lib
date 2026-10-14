@@ -33,7 +33,7 @@ const expected = {
   schema: "71127414d8019a2a11a36bb41cea9305df6279070886ea56be7dcefc87b28a02",
   payloadSchema: "b4780b8da7d2a9022a36127601e18b1f4b0f85d263af252504027a99e15dc983",
   fixture: "43641ac53df62ec0560198eb3ca4ebd995dedc727e322bb872a81fb6e78e5fca",
-  eventSchema: "8f6694f9be554476dd86b181b49a2b0d813f1eb1dfcc3880b0e5e5d13a2c7643",
+  eventSchema: "822515fa37f0d433baf3170bf50d76dfd55d37c6827df27ae50e0720bbba9977",
 };
 // These are trusted repository files; validate their internal schemas before reporting drift.
 const ajv = new Ajv({ allErrors: true, strict: true, allowUnionTypes: true });
@@ -56,6 +56,8 @@ if (!validateEventSchema(eventFixture))
   throw new Error(
     `routing event fixture does not match schema: ${ajv.errorsText(validateEventSchema.errors)}`,
   );
+if (validateEventSchema({ ...eventFixture, type: "routing.unknown" }))
+  throw new Error("routing update schema accepts an unknown event type");
 const topologyFixture = {
   type: "routing.topology",
   version: 1,
@@ -79,6 +81,29 @@ if (
   })
 )
   throw new Error("routing topology schema accepts an unknown nodeIdentity field");
+const shutdownFixture = {
+  type: "routing.shutdown",
+  version: 1,
+  generatedAt: "2099-01-01T00:00:00Z",
+  node: "node-a",
+  reason: "maintenance",
+  reconnectDeadlineMs: 0,
+};
+if (!validateEventSchema(shutdownFixture))
+  throw new Error(
+    `routing shutdown fixture does not match schema: ${ajv.errorsText(validateEventSchema.errors)}`,
+  );
+if (validateEventSchema({ ...shutdownFixture, reconnectDeadlineMs: 1.5 }))
+  throw new Error("routing shutdown schema accepts a fractional deadline");
+const contextFixture = {
+  type: "routing.drain",
+  version: 1,
+  generatedAt: "2099-01-01T00:00:00Z",
+  node: "node-a",
+  context: {},
+};
+if (validateEventSchema({ ...contextFixture, type: "routing.unknown" }))
+  throw new Error("routing context schema accepts an unknown event type");
 if (
   digest(schema) !== expected.schema ||
   digest(payloadSchema) !== expected.payloadSchema ||

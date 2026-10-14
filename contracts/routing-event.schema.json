@@ -21,6 +21,10 @@
     "update": {
       "type": "object",
       "allOf": [{ "$ref": "#/$defs/envelope" }, { "$ref": "bundle-payload.schema.json" }],
+      "properties": {
+        "type": { "const": "routing.update" },
+        "version": { "type": "integer", "minimum": 1 }
+      },
       "unevaluatedProperties": false
     },
     "topology": {
@@ -89,6 +93,7 @@
           "required": ["node", "context"],
           "properties": {
             "type": { "enum": ["routing.drain", "routing.recovery"] },
+            "version": { "type": "integer", "minimum": 1 },
             "node": { "type": "string", "minLength": 1 },
             "context": { "type": "object" }
           }
@@ -107,7 +112,7 @@
             "type": { "const": "routing.shutdown" },
             "node": { "type": "string", "minLength": 1 },
             "reason": { "type": "string", "minLength": 1 },
-            "reconnectDeadlineMs": { "type": "number", "minimum": 0 },
+            "reconnectDeadlineMs": { "type": "integer", "minimum": 0 },
             "loadBalancerEndpoint": { "type": "string", "format": "uri" }
           }
         }
