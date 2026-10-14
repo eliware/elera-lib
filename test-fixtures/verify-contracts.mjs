@@ -33,7 +33,7 @@ const expected = {
   schema: "71127414d8019a2a11a36bb41cea9305df6279070886ea56be7dcefc87b28a02",
   payloadSchema: "b4780b8da7d2a9022a36127601e18b1f4b0f85d263af252504027a99e15dc983",
   fixture: "43641ac53df62ec0560198eb3ca4ebd995dedc727e322bb872a81fb6e78e5fca",
-  eventSchema: "f683c28f627007502a2625c95d71bece2f936bde565eaaa2df0f1a817c06620d",
+  eventSchema: "8f6694f9be554476dd86b181b49a2b0d813f1eb1dfcc3880b0e5e5d13a2c7643",
 };
 // These are trusted repository files; validate their internal schemas before reporting drift.
 const ajv = new Ajv({ allErrors: true, strict: true, allowUnionTypes: true });
@@ -56,6 +56,29 @@ if (!validateEventSchema(eventFixture))
   throw new Error(
     `routing event fixture does not match schema: ${ajv.errorsText(validateEventSchema.errors)}`,
   );
+const topologyFixture = {
+  type: "routing.topology",
+  version: 1,
+  generatedAt: "2099-01-01T00:00:00Z",
+  node: "node-a",
+  context: {
+    nodeIdentity: { name: "node-a" },
+    ports: { sql: 3306, http: 8080 },
+    clusterCondition: "ready",
+  },
+  topology: { nodes: [] },
+};
+if (!validateEventSchema(topologyFixture))
+  throw new Error(
+    `routing topology fixture does not match schema: ${ajv.errorsText(validateEventSchema.errors)}`,
+  );
+if (
+  validateEventSchema({
+    ...topologyFixture,
+    context: { ...topologyFixture.context, nodeIdentity: { name: "node-a", extra: true } },
+  })
+)
+  throw new Error("routing topology schema accepts an unknown nodeIdentity field");
 if (
   digest(schema) !== expected.schema ||
   digest(payloadSchema) !== expected.payloadSchema ||
