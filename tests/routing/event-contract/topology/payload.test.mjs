@@ -21,3 +21,16 @@ test("rejects non-JSON values and clone failures", () => {
     globalThis.structuredClone = original;
   }
 });
+
+test("rejects accessors without calling them", () => {
+  let called = false;
+  const payload = Object.defineProperty({}, "nodes", {
+    enumerable: true,
+    get() {
+      called = true;
+      return [];
+    },
+  });
+  expect(() => detachTopologyPayload(payload)).toThrow("JSON-compatible");
+  expect(called).toBe(false);
+});

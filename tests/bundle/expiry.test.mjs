@@ -15,12 +15,12 @@ const valid = {
   bundleVersion: 1,
   nodeIdentity: "node-a",
   ports: { sql: 3306, http: 8080 },
-  expiresAt: "2030-01-01T00:00:00Z",
+  expiresAt: "2999-01-01T00:00:00Z",
   routes: { primary: [{ host: "a", port: 3306 }], balanced: [] },
 };
 
 test("accepts a future expiry time", () =>
-  expect(() => validateBundleExpiry("2030-01-01T00:00:00Z")).not.toThrow());
+  expect(() => validateBundleExpiry("2999-01-01T00:00:00Z")).not.toThrow());
 test("validates expiry", () => {
   expect(() => validateBundle({ ...valid, expiresAt: "2000-01-01T00:00:00Z" })).toThrow("future");
   expect(() => validateBundle({ ...valid, expiresAt: undefined })).toThrow();

@@ -1,6 +1,7 @@
 import { assertJsonValue } from "../json-value/index.mjs";
 
 export function detachTopologyPayload(payload) {
+  assertJsonValue(payload, "routing topology topology");
   let topology;
   try {
     topology = structuredClone(payload);
