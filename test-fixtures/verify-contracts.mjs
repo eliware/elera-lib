@@ -44,6 +44,8 @@ if (!validate(fixture))
   throw new Error(
     `routing bundle fixture does not match schema: ${ajv.errorsText(validate.errors)}`,
   );
+if (validate({ ...fixture, unexpected: true }))
+  throw new Error("routing bundle schema accepts an unknown top-level field");
 ajv.addSchema(schema, "routing-bundle.schema.json");
 const validateEventSchema = ajv.compile(eventSchema);
 const eventFixture = {

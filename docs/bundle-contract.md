@@ -70,4 +70,4 @@ const input = {
 };
 ```
 
-Use [the bundle schema](../contracts/routing-bundle.schema.json) and [the payload schema](../contracts/bundle-payload.schema.json) for machine validation.
+Use [the bundle schema](../contracts/routing-bundle.schema.json) to validate a complete bundle. The payload schema defines bundle fields for event schemas. Do not use it as a complete bundle schema.
