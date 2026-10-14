@@ -29,4 +29,10 @@ test("validates update bundles", () => {
   expect(() =>
     validateUpdateEvent({ ...envelope, type: "routing.update", version: 0, ...bundle }),
   ).toThrow("version");
+  expect(() => validateUpdateEvent({ ...bundle, version: 1, type: "routing.update" })).toThrow(
+    "generatedAt",
+  );
+  expect(() => validateUpdateEvent({ ...envelope, type: "routing.other", ...bundle })).toThrow(
+    "unsupported",
+  );
 });

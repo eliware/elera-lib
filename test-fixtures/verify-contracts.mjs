@@ -31,7 +31,7 @@ const fixture = await readJson("routing-bundle.fixture.json");
 const eventSchema = await readJson("routing-event.schema.json");
 const expected = {
   schema: "71127414d8019a2a11a36bb41cea9305df6279070886ea56be7dcefc87b28a02",
-  payloadSchema: "b4780b8da7d2a9022a36127601e18b1f4b0f85d263af252504027a99e15dc983",
+  payloadSchema: "4fec3d7a3fbfe6de6737271ce29221d9e956be94df1d2c9c606686395d14bbf3",
   fixture: "43641ac53df62ec0560198eb3ca4ebd995dedc727e322bb872a81fb6e78e5fca",
   eventSchema: "822515fa37f0d433baf3170bf50d76dfd55d37c6827df27ae50e0720bbba9977",
 };
@@ -46,6 +46,8 @@ if (!validate(fixture))
   );
 if (validate({ ...fixture, unexpected: true }))
   throw new Error("routing bundle schema accepts an unknown top-level field");
+if (validate({ ...fixture, bundleVersion: Number.MAX_SAFE_INTEGER + 1 }))
+  throw new Error("routing bundle schema accepts an unsafe bundleVersion");
 ajv.addSchema(schema, "routing-bundle.schema.json");
 const validateEventSchema = ajv.compile(eventSchema);
 const eventFixture = {

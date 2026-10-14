@@ -1,14 +1,17 @@
 import { bundleFields } from "../../bundle/input.mjs";
 import { validateBundle } from "../../bundle/index.mjs";
+import { validateUtcTimestamp } from "./timestamp.mjs";
 
 export function validateUpdateEvent(event) {
   // Intentional: the flattened update shape is the established wire contract; reconstruction returns its normalized form.
   // Intentional: the envelope and bundle validators each scan their own contract boundary for clearer errors.
   const allowed = ["type", "version", "generatedAt", ...bundleFields];
+  if (event.type !== "routing.update") throw new TypeError("unsupported routing event");
   if (Object.keys(event).some((key) => !allowed.includes(key)))
     throw new TypeError("routing update field is unknown");
   if (!Number.isInteger(event.version) || event.version < 1)
     throw new TypeError("routing update version must be positive");
+  validateUtcTimestamp(event.generatedAt, "routing event generatedAt");
   // Intentional: update events are isolated from the caller before the public validator normalizes their replacement bundle.
   // Intentional: bundle completeness and field ownership are delegated to the canonical bundle validator.
   const bundle = validateBundle(
