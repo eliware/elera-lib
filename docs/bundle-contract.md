@@ -70,4 +70,4 @@ const input = {
 };
 ```
 
-Use [the bundle schema](../contracts/routing-bundle.schema.json) to validate a complete bundle. The payload schema defines bundle fields for event schemas. Do not use it as a complete bundle schema.
+See the [bundle specification](../specs/bundle-contract.yaml) for the contract rules and YAML examples.

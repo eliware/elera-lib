@@ -1,4 +1,5 @@
 # Specifications
 
-- [Directive schema](directives-schema.yaml)
+- [Bundle contract](bundle-contract.yaml)
 - [Repository directives](directives.yaml)
+- [Routing event contract](routing-event-contract.yaml)

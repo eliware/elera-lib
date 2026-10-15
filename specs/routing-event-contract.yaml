@@ -1,0 +1,119 @@
+version: "12.0"
+description: Defines routing event contracts for @eliware/elera-lib.
+requires:
+  - general
+  - library
+  - npm-published
+directives:
+  - id: E-1320.2
+    dos:
+      - Validate routing events before a consumer acts on them.
+      - Return a detached event with validated values.
+      - Require each event to use JSON-compatible values.
+    donts:
+      - Do not accept unknown event types or fields.
+      - Do not handle event transport or orchestration in this package.
+    children:
+      - id: E-1320.2.0
+        dos:
+          - Require type, version, and generatedAt on each event.
+          - Require a supported event type.
+          - Require version to be a non-negative integer.
+          - Require generatedAt to use a valid UTC date-time.
+        donts:
+          - Do not accept accessors, symbols, cycles, sparse arrays, or non-finite numbers.
+        examples:
+          - |
+            type: routing.drain
+            version: 1
+            generatedAt: "2099-01-01T00:00:00Z"
+      - id: E-1320.2.1
+        dos:
+          - Require routing.update to carry a complete bundle and a positive version.
+          - Require routing.drain and routing.recovery to carry a non-empty node and a JSON object context.
+          - Allow lifecycle context fields to vary between consumer versions.
+        donts:
+          - Do not accept a partial update bundle.
+          - Do not accept event fields outside the selected event contract.
+        examples:
+          - |
+            type: routing.update
+            version: 1
+            generatedAt: "2099-01-01T00:00:00Z"
+            apiVersion: v1
+            application: billing
+            database: billing
+            physicalDatabase: elera_billing
+            identity: billing-runtime
+            credentials:
+              username: billing_runtime
+              password: example-only
+            writer:
+              host: elera-0
+              port: 3306
+            readers: []
+            failover: []
+            bundleVersion: 1
+            expiresAt: "2099-01-01T00:00:00Z"
+            nodeIdentity: elera-0
+            ports:
+              sql: 3306
+              http: 8080
+            routes:
+              primary: []
+              balanced: []
+          - |
+            type: routing.drain
+            version: 1
+            generatedAt: "2099-01-01T00:00:00Z"
+            node: elera-0
+            context: {}
+      - id: E-1320.2.2
+        dos:
+          - Require routing.topology to use a positive version, a non-empty node, a context, and a topology.
+          - Require topology to contain only a nodes array.
+          - Require each topology context to contain nodeIdentity, ports, and clusterCondition.
+          - Require nodeIdentity to contain only a non-empty name string.
+          - Require sql and http ports; allow an optional ws port and named ports.
+          - Require topology nodes to contain nodeId, address, sqlPort, state, and draining.
+          - Require topology node IDs to be unique.
+        donts:
+          - Do not accept unknown topology or topology context fields.
+        examples:
+          - |
+            type: routing.topology
+            version: 1
+            generatedAt: "2099-01-01T00:00:00Z"
+            node: elera-0
+            context:
+              nodeIdentity:
+                name: elera-0
+              ports:
+                sql: 3306
+                http: 8080
+              clusterCondition: ready
+            topology:
+              nodes:
+                - nodeId: elera-0
+                  address: 10.0.0.1
+                  sqlPort: 3306
+                  state: ready
+                  draining: false
+      - id: E-1320.2.3
+        dos:
+          - Require routing.shutdown to contain a non-empty node and reason.
+          - Require reconnectDeadlineMs to be a non-negative integer.
+          - Allow an optional HTTP or HTTPS loadBalancerEndpoint.
+          - Reject local, private, and unspecified address literals in endpoint URLs.
+        donts:
+          - Do not accept endpoint user data, queries, or fragments.
+          - Do not replace the consumer's live connection and network checks.
+        examples:
+          - |
+            type: routing.shutdown
+            version: 1
+            generatedAt: "2099-01-01T00:00:00Z"
+            node: elera-0
+            reason: maintenance
+            reconnectDeadlineMs: 1000
+            loadBalancerEndpoint: https://example.com/shutdown

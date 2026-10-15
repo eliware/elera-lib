@@ -50,4 +50,4 @@ const update = {
 const validated = validateRoutingEvent(update);
 ```
 
-The example assumes that `bundle` follows the [bundle contract](bundle-contract.md). See [the event schema](../contracts/routing-event.schema.json) for machine validation.
+The example assumes that `bundle` follows the [bundle contract](bundle-contract.md). See the [routing event specification](../specs/routing-event-contract.yaml) for event rules and YAML examples.

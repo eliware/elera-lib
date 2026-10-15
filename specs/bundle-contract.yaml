@@ -1,0 +1,93 @@
+version: "12.0"
+description: Defines the routing bundle contract for @eliware/elera-lib.
+requires:
+  - general
+  - library
+  - npm-published
+directives:
+  - id: E-1320.1
+    dos:
+      - Validate each complete routing bundle before use.
+      - Return a detached bundle with normalized node values.
+      - Reject unknown fields and non-JSON values.
+    donts:
+      - Do not accept partial bundles.
+      - Do not change the input object.
+    children:
+      - id: E-1320.1.0
+        dos:
+          - Require apiVersion to equal v1.
+          - Require non-empty application, database, physicalDatabase, identity, and nodeIdentity strings.
+          - Require credentials with only username and password fields.
+          - Require username to contain non-space text and password to be a string.
+          - Require writer, readers, failover, bundleVersion, expiresAt, ports, and routes.
+          - Require bundleVersion to be a safe non-negative integer.
+          - Require expiresAt to be a valid future UTC date-time.
+        donts:
+          - Do not require a non-empty password.
+          - Do not accept credentials fields other than username and password.
+        examples:
+          - |
+            apiVersion: v1
+            application: billing
+            database: billing
+            physicalDatabase: elera_billing
+            identity: billing-runtime
+            credentials:
+              username: billing_runtime
+              password: example-only
+            writer:
+              host: elera-0
+              port: 3306
+            readers: []
+            failover: []
+            bundleVersion: 1
+            expiresAt: "2099-01-01T00:00:00Z"
+            nodeIdentity: elera-0
+            ports:
+              sql: 3306
+              http: 8080
+            routes:
+              primary: []
+              balanced: []
+      - id: E-1320.1.1
+        dos:
+          - Allow applicationId, databaseId, identityId, credentialName, scopes, and refreshAfter when present.
+          - Require optional identifiers and scope items to contain non-space text.
+          - Require refreshAfter to be a valid future UTC date-time when present.
+          - Require every routing node to have a non-empty host and an integer port from 1 to 65535.
+          - Allow a finite, non-negative weight and a non-empty nodeId on each routing node.
+          - Trim host and nodeId values in normalized routing nodes.
+        donts:
+          - Do not accept unknown bundle fields.
+          - Do not accept duplicate nodes within one role or route list.
+          - Do not allow a failover node to duplicate the writer endpoint.
+          - Do not reject intentional overlap between route views and node roles.
+        examples:
+          - |
+            routes:
+              primary:
+                - host: elera-0
+                  port: 3306
+                  weight: 0
+                  nodeId: primary-0
+              balanced: []
+            ports:
+              sql: 3306
+              http: 8080
+              metrics: 9090
+      - id: E-1320.1.2
+        dos:
+          - Require ports to include valid sql and http values.
+          - Allow additional named ports with integer values from 1 to 65535.
+          - Limit the serialized bundle to 1 MiB.
+          - Copy the bundle before the validator returns it.
+        donts:
+          - Do not accept symbols, accessors, cycles, sparse arrays, non-finite numbers, or unsupported object types.
+          - Do not convert non-finite values to null during serialization.
+        examples:
+          - |
+            ports:
+              sql: 3306
+              http: 8080
+              metrics: 9090

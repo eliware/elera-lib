@@ -10,7 +10,8 @@
 ### Added
 
 - Add TypeScript declarations for both public validators.
-- Add bundle and routing-event schemas. Check schema fixtures against each schema.
+- Add bundle and routing-event specifications in YAML with contract examples.
+- Replace standalone JSON contract schemas with YAML specifications.
 - Add end-user guides for setup, API use, bundle fields, events, and troubleshooting.
 - Add focused tests for all runtime modules. Require full line, branch, statement, and function coverage.
 
@@ -25,7 +26,7 @@
 
 ### Fixed
 
-- Match schema rules to runtime rules for node identity, event types, deadline values, and safe bundle versions.
+- Match specification rules to runtime rules for node identity, event types, deadlines, and safe bundle versions.
 - Require update events to include a valid event type and timestamp.
 - Keep the expiry test valid after 2030.
 
