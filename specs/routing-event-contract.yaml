@@ -31,7 +31,7 @@ directives:
             context.
           - Allow lifecycle context fields to change between consumer versions.
         donts:
-          - Do not accept a incomplete update bundle.
+          - Do not accept an incomplete update bundle.
           - Do not accept event fields outside the selected event contract.
         examples:
           - |
