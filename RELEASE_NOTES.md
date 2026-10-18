@@ -1,5 +1,16 @@
 # Release Notes
 
+## 13.0.0 — 2026-10-17
+
+### Changed
+
+- Update package metadata and routing specifications to version 13.0.0.
+- Align validation and npm publication workflows with shared repository rules.
+
+### Fixed
+
+- Correct YAML formatting, Knit deployment commands, and contributor guidance.
+
 ## 12.0.0 — 2026-10-14
 
 ### Breaking changes
@@ -39,7 +50,7 @@
 
 ### Changed
 
-- Remove the unused routing stream and common package dependency. Keep the public API focused on shared bundle and event validation.
+- Remove the routing stream and common package dependency. Keep the public API focused on shared bundle and event validation.
 - Update examples and docs to show the shared validation boundary.
 
 ## 0.3.0 — 2026-08-29
@@ -71,7 +82,7 @@
 
 ### Added
 
-- Add standalone outage classification and operation telemetry.
+- Add standalone outage categories and operation telemetry.
 
 ## 0.1.8 — 2026-08-28
 

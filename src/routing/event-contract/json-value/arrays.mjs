@@ -5,7 +5,7 @@ import { getArrayValueDescriptors } from "./array-shape.mjs";
 export function validateArray(value, path, ancestors, depth) {
   if (ancestors.has(value))
     throw new JsonValueError(
-      `${path} must not contain cyclic values; JSON-compatible values are acyclic`,
+      `${path} must not contain cyclic values. JSON-compatible values are acyclic`,
     );
   try {
     ancestors.add(value);

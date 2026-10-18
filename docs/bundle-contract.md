@@ -12,7 +12,7 @@
 | `physicalDatabase` | string        | Must contain non-space text. This is the physical SQL schema name.                                                                     |
 | `identity`         | string        | Must contain non-space text.                                                                                                           |
 | `credentials`      | object        | Must have only `username` and `password`. Username must contain non-space text. Password must be a string. An empty password is valid. |
-| `writer`           | node          | Must contain a valid host and port.                                                                                                    |
+| `writer`           | node          | Must contain a valid host and endpoint number.                                                                                         |
 | `readers`          | node array    | May be empty. Nodes in this list must be unique.                                                                                       |
 | `failover`         | node array    | May be empty. Nodes in this list must be unique and must not repeat the writer.                                                        |
 | `bundleVersion`    | integer       | Must be zero or greater.                                                                                                               |
@@ -23,22 +23,22 @@
 
 ## Optional fields
 
-| Field            | Type          | Rule                                      |
-| ---------------- | ------------- | ----------------------------------------- |
-| `applicationId`  | string        | Must contain non-space text when present. |
-| `databaseId`     | string        | Must contain non-space text when present. |
-| `identityId`     | string        | Must contain non-space text when present. |
-| `credentialName` | string        | Must contain non-space text when present. |
-| `scopes`         | string array  | Every item must contain non-space text.   |
-| `refreshAfter`   | UTC date-time | Must be a valid future date when present. |
+| Field            | Type          | Rule                                       |
+| ---------------- | ------------- | ------------------------------------------ |
+| `applicationId`  | string        | Must contain non-space text when supplied. |
+| `databaseId`     | string        | Must contain non-space text when supplied. |
+| `identityId`     | string        | Must contain non-space text when supplied. |
+| `credentialName` | string        | Must contain non-space text when supplied. |
+| `scopes`         | string array  | Every item must contain non-space text.    |
+| `refreshAfter`   | UTC date-time | Must be a valid future date when supplied. |
 
 ## Nodes and ports
 
-A routing node has a `host` string and an integer `port` from 1 to 65535. It may have a `weight` number of zero or greater and a non-empty `nodeId` string. The validator trims node hosts and identifiers.
+A routing node has a `host` string and an integer endpoint number from 1 to 65535. It may have a `weight` number of zero or greater and a non-empty `nodeId` string. The validator trims node hosts and identifiers.
 
-`ports` must include `sql` and `http`. It can include other named ports. Each name must contain no leading, trailing, or empty space. Each value must be an integer from 1 to 65535.
+`ports` must include `sql` and `http`. It can include other named ports. Each name must contain no leading, trailing, or empty whitespace. Each value must be an integer from 1 to 65535.
 
-`routes` accepts only `primary` and `balanced`. Both values must be arrays of valid nodes. Route views may overlap with the writer, failover, or reader lists. Duplicate nodes within each list are invalid.
+`routes` accepts only `primary` and `balanced`. Both values must be arrays of valid nodes. Route views may overlap with the writer, failover, or reader lists. Duplicate nodes in each list are invalid.
 
 ## Data limits
 

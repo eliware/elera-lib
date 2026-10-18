@@ -11,5 +11,5 @@ export function validateAvailabilityRecord(record) {
   )
     throw new TypeError("routing topology availability record is invalid");
   if (record.sqlPort < 1 || record.sqlPort > 65535)
-    throw new TypeError("routing topology availability port is invalid");
+    throw new TypeError("routing topology endpoint number is invalid");
 }

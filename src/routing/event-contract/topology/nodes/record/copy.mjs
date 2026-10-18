@@ -1,4 +1,4 @@
-import { assertJsonValue } from "../../json-value/index.mjs";
+import { assertJsonValue } from "../../../json-value/index.mjs";
 
 export function detachAvailabilityRecord(record) {
   assertJsonValue(record, "routing topology availability record");

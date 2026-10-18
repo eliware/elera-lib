@@ -23,5 +23,7 @@ test("rejects symbols, accessors, and custom prototypes", () => {
       "value",
     ),
   ).toThrow("JSON-compatible");
-  expect(() => getObjectValueDescriptors(new Date(), "value")).toThrow("JSON-compatible");
+  expect(() => getObjectValueDescriptors(new Date("2000-01-01T00:00:00Z"), "value")).toThrow(
+    "JSON-compatible",
+  );
 });

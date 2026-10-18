@@ -20,7 +20,7 @@ test("accepts valid shutdown fields", () => {
 test("rejects unknown and invalid shutdown fields", () => {
   expect(() => validateShutdownFields({ ...event, extra: true })).toThrow("field is unknown");
   expect(() => validateShutdownFields({ ...event, node: " " })).toThrow("node is required");
-  expect(() => validateShutdownFields({ ...event, reason: "" })).toThrow("reason is required");
+  expect(() => validateShutdownFields({ ...event, reason: "" })).toThrow("cause is required");
   expect(() => validateShutdownFields({ ...event, reconnectDeadlineMs: -1 })).toThrow("deadline");
   expect(() => validateShutdownFields({ ...event, reconnectDeadlineMs: 1.5 })).toThrow("deadline");
 });

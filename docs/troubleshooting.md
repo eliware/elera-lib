@@ -14,4 +14,4 @@ Use Node.js 26 or later. Run `npm ci` from the repository root. Run `npm test` a
 
 ## TypeScript error
 
-Import supported functions and types from `@eliware/elera-lib`. Treat the result of `validateRoutingEvent` as `unknown`. Check its `type` before you read event fields.
+Import supported functions and types from `@eliware/elera-lib`. Read the result of `validateRoutingEvent` as `unknown`. Check its `type` before you read event fields.

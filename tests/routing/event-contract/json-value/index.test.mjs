@@ -2,7 +2,7 @@ import { assertJsonValue } from "../../../../src/routing/event-contract/json-val
 
 test("accepts JSON values and rejects non-JSON objects", () => {
   expect(() => assertJsonValue({ nested: [true, 1, "ok", null] })).not.toThrow();
-  expect(() => assertJsonValue(new Date())).toThrow("JSON-compatible");
+  expect(() => assertJsonValue(new Date("2000-01-01T00:00:00Z"))).toThrow("JSON-compatible");
   expect(() => assertJsonValue(Number.NaN)).toThrow("JSON-compatible");
   const symbolValue = {};
   symbolValue[Symbol("secret")] = "hidden";

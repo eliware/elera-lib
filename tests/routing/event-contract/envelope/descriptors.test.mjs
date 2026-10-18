@@ -18,7 +18,7 @@ test("rejects unsupported prototypes and descriptors", () => {
     get: () => "routing.drain",
     enumerable: true,
   });
-  expect(() => readEventDescriptors(new Date())).toThrow("unsupported");
+  expect(() => readEventDescriptors(new Date("2000-01-01T00:00:00Z"))).toThrow("unsupported");
   expect(() => readEventDescriptors(accessor)).toThrow("unsupported");
   expect(() => readEventDescriptors(Object.defineProperty({}, "hidden", { value: 1 }))).toThrow(
     "unsupported",

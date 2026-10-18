@@ -21,7 +21,7 @@ test("dispatches valid shutdown events", () => {
 
 test("rejects invalid shutdown fields", () => {
   expect(() => validateRoutingEvent({ ...event, node: undefined })).toThrow("node");
-  expect(() => validateRoutingEvent({ ...event, reason: "" })).toThrow("reason");
+  expect(() => validateRoutingEvent({ ...event, reason: "" })).toThrow("cause");
   expect(() => validateRoutingEvent({ ...event, reconnectDeadlineMs: -1 })).toThrow("deadline");
   expect(() => validateRoutingEvent({ ...event, reconnectDeadlineMs: 1.5 })).toThrow("deadline");
   expect(() => validateRoutingEvent({ ...event, extra: true })).toThrow("unknown");

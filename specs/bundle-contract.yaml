@@ -1,9 +1,5 @@
-version: "12.0"
+version: "13.0"
 description: Defines the routing bundle contract for @eliware/elera-lib.
-requires:
-  - general
-  - library
-  - npm-published
 directives:
   - id: E-1320.1
     dos:
@@ -11,13 +7,15 @@ directives:
       - Return a detached bundle with normalized node values.
       - Reject unknown fields and non-JSON values.
     donts:
-      - Do not accept partial bundles.
+      - Do not accept incomplete bundles.
       - Do not change the input object.
     children:
       - id: E-1320.1.0
         dos:
           - Require apiVersion to equal v1.
-          - Require non-empty application, database, physicalDatabase, identity, and nodeIdentity strings.
+          - >-
+            Require non-empty application, database, physicalDatabase, identity, and nodeIdentity
+            strings.
           - Require credentials with only username and password fields.
           - Require username to contain non-space text and password to be a string.
           - Require writer, readers, failover, bundleVersion, expiresAt, ports, and routes.
@@ -52,15 +50,19 @@ directives:
               balanced: []
       - id: E-1320.1.1
         dos:
-          - Allow applicationId, databaseId, identityId, credentialName, scopes, and refreshAfter when present.
+          - >-
+            Allow applicationId, databaseId, identityId, credentialName, scopes, and refreshAfter
+            when supplied.
           - Require optional identifiers and scope items to contain non-space text.
-          - Require refreshAfter to be a valid future UTC date-time when present.
-          - Require every routing node to have a non-empty host and an integer port from 1 to 65535.
+          - Require refreshAfter to be a valid future UTC date-time when supplied.
+          - >-
+            Require every routing node to have a non-empty host and an integer endpoint number from
+            1 to 65535.
           - Allow a finite, non-negative weight and a non-empty nodeId on each routing node.
-          - Trim host and nodeId values in normalized routing nodes.
+          - Normalize host and nodeId values in normalized routing nodes.
         donts:
           - Do not accept unknown bundle fields.
-          - Do not accept duplicate nodes within one role or route list.
+          - Do not accept duplicate nodes in one role or route list.
           - Do not allow a failover node to duplicate the writer endpoint.
           - Do not reject intentional overlap between route views and node roles.
         examples:
@@ -79,11 +81,13 @@ directives:
       - id: E-1320.1.2
         dos:
           - Require ports to include valid sql and http values.
-          - Allow additional named ports with integer values from 1 to 65535.
+          - Allow other named ports with integer values from 1 to 65535.
           - Limit the serialized bundle to 1 MiB.
           - Copy the bundle before the validator returns it.
         donts:
-          - Do not accept symbols, accessors, cycles, sparse arrays, non-finite numbers, or unsupported object types.
+          - >-
+            Do not accept symbols, accessors, cycles, sparse arrays, non-finite numbers, or
+            unsupported object types.
           - Do not convert non-finite values to null during serialization.
         examples:
           - |

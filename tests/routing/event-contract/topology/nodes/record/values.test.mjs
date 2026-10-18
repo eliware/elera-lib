@@ -1,5 +1,5 @@
 import { expect, test } from "@jest/globals";
-import { validateAvailabilityRecord } from "../../../../../src/routing/event-contract/topology/nodes/record-values.mjs";
+import { validateAvailabilityRecord } from "../../../../../../src/routing/event-contract/topology/nodes/record/values.mjs";
 
 const valid = {
   nodeId: "node-a",
@@ -23,5 +23,7 @@ test("rejects invalid values and ports", () => {
   ])
     expect(() => validateAvailabilityRecord(record)).toThrow("record is invalid");
   for (const sqlPort of [0, 65536])
-    expect(() => validateAvailabilityRecord({ ...valid, sqlPort })).toThrow("port is invalid");
+    expect(() => validateAvailabilityRecord({ ...valid, sqlPort })).toThrow(
+      "endpoint number is invalid",
+    );
 });

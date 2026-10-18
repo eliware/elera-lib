@@ -1,8 +1,8 @@
-import { assertAvailabilityRecordShape } from "./nodes/record-shape.mjs";
-import { validateAvailabilityRecord } from "./nodes/record-values.mjs";
-import { detachAvailabilityRecord } from "./nodes/record-copy.mjs";
+import { assertAvailabilityRecordShape } from "./nodes/record/shape.mjs";
+import { validateAvailabilityRecord } from "./nodes/record/values.mjs";
+import { detachAvailabilityRecord } from "./nodes/record/copy.mjs";
 import { assertUniqueAvailabilityNodes } from "./nodes/duplicates.mjs";
-import { assertAvailabilityRecordFields } from "./nodes/record-fields.mjs";
+import { assertAvailabilityRecordFields } from "./nodes/record/fields.mjs";
 
 export function validateTopologyNodes(nodes) {
   if (!Array.isArray(nodes)) throw new TypeError("routing topology nodes are required");

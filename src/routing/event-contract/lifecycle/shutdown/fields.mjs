@@ -17,7 +17,7 @@ export function validateShutdownFields(event) {
   if (typeof event.node !== "string" || event.node.trim().length === 0)
     throw new TypeError("routing shutdown node is required");
   if (typeof event.reason !== "string" || event.reason.trim().length === 0)
-    throw new TypeError("routing shutdown reason is required");
+    throw new TypeError("routing shutdown cause is required");
   if (!Number.isInteger(event.reconnectDeadlineMs) || event.reconnectDeadlineMs < 0)
     throw new TypeError("routing shutdown deadline must be a non-negative integer");
 }

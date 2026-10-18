@@ -3,7 +3,7 @@ import { validateBundle } from "../../bundle/index.mjs";
 import { validateUtcTimestamp } from "./timestamp.mjs";
 
 export function validateUpdateEvent(event) {
-  // Intentional: the flattened update shape is the established wire contract; reconstruction returns its normalized form.
+  // The flattened update shape is the established message contract. Normalization returns its checked shape.
   // Intentional: the envelope and bundle validators each scan their own contract boundary for clearer errors.
   const allowed = ["type", "version", "generatedAt", ...bundleFields];
   if (event.type !== "routing.update") throw new TypeError("unsupported routing event");

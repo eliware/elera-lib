@@ -31,7 +31,7 @@ test("rejects symbol fields", () => {
 
 test("rejects oversized and unmeasurable event payloads", () => {
   expect(() => detachEventPayload({ value: "x".repeat(1_048_576) })).toThrow(
-    "maximum contract size",
+    "maximum contract byte count",
   );
   const originalEncoder = globalThis.TextEncoder;
   globalThis.TextEncoder = class {
@@ -40,7 +40,7 @@ test("rejects oversized and unmeasurable event payloads", () => {
     }
   };
   try {
-    expect(() => detachEventPayload({ value: 1 })).toThrow("maximum contract size");
+    expect(() => detachEventPayload({ value: 1 })).toThrow("maximum contract byte count");
   } finally {
     globalThis.TextEncoder = originalEncoder;
   }

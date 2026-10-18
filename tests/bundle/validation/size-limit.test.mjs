@@ -21,7 +21,9 @@ test("rejects unserializable and oversized bundles", () => {
   } finally {
     JSON.stringify = originalStringify;
   }
-  expect(() => assertBundleSize({ value: "x".repeat(1_048_576) })).toThrow("maximum contract size");
+  expect(() => assertBundleSize({ value: "x".repeat(1_048_576) })).toThrow(
+    "maximum contract byte count",
+  );
 });
 
 test("normalizes byte encoding failures", () => {
@@ -32,7 +34,7 @@ test("normalizes byte encoding failures", () => {
     }
   };
   try {
-    expect(() => assertBundleSize({ value: 1 })).toThrow("maximum contract size");
+    expect(() => assertBundleSize({ value: 1 })).toThrow("maximum contract byte count");
   } finally {
     globalThis.TextEncoder = originalEncoder;
   }

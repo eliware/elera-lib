@@ -1,9 +1,5 @@
-version: "12.0"
+version: "13.0"
 description: Defines routing event contracts for @eliware/elera-lib.
-requires:
-  - general
-  - library
-  - npm-published
 directives:
   - id: E-1320.2
     dos:
@@ -12,7 +8,7 @@ directives:
       - Require each event to use JSON-compatible values.
     donts:
       - Do not accept unknown event types or fields.
-      - Do not handle event transport or orchestration in this package.
+      - Do not manage event transport or orchestration in this package.
     children:
       - id: E-1320.2.0
         dos:
@@ -29,11 +25,13 @@ directives:
             generatedAt: "2099-01-01T00:00:00Z"
       - id: E-1320.2.1
         dos:
-          - Require routing.update to carry a complete bundle and a positive version.
-          - Require routing.drain and routing.recovery to carry a non-empty node and a JSON object context.
-          - Allow lifecycle context fields to vary between consumer versions.
+          - Require routing.update to include a complete bundle and a positive version.
+          - >-
+            Require routing.drain and routing.recovery to include a non-empty node and a JSON object
+            context.
+          - Allow lifecycle context fields to change between consumer versions.
         donts:
-          - Do not accept a partial update bundle.
+          - Do not accept a incomplete update bundle.
           - Do not accept event fields outside the selected event contract.
         examples:
           - |
@@ -70,11 +68,13 @@ directives:
             context: {}
       - id: E-1320.2.2
         dos:
-          - Require routing.topology to use a positive version, a non-empty node, a context, and a topology.
+          - >-
+            Require routing.topology to use a positive version, a non-empty node, a context, and a
+            topology.
           - Require topology to contain only a nodes array.
           - Require each topology context to contain nodeIdentity, ports, and clusterCondition.
           - Require nodeIdentity to contain only a non-empty name string.
-          - Require sql and http ports; allow an optional ws port and named ports.
+          - Require sql and http values. Allow an optional ws value and named endpoint values.
           - Require topology nodes to contain nodeId, address, sqlPort, state, and draining.
           - Require topology node IDs to be unique.
         donts:
@@ -101,7 +101,7 @@ directives:
                   draining: false
       - id: E-1320.2.3
         dos:
-          - Require routing.shutdown to contain a non-empty node and reason.
+          - Require routing.shutdown to contain a non-empty node and cause.
           - Require reconnectDeadlineMs to be a non-negative integer.
           - Allow an optional HTTP or HTTPS loadBalancerEndpoint.
           - Reject local, private, and unspecified address literals in endpoint URLs.

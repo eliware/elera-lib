@@ -5,7 +5,7 @@ export function validateBundleRouteLists(bundle) {
     throw new TypeError("routing bundle routes are required");
   const routes = {};
   // Route sets intentionally overlap role views: primary may contain writer and balanced may contain readers.
-  // Intentional: route-list validation checks shape and node validity only; endpoint ownership belongs to the role views.
+  // Route-list validation checks shape and nodes. Role views define endpoint ownership.
   const routeNames = new Set(["primary", "balanced"]);
   for (const key of Object.keys(bundle.routes))
     if (!routeNames.has(key)) throw new TypeError("routing bundle routes field is unknown");

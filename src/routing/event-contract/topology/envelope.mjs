@@ -1,5 +1,5 @@
 export function validateTopologyEnvelope(event) {
-  // Codescope exception: this focused gate checks shape only; validateRoutingEvent supplies the detached snapshot and context semantics.
+  // Codescope guidance: This gate checks shape only. validateRoutingEvent checks detached data and context rules.
   if (!event || typeof event !== "object" || Array.isArray(event))
     throw new TypeError("routing topology field is required");
   if (event.type !== "routing.topology") throw new TypeError("routing topology type is invalid");

@@ -32,7 +32,9 @@ test("rejects non-JSON values and oversized bundles", () => {
     expect(() => validateBundle({ value })).toThrow("JSON-compatible");
     expect(() => validateBundle({ nested: { value } })).toThrow("JSON-compatible");
   }
-  expect(() => validateBundle({ value: "x".repeat(1_048_576) })).toThrow("maximum contract size");
+  expect(() => validateBundle({ value: "x".repeat(1_048_576) })).toThrow(
+    "maximum contract byte count",
+  );
 });
 test("normalizes serialization and encoding failures", () => {
   const originalStringify = JSON.stringify;
@@ -51,7 +53,7 @@ test("normalizes serialization and encoding failures", () => {
     }
   };
   try {
-    expect(() => validateBundle({})).toThrow("maximum contract size");
+    expect(() => validateBundle({})).toThrow("maximum contract byte count");
   } finally {
     globalThis.TextEncoder = originalEncoder;
   }

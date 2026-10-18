@@ -1,5 +1,5 @@
 import { expect, test } from "@jest/globals";
-import { detachAvailabilityRecord } from "../../../../../src/routing/event-contract/topology/nodes/record-copy.mjs";
+import { detachAvailabilityRecord } from "../../../../../../src/routing/event-contract/topology/nodes/record/copy.mjs";
 
 test("returns a detached availability record", () => {
   const record = { nodeId: "a", metadata: { ready: true } };

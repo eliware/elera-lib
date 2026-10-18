@@ -14,13 +14,19 @@ Keep runtime code in src/, tests in tests/, docs in docs/, examples in examples/
 
 ## Development
 
-Keep each source module below 100 lines. Keep each test module below 200 lines. Match each source module with one test module.
+- Keep each source module under 100 lines.
+- Keep each test module under 200 lines.
+- Match each source module with one test module.
 
 ## Validation
 
-Run `npm test` for aggregate validation. Run `npm run lint` for lint checks. Run `npm run audit` for package audit checks.
-Run `npm run format` to format files. Run `npm run format:check` to check file format. Run `npm run pack` to check package contents.
-Run `npm run typecheck` to check declarations.
+- Run `npm test` for aggregate validation.
+- Run `npm run lint` for lint checks.
+- Run `npm run audit` for package audit checks.
+- Run `npm run format` to format files.
+- Run `npm run format:check` to check file format.
+- Run `npm run pack` to check package contents.
+- Run `npm run typecheck` to check declarations.
 
 ## Security
 
@@ -34,6 +40,13 @@ Keep documentation current. Follow the shared repository rules.
 
 Export supported APIs only. Keep one test module for each source module.
 
+- Run focused tests first during development.
+- Run one test file with `npm test -- tests/path/to/example.test.mjs`.
+- Run multiple test files with `npm test -- tests/path/to/first.test.mjs tests/path/to/second.test.mjs`.
+- Prevent repeated full-suite runs during development.
+- Run the full `npm test` suite for final validation before a commit, milestone, or release.
+
 ## npm publication
 
-The public package is @eliware/elera-lib. Include required runtime files and metadata. Run `npm run pack` before publication review.
+The public package is @eliware/elera-lib. Include required runtime files and metadata.
+Run `npm run pack` before the release check.

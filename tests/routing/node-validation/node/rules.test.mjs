@@ -17,7 +17,9 @@ test("validates and normalizes node values", () => {
 
 test("requires a host and a valid port", () => {
   expect(() => validateNodeValues({ port: 3306 }, "node")).toThrow("host is required");
-  expect(() => validateNodeValues({ host: "node-a", port: 0 }, "node")).toThrow("port is invalid");
+  expect(() => validateNodeValues({ host: "node-a", port: 0 }, "node")).toThrow(
+    "endpoint number is invalid",
+  );
 });
 
 test("rejects unknown fields and invalid optional values", () => {

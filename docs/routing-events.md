@@ -4,7 +4,7 @@
 
 ## Shared fields
 
-Every event has `type`, `version`, and `generatedAt`. `version` is a non-negative integer. The event type rules can require a value above zero. `generatedAt` must use UTC in this form: `YYYY-MM-DDTHH:mm:ssZ` or `YYYY-MM-DDTHH:mm:ss.sssZ`.
+Every event has `type`, `version`, and `generatedAt`. `version` is a non-negative integer. The event type rules can require a value above zero. `generatedAt` must use UTC in this format: `YYYY-MM-DDTHH:mm:ssZ` or `YYYY-MM-DDTHH:mm:ss.sssZ`.
 
 The validator rejects unknown fields. It rejects accessors, symbols, cyclic values, sparse arrays, non-finite numbers, and unsupported object types.
 
@@ -29,11 +29,11 @@ The `context` object in a `routing.topology` event has these fields:
 | `clusterCondition` | Non-empty string.                                           |
 | `refreshAfter`     | Optional valid UTC date-time.                               |
 
-Each `topology.nodes` item has `nodeId`, `address`, `sqlPort`, `state`, and `draining`. The first four fields must be non-empty strings, except `sqlPort`, which must be an integer from 1 to 65535. `draining` must be a Boolean. Node IDs must be unique.
+Each `topology.nodes` item has `nodeId`, `address`, `sqlPort`, `state`, and `draining`. The first four fields must contain non-empty strings. The `sqlPort` field must be an integer from 1 to 65535. `draining` must be a Boolean. Node IDs must be unique.
 
 ## Shutdown endpoint
 
-`loadBalancerEndpoint` is optional. When present, it must be an HTTP or HTTPS URL with a host. It cannot include user data, a query, or a fragment. It cannot use localhost, a local address, or an unspecified address.
+`loadBalancerEndpoint` is optional. When supplied, it must be an HTTP or HTTPS URL with a host. It cannot include user data, a query, or a fragment. It cannot use localhost, a local address, or an unspecified address.
 
 The validator checks the endpoint text. The consuming application must apply its own connection and network policy.
 

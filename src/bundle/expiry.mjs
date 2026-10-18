@@ -1,5 +1,5 @@
 export function validateBundleExpiry(expiresAt, field = "expiresAt") {
-  // Intentional: expiry is checked against the process clock; callers needing replay control should validate at their boundary.
+  // Expiry uses the process clock. Callers can check replay control at their boundary.
   const match =
     typeof expiresAt === "string" &&
     expiresAt.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{3}))?Z$/);

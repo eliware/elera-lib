@@ -1,10 +1,10 @@
-version: "12.0"
+version: "13.0"
 description: Defines requirements for @eliware/elera-lib.
 directives:
   - id: E-1320.0
     dos:
       - Export only validateBundle and validateRoutingEvent from the package root.
-      - Keep each public function consistent with its end-user documentation.
+      - Keep each public function aligned with its end-user documentation.
       - Run npm test before each commit.
     donts:
       - Do not expose secrets, tokens, or private data.

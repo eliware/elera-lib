@@ -49,7 +49,7 @@ Run `npm test` to validate the repository.
 ## Troubleshooting
 
 Run `npm ci` from the repository root. Then run `npm test`.
-Fix the first reported error before you run the test again.
+Correct the first reported error before you run the test again.
 
 ## Security
 

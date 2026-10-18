@@ -23,8 +23,9 @@ export function detachEventPayload(values) {
   try {
     size = new TextEncoder().encode(serialized).length;
   } catch {
-    throw new TypeError("routing event exceeds the maximum contract size");
+    throw new TypeError("routing event exceeds the maximum contract byte count");
   }
-  if (size > 1_048_576) throw new TypeError("routing event exceeds the maximum contract size");
+  if (size > 1_048_576)
+    throw new TypeError("routing event exceeds the maximum contract byte count");
   return snapshot;
 }

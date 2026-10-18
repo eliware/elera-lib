@@ -12,7 +12,7 @@ The package has no runtime dependencies. It reads no environment variables and o
 
 ## Import
 
-Import either public function from the package root:
+Import a public function from the package root:
 
 ```js
 import { validateBundle, validateRoutingEvent } from "@eliware/elera-lib";
@@ -29,9 +29,9 @@ const bundle = validateBundle(input);
 console.log(bundle.bundleVersion);
 ```
 
-The function throws `TypeError` when the object violates the contract. It rejects accessors, symbols, unsupported object types, cyclic values, and JSON values over 1 MiB. See [bundle contract](bundle-contract.md) for all fields and rules.
+The function throws `TypeError` when the object violates the contract. It rejects accessors, symbols, unsupported object types, cyclic values, and JSON values larger than 1 MiB. See [bundle contract](bundle-contract.md) for all fields and rules.
 
-Bundle expiry uses the current process clock. The `expiresAt` value must be in the future. Use a caller-owned clock check when you need replay control.
+Bundle expiry uses the current process clock. The `expiresAt` value must be in the future. Use a caller-owned clock check when replay control matters.
 
 ## Validate an event
 
@@ -56,6 +56,6 @@ The package includes declarations for `RoutingNode`, `RoutingBundle`, `RoutingTo
 
 ## Supported scope
 
-This package validates data. It does not fetch bundles, open a WebSocket, choose routes, create a SQL client, drain nodes, or reconnect clients. The consuming application owns those actions.
+This package validates data. It does not fetch bundles, open a WebSocket, select routes, create a SQL client, drain nodes, or reconnect clients. The consuming application owns those actions.
 
 The package has no supported runtime options or environment variables.

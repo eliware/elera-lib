@@ -9,7 +9,7 @@ export function validateNodeValues(values, name) {
   )
     throw new TypeError(`${name} nodeId is invalid`);
   if (!Number.isInteger(values.port) || values.port < 1 || values.port > 65535)
-    throw new TypeError(`${name} port is invalid`);
+    throw new TypeError(`${name} endpoint number is invalid`);
   if (
     values.weight !== undefined &&
     (typeof values.weight !== "number" || !Number.isFinite(values.weight) || values.weight < 0)

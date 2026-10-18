@@ -1,5 +1,5 @@
 import { expect, test } from "@jest/globals";
-import { assertAvailabilityRecordFields } from "../../../../../src/routing/event-contract/topology/nodes/record-fields.mjs";
+import { assertAvailabilityRecordFields } from "../../../../../../src/routing/event-contract/topology/nodes/record/fields.mjs";
 
 test("accepts the declared availability fields", () => {
   expect(
