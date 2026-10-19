@@ -4,7 +4,7 @@ import { isPrivateIpv6Address } from "../../../../../../src/routing/event-contra
 test("classifies private IPv6 ranges", () => {
   for (const hostname of ["[::1]", "[fc00::1]", "[fd00::1]", "[fe80::1]"])
     expect(isPrivateIpv6Address(hostname)).toBe(true);
-  for (const hostname of ["[::ffff:10.0.0.1]", "[::ffff:172.16.0.1]"])
+  for (const hostname of ["[::ffff:10.0.0.1]", "[::ffff:172.16.0.1]", "[::ffff:ac10:1]"])
     expect(isPrivateIpv6Address(hostname)).toBe(true);
 });
 
