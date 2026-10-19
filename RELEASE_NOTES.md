@@ -1,15 +1,22 @@
 # Release Notes
 
-## 13.0.0 — 2026-10-17
+## 13.0.0 — 2026-10-19
+
+### Added
+
+- Expand end-user guides with complete bundle and event examples, validation rules, TypeScript guidance, and troubleshooting steps.
 
 ### Changed
 
-- Update package metadata and routing specifications to version 13.0.0.
-- Align validation and npm publication workflows with shared repository rules.
+- Update package metadata and routing specifications to version 13.0.0. Refresh Eliware Test and TypeScript development dependencies.
+- Let `validateBundle` accept `unknown` input and return a validated `RoutingBundle`.
+- Align CI, Knit, and npm publication workflows with the version 13 repository conventions.
 
 ### Fixed
 
-- Correct YAML formatting, Knit deployment commands, and contributor guidance.
+- Reject unknown bundle fields before copying input. Reject sparse topology node arrays and array keys that do not name an item.
+- Reject shutdown endpoints that encode private IPv4 addresses as expanded or hexadecimal IPv4-mapped IPv6 literals.
+- Clarify validation limits and endpoint error messages in the user guides.
 
 ## 12.0.0 — 2026-10-14
 
