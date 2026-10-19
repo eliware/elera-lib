@@ -23,7 +23,7 @@ Shared Elera routing contracts and validation
 
 ## Features
 
-Validate routing bundles and routing events. The package does not connect to databases or manage routing transport.
+Validate routing bundles and routing events.
 
 ## Requirements
 
@@ -35,12 +35,11 @@ Install the public package with `npm install @eliware/elera-lib`.
 
 ## Usage
 
-Import `validateBundle` or `validateRoutingEvent` from `@eliware/elera-lib`. Read the [documentation index](docs/README.md), [API usage](docs/usage.md), [bundle fields](docs/bundle-contract.md), and [routing events](docs/routing-events.md).
-Read [release notes](RELEASE_NOTES.md) for released changes. Read [specifications](specs/README.md) for contract and repository rules.
+Import `validateBundle` or `validateRoutingEvent` from `@eliware/elera-lib`. Read the [documentation index](docs/README.md) for API details, [release notes](RELEASE_NOTES.md) for changes, and [specifications](specs/README.md) for package contracts.
 
 ## Development
 
-Run `npm ci` to install the locked development packages.
+Run `npm ci` to install development dependencies.
 
 ## Testing
 
@@ -48,8 +47,7 @@ Run `npm test` to validate the repository.
 
 ## Troubleshooting
 
-Run `npm ci` from the repository root. Then run `npm test`.
-Correct the first reported error before you run the test again.
+Run `npm ci` from the repository root, then run `npm test`.
 
 ## Security
 
@@ -57,11 +55,11 @@ Do not log credentials or tokens. Do not commit secrets or live routing data.
 
 ## API
 
-Read [API usage](docs/usage.md) for the supported functions.
+Read [API usage](docs/usage.md) for function details and [bundle fields](docs/bundle-contract.md) for accepted data.
 
 ## Packaging
 
-Run `npm run pack` to check package contents.
+The package includes runtime code, documentation, examples, and specifications. Run `npm run pack` to check package contents.
 
 ## Examples
 
