@@ -26,7 +26,7 @@ export interface RoutingBundle {
   nodeIdentity: string;
   ports: Record<string, number>;
 }
-export function validateBundle(bundle: RoutingBundle): RoutingBundle;
+export function validateBundle(bundle: unknown): RoutingBundle;
 export function validateRoutingEvent(event: unknown): unknown;
 export interface RoutingTopologyEvent {
   type: "routing.topology";

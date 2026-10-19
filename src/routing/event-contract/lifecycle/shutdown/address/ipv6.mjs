@@ -1,8 +1,6 @@
 import { isPrivateIpv4Address } from "./ipv4.mjs";
 
 function isPrivateIpv4MappedAddress(hostname) {
-  const dottedAddress = /^\[::ffff:(\d{1,3}(?:\.\d{1,3}){3})\]$/i.exec(hostname);
-  if (dottedAddress) return isPrivateIpv4Address(dottedAddress[1]);
   const hexadecimalAddress = /^\[::ffff:([\da-f]{1,4}):([\da-f]{1,4})\]$/i.exec(hostname);
   if (!hexadecimalAddress) return false;
   const high = Number.parseInt(hexadecimalAddress[1], 16);
@@ -12,9 +10,13 @@ function isPrivateIpv4MappedAddress(hostname) {
 }
 
 export function isPrivateIpv6Address(hostname) {
+  let normalizedHostname = hostname;
+  try {
+    normalizedHostname = new URL(`http://${hostname}`).hostname.toLowerCase();
+  } catch {}
   return (
-    hostname === "[::1]" ||
-    /^\[(fc|fd|fe8|fe9|fea|feb)/.test(hostname) ||
-    isPrivateIpv4MappedAddress(hostname)
+    normalizedHostname === "[::1]" ||
+    /^\[(fc|fd|fe8|fe9|fea|feb)/.test(normalizedHostname) ||
+    isPrivateIpv4MappedAddress(normalizedHostname)
   );
 }

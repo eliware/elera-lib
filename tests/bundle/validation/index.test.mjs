@@ -27,12 +27,12 @@ test("rejects non-enumerable fields before detachment", () => {
   expect(() => validateBundle(bundle)).toThrow("field is unknown");
 });
 test("rejects non-JSON values and oversized bundles", () => {
-  expect(() => validateBundle({ value: BigInt(1) })).toThrow("JSON-compatible");
+  expect(() => validateBundle({ scopes: { value: BigInt(1) } })).toThrow("JSON-compatible");
   for (const value of [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
-    expect(() => validateBundle({ value })).toThrow("JSON-compatible");
-    expect(() => validateBundle({ nested: { value } })).toThrow("JSON-compatible");
+    expect(() => validateBundle({ scopes: value })).toThrow("JSON-compatible");
+    expect(() => validateBundle({ scopes: { value } })).toThrow("JSON-compatible");
   }
-  expect(() => validateBundle({ value: "x".repeat(1_048_576) })).toThrow(
+  expect(() => validateBundle({ scopes: "x".repeat(1_048_576) })).toThrow(
     "maximum contract byte count",
   );
 });

@@ -5,6 +5,10 @@ test("accepts an empty list and rejects invalid list shapes", () => {
   expect(() => validateTopologyNodes(null)).toThrow("nodes are required");
   expect(() => validateTopologyNodes({})).toThrow("nodes are required");
   expect(() => validateTopologyNodes([null])).toThrow("record");
+  expect(() => validateTopologyNodes(Array(1))).toThrow("JSON-compatible");
+  const extraProperty = [];
+  extraProperty.extra = true;
+  expect(() => validateTopologyNodes(extraProperty)).toThrow("JSON-compatible");
 });
 
 test("rejects duplicate node identifiers", () => {

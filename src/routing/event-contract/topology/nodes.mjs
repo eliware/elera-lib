@@ -3,11 +3,14 @@ import { validateAvailabilityRecord } from "./nodes/record/values.mjs";
 import { detachAvailabilityRecord } from "./nodes/record/copy.mjs";
 import { assertUniqueAvailabilityNodes } from "./nodes/duplicates.mjs";
 import { assertAvailabilityRecordFields } from "./nodes/record/fields.mjs";
+import { getArrayValueDescriptors } from "../json-value/array-shape.mjs";
 
 export function validateTopologyNodes(nodes) {
   if (!Array.isArray(nodes)) throw new TypeError("routing topology nodes are required");
+  const { descriptors, length } = getArrayValueDescriptors(nodes, "routing topology nodes");
   const snapshots = [];
-  for (const record of nodes) {
+  for (let index = 0; index < length; index += 1) {
+    const record = descriptors[index].value;
     assertAvailabilityRecordShape(record);
     const snapshot = detachAvailabilityRecord(record);
     assertAvailabilityRecordFields(snapshot);

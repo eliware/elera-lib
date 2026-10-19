@@ -2,18 +2,18 @@ import { expect, test } from "@jest/globals";
 import { detachAndLimitBundle } from "../../../src/bundle/validation/boundary.mjs";
 
 test("returns a detached copy of a JSON object", () => {
-  const input = { nested: { value: 1 } };
+  const input = { scopes: [{ value: 1 }] };
   const result = detachAndLimitBundle(input);
   expect(result).toEqual(input);
   expect(result).not.toBe(input);
-  expect(result.nested).not.toBe(input.nested);
+  expect(result.scopes).not.toBe(input.scopes);
 });
 
 test("rejects hidden fields and unsupported values", () => {
   const hidden = {};
-  Object.defineProperty(hidden, "secret", { value: true });
+  Object.defineProperty(hidden, "application", { value: "app" });
   expect(() => detachAndLimitBundle(hidden)).toThrow("field is unknown");
-  expect(() => detachAndLimitBundle({ value: undefined })).toThrow("JSON-compatible");
+  expect(() => detachAndLimitBundle({ scopes: undefined })).toThrow("JSON-compatible");
 });
 
 test("normalizes clone failures", () => {
@@ -22,7 +22,7 @@ test("normalizes clone failures", () => {
     throw new Error("clone failure");
   };
   try {
-    expect(() => detachAndLimitBundle({ value: 1 })).toThrow("cloneable JSON-compatible");
+    expect(() => detachAndLimitBundle({ scopes: [] })).toThrow("cloneable JSON-compatible");
   } finally {
     globalThis.structuredClone = originalClone;
   }

@@ -6,6 +6,7 @@ test("accepts enumerable string fields", () => {
 });
 
 test("rejects hidden fields and symbol keys", () => {
+  expect(() => assertBundleFields({ extra: true })).toThrow("field is unknown");
   const hidden = {};
   Object.defineProperty(hidden, "secret", { value: true });
   expect(() => assertBundleFields(hidden)).toThrow("field is unknown");
