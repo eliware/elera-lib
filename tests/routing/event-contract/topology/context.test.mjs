@@ -14,51 +14,32 @@ const event = {
   },
   topology: { nodes: [] },
 };
+
+function expectInvalidContext(context, message) {
+  expect(() => validateTopologyContext(context)).toThrow(message);
+}
+
 test("validates topology context", () => {
   expect(validateRoutingEvent(event)).toEqual(event);
-  expect(() => validateRoutingEvent({ ...event, context: null })).toThrow("context");
-  expect(() =>
-    validateRoutingEvent({ ...event, context: { ...event.context, nodeIdentity: null } }),
-  ).toThrow("nodeIdentity");
-  expect(() =>
-    validateRoutingEvent({ ...event, context: { ...event.context, ports: null } }),
-  ).toThrow("ports");
-  expect(() =>
-    validateRoutingEvent({ ...event, context: { ...event.context, ports: { sql: 0 } } }),
-  ).toThrow("ports");
-  expect(() =>
-    validateRoutingEvent({ ...event, context: { ...event.context, clusterCondition: "" } }),
-  ).toThrow("clusterCondition");
-  expect(() =>
-    validateRoutingEvent({ ...event, context: { ...event.context, refreshAfter: "bad" } }),
-  ).toThrow("refreshAfter");
-  expect(() =>
-    validateRoutingEvent({ ...event, context: { ...event.context, extra: true } }),
-  ).toThrow("context field");
-  expect(() =>
-    validateRoutingEvent({ ...event, context: { ...event.context, nodeIdentity: [] } }),
-  ).toThrow("nodeIdentity");
-  expect(() =>
-    validateRoutingEvent({ ...event, context: { ...event.context, nodeIdentity: {} } }),
-  ).toThrow("nodeIdentity");
-  expect(() =>
-    validateRoutingEvent({
-      ...event,
-      context: { ...event.context, nodeIdentity: { name: "n", metadata: {} } },
-    }),
-  ).toThrow("nodeIdentity field");
-  expect(() =>
-    validateRoutingEvent({ ...event, context: { ...event.context, ports: [] } }),
-  ).toThrow("ports");
-  expect(() =>
-    validateRoutingEvent({ ...event, context: { ...event.context, ports: { sql: 3306 } } }),
-  ).toThrow("ports.http");
-  expect(() =>
-    validateRoutingEvent({
-      ...event,
-      context: { ...event.context, ports: { sql: 3306, http: 8080, mysql: 3306 } },
-    }),
-  ).toThrow("ports field");
+  expectInvalidContext(null, "context");
+  expectInvalidContext({ ...event.context, nodeIdentity: null }, "nodeIdentity");
+  expectInvalidContext({ ...event.context, ports: null }, "ports");
+  expectInvalidContext({ ...event.context, ports: { sql: 0 } }, "ports");
+  expectInvalidContext({ ...event.context, clusterCondition: "" }, "clusterCondition");
+  expectInvalidContext({ ...event.context, refreshAfter: "bad" }, "refreshAfter");
+  expectInvalidContext({ ...event.context, extra: true }, "context field");
+  expectInvalidContext({ ...event.context, nodeIdentity: [] }, "nodeIdentity");
+  expectInvalidContext({ ...event.context, nodeIdentity: {} }, "nodeIdentity");
+  expectInvalidContext(
+    { ...event.context, nodeIdentity: { name: "n", metadata: {} } },
+    "nodeIdentity field",
+  );
+  expectInvalidContext({ ...event.context, ports: [] }, "ports");
+  expectInvalidContext({ ...event.context, ports: { sql: 3306 } }, "ports.http");
+  expectInvalidContext(
+    { ...event.context, ports: { sql: 3306, http: 8080, mysql: 3306 } },
+    "ports field",
+  );
 });
 
 test("accepts optional ws and millisecond refresh timestamps", () => {
