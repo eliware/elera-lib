@@ -12,39 +12,53 @@
 | `physicalDatabase` | string        | Must contain non-space text. This is the physical SQL schema name.                                                                     |
 | `identity`         | string        | Must contain non-space text.                                                                                                           |
 | `credentials`      | object        | Must have only `username` and `password`. Username must contain non-space text. Password must be a string. An empty password is valid. |
-| `writer`           | node          | Must contain a valid host and endpoint number.                                                                                         |
+| `writer`           | node          | Must contain a valid host and `port` value.                                                                                            |
 | `readers`          | node array    | May be empty. Nodes in this list must be unique.                                                                                       |
 | `failover`         | node array    | May be empty. Nodes in this list must be unique and must not repeat the writer.                                                        |
 | `bundleVersion`    | integer       | Must be zero or greater.                                                                                                               |
 | `expiresAt`        | UTC date-time | Must be in the future.                                                                                                                 |
 | `nodeIdentity`     | string        | Must contain non-space text.                                                                                                           |
-| `ports`            | object        | Must include valid `sql` and `http` ports.                                                                                             |
+| `ports`            | object        | Must include valid `sql` and `http` port values.                                                                                       |
 | `routes`           | object        | Must include `primary` and `balanced` node arrays.                                                                                     |
 
 ## Optional fields
 
-| Field            | Type          | Rule                                       |
-| ---------------- | ------------- | ------------------------------------------ |
-| `applicationId`  | string        | Must contain non-space text when supplied. |
-| `databaseId`     | string        | Must contain non-space text when supplied. |
-| `identityId`     | string        | Must contain non-space text when supplied. |
-| `credentialName` | string        | Must contain non-space text when supplied. |
-| `scopes`         | string array  | Every item must contain non-space text.    |
-| `refreshAfter`   | UTC date-time | Must be a valid future date when supplied. |
+| Field            | Type          | Rule                                                             |
+| ---------------- | ------------- | ---------------------------------------------------------------- |
+| `applicationId`  | string        | Must contain non-space text when supplied.                       |
+| `databaseId`     | string        | Must contain non-space text when supplied.                       |
+| `identityId`     | string        | Must contain non-space text when supplied.                       |
+| `credentialName` | string        | Must contain non-space text when supplied.                       |
+| `scopes`         | string array  | Every item must contain non-space text. An empty array is valid. |
+| `refreshAfter`   | UTC date-time | Must be a valid future date when supplied.                       |
 
 ## Nodes and ports
 
-A routing node has a `host` string and an integer endpoint number from 1 to 65535. It may have a `weight` number of zero or greater and a non-empty `nodeId` string. The validator trims node hosts and identifiers.
+A `port` is a number that identifies an application endpoint on a host. Each routing node has a `host` string and an integer `port` from 1 through 65535. A node may have a finite `weight` of zero or greater. A node may also have a non-empty `nodeId` string. The validator trims `host` and `nodeId` values in its returned copy.
 
-`ports` must include `sql` and `http`. It can include other named ports. Each name must contain no leading, trailing, or empty whitespace. Each value must be an integer from 1 to 65535.
+The validator checks that `host` contains text. It does not resolve the host or test network access. The consuming application owns those checks.
 
-`routes` accepts only `primary` and `balanced`. Both values must be arrays of valid nodes. Route views may overlap with the writer, failover, or reader lists. Duplicate nodes in each list are invalid.
+The `ports` object must include `sql` and `http`. It may include other named services. Each name must contain text without leading or trailing whitespace. Each value must be an integer from 1 through 65535.
+
+Each node may contain only `host`, `port`, `weight`, and `nodeId`. The `host` value must contain non-space text. The `weight` value must be finite and non-negative when supplied.
+
+The validator rejects duplicate endpoints in each node list. An endpoint is the combination of `host` and `port`. A failover endpoint cannot match the writer endpoint. Reader and route lists may share endpoints with other roles.
+
+The `routes` object accepts only `primary` and `balanced`. Both values must be arrays of valid nodes. Each route list rejects duplicate endpoints. The two route lists may share endpoints.
+
+## Timestamps
+
+The validator accepts timestamps in `YYYY-MM-DDTHH:mm:ssZ` format. It also accepts exactly three fractional second digits before `Z`. It rejects invalid dates, offsets, and other fractional precision.
+
+`expiresAt` and `refreshAfter` must be later than the current process time. The validator does not compare `refreshAfter` with `expiresAt`. Your application can add its own clock check when replay control is necessary.
+
+The validator does not increment `bundleVersion` or manage bundle updates. The producer owns version assignment.
 
 ## Data limits
 
-The validator rejects unknown fields. It rejects symbols, accessors, cyclic values, sparse arrays, non-finite numbers, and unsupported object types. It accepts JSON-compatible data only.
+The validator rejects unknown fields. It rejects symbols, accessors, cyclic values, sparse arrays, non-finite numbers, and unsupported object types. It accepts JSON-compatible data only. The maximum nested value depth is 100.
 
-The serialized bundle limit is 1 MiB. The validator copies the bundle before it returns. Changes to the returned object do not change the input object.
+The serialized bundle limit is 1 MiB. The validator copies the bundle before it returns. Changes to the returned object do not change the input object. Use plain objects or objects with null prototypes.
 
 ## Complete example
 

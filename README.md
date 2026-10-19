@@ -36,7 +36,7 @@ Install the public package with `npm install @eliware/elera-lib`.
 ## Usage
 
 Import `validateBundle` or `validateRoutingEvent` from `@eliware/elera-lib`. Read the [documentation index](docs/README.md), [API usage](docs/usage.md), [bundle fields](docs/bundle-contract.md), and [routing events](docs/routing-events.md).
-Read [release notes](RELEASE_NOTES.md) for released changes. Read [specifications](specs/README.md) for repository requirements.
+Read [release notes](RELEASE_NOTES.md) for released changes. Read [specifications](specs/README.md) for contract and repository rules.
 
 ## Development
 
