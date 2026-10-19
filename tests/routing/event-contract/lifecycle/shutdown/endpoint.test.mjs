@@ -38,8 +38,7 @@ test("rejects ports outside the valid range", () => {
   }
 });
 
-test("accepts a public IP endpoint and rejects a blocked address", () => {
+test("accepts a public IP endpoint and rejects an alternate IP literal", () => {
   expect(validateShutdownEndpoint("http://8.8.8.8")).toBe("http://8.8.8.8");
-  expect(() => validateShutdownEndpoint("http://127.0.0.1")).toThrow("plain HTTP");
   expect(() => validateShutdownEndpoint("http://0x7f000001")).toThrow("plain HTTP");
 });

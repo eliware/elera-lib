@@ -1,13 +1,7 @@
-import { isIP } from "node:net";
+import { isPrivateIpv4Address } from "./address/ipv4.mjs";
+import { isPrivateIpv6Address } from "./address/ipv6.mjs";
 
 export function isBlockedShutdownAddress(hostname) {
-  const privateIpv4 = /^(10|127)\.|^169\.254\.|^192\.168\.|^172\.(1[6-9]|2\d|3[0-1])\./.test(
-    hostname,
-  );
-  const privateIpv6 =
-    hostname === "[::1]" ||
-    /^\[(fc|fd|fe8|fe9|fea|feb)/.test(hostname) ||
-    /^\[::ffff:(10|127|169\.254|192\.168|172\.(1[6-9]|2\d|3[0-1]))(?:\.|\])/.test(hostname);
   const unspecifiedAddress = hostname === "0.0.0.0" || hostname === "[::]";
   const alternateIpLiteral =
     /^(?:0x[0-9a-f]+|0[0-7]+|\d+)$/.test(hostname) || /^\[::ffff:/i.test(hostname);
@@ -17,8 +11,8 @@ export function isBlockedShutdownAddress(hostname) {
     hostname.endsWith(".local") ||
     unspecifiedAddress ||
     alternateIpLiteral ||
-    (isIP(hostname) && privateIpv4) ||
-    privateIpv6
+    isPrivateIpv4Address(hostname) ||
+    isPrivateIpv6Address(hostname)
   );
 }
 

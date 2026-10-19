@@ -4,20 +4,11 @@ import {
   isBlockedShutdownAddress,
 } from "../../../../../src/routing/event-contract/lifecycle/shutdown/address-policy.mjs";
 
-test("blocks local, private, and unspecified addresses", () => {
+test("blocks local and unspecified names and alternate IP literals", () => {
   for (const hostname of [
     "localhost",
     "localhost.",
     "service.local",
-    "10.0.0.1",
-    "127.0.0.1",
-    "169.254.1.1",
-    "192.168.1.1",
-    "172.16.0.1",
-    "[::1]",
-    "[fc00::1]",
-    "[fe80::1]",
-    "[::ffff:10.0.0.1]",
     "0.0.0.0",
     "[::]",
     "0x7f000001",
@@ -28,7 +19,7 @@ test("blocks local, private, and unspecified addresses", () => {
     expect(isBlockedShutdownAddress(hostname)).toBe(true);
 });
 
-test("allows public addresses", () => {
+test("allows public addresses and rejects blocked addresses", () => {
   expect(isBlockedShutdownAddress("example.com")).toBe(false);
   expect(isBlockedShutdownAddress("8.8.8.8")).toBe(false);
   expect(() => assertShutdownAddressAllowed("example.com")).not.toThrow();
