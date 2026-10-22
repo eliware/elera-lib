@@ -5,18 +5,22 @@
 ### Added
 
 - Add complete bundle and event examples, field rules, validation limits, TypeScript guidance, and troubleshooting steps to the user guides.
+- Add optional structured logging to both validators through `@eliware/log` 15.0.0. Inject a logger to receive safe `debug`, `info`, and `error` records with operation context.
 
 ### Changed
 
-- Set the package and specification versions to 15.0.0. Update Eliware Test to 15.0.0.
+- Set the package version to 15.0.0 and specification versions to 15.0. Update Eliware Test and npm dependencies.
 - Let `validateBundle` accept `unknown` input and return a validated, detached `RoutingBundle`.
-- Align CI, Knit, and npm publication workflows with the v15 repository conventions.
+- Add an optional logger property to both public validator options. The validators write no records when a caller omits a logger.
+- Update CI and npm publication workflows to use current GitHub Actions. Fetch full Git history for CI validation and rename the publish workflow to `npm.yaml`.
+- Update Knit deployment to use the configured Git branch when it pulls repository changes.
+- Expand and correct end-user documentation, package specifications, and repository guidance.
 
 ### Fixed
 
-- Reject unknown bundle fields before copying input. Reject sparse topology node lists and non-index array keys.
-- Reject shutdown endpoints that encode private IPv4 addresses as IPv4-mapped IPv6 literals.
-- Report serialized byte limits and clarify endpoint error messages.
+- Reject undeclared bundle fields before copying input. Reject sparse arrays, non-index array properties, and unsupported event values.
+- Normalize IPv4-mapped IPv6 addresses before classifying shutdown endpoints. Reject private and unspecified endpoints. Reject `255.255.255.255`.
+- Report serialized byte limits consistently and clarify shutdown endpoint error messages.
 
 ## 12.0.0 — 2026-10-14
 
