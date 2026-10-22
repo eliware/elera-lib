@@ -44,6 +44,9 @@
   "engines": {
     "node": ">=26"
   },
+  "dependencies": {
+    "@eliware/log": "^15.0.0"
+  },
   "devDependencies": {
     "@eliware/test": "^15.0.0",
     "@types/node": "^26.6.5",

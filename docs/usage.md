@@ -8,19 +8,35 @@ Use Node.js 26 or later. Install the package in your ESM project:
 npm install @eliware/elera-lib@15
 ```
 
-The package uses native ESM and exposes no CommonJS entrypoint. It has no runtime dependencies. It reads no environment variables. It opens no network or database connections.
+The package uses native ESM and exposes no CommonJS entrypoint. It reads no environment variables. It opens no network or database connections.
 
 Use `.mjs` files for native ESM. If you use `.js` files, set `"type": "module"` in your application's `package.json`.
 
 ## Import
 
-Import the validators from the package root:
+Import the validators and logger factory from their packages:
 
 ```js
 import { validateBundle, validateRoutingEvent } from "@eliware/elera-lib";
+import { createLogger } from "@eliware/log";
 ```
 
 The package exports only these two runtime functions. Do not import internal source paths.
+
+Both functions accept an optional second argument with a `logger` property. The library writes no
+records when you omit that property. When you inject a logger, it writes `debug` records when
+validation starts, `info` records when validation succeeds, and `error` records when validation
+fails. Records include the operation and safe result context. Records exclude input values and
+error messages.
+
+Inject a logger when you want to control its level, format, or transports:
+
+```js
+const logger = createLogger({ level: "debug", format: "json" });
+const bundle = validateBundle(input, { logger });
+```
+
+The logger supports `error`, `warn`, `info`, `http`, `verbose`, `debug`, and `silly` levels.
 
 ## Validate a bundle
 
@@ -114,4 +130,4 @@ The validator checks data only. Your application must authenticate senders, enfo
 
 This package validates data. It does not fetch bundles, open a WebSocket, select routes, create a SQL client, drain nodes, or reconnect clients. The consuming application owns those actions.
 
-The package has no supported runtime options or environment variables.
+The validators support a logger option. The package reads no environment variables.

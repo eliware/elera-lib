@@ -35,7 +35,7 @@ Install version 15 with `npm install @eliware/elera-lib@15`.
 
 ## Usage
 
-Import `validateBundle` or `validateRoutingEvent` from `@eliware/elera-lib`. Read the [documentation index](docs/README.md) for API details, [release notes](RELEASE_NOTES.md) for changes, and [specifications](specs/README.md) for package contracts.
+Import `validateBundle` or `validateRoutingEvent` from `@eliware/elera-lib`. Pass a logger from `@eliware/log` as the second argument to record validation results. Read the [documentation index](docs/README.md) for API details, [release notes](RELEASE_NOTES.md) for changes, and [specifications](specs/README.md) for package contracts.
 
 ## Development
 

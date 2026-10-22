@@ -5,6 +5,8 @@ directives:
     dos:
       - Export only validateBundle and validateRoutingEvent from the package root.
       - Keep each public function aligned with its end-user documentation.
+      - Accept an optional logger with the supported @eliware/log levels.
+      - Log validation results with operation context and without input values.
       - Run npm test before each commit.
     donts:
       - Do not expose secrets, tokens, or private data.

@@ -26,8 +26,20 @@ export interface RoutingBundle {
   nodeIdentity: string;
   ports: Record<string, number>;
 }
-export function validateBundle(bundle: unknown): RoutingBundle;
-export function validateRoutingEvent(event: unknown): unknown;
+export interface ValidationLogger {
+  error(message: unknown, metadata?: unknown): unknown;
+  warn(message: unknown, metadata?: unknown): unknown;
+  info(message: unknown, metadata?: unknown): unknown;
+  http(message: unknown, metadata?: unknown): unknown;
+  verbose(message: unknown, metadata?: unknown): unknown;
+  debug(message: unknown, metadata?: unknown): unknown;
+  silly(message: unknown, metadata?: unknown): unknown;
+}
+export interface ValidationOptions {
+  logger?: ValidationLogger;
+}
+export function validateBundle(bundle: unknown, options?: ValidationOptions): RoutingBundle;
+export function validateRoutingEvent(event: unknown, options?: ValidationOptions): unknown;
 export interface RoutingTopologyEvent {
   type: "routing.topology";
   version: number;
