@@ -1,4 +1,4 @@
-version: "13.0"
+version: "15.0"
 description: Defines routing event contracts for @eliware/elera-lib.
 directives:
   - id: E-1320.2

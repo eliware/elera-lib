@@ -1,4 +1,4 @@
-version: "13.0"
+version: "15.0"
 description: Defines the routing bundle contract for @eliware/elera-lib.
 directives:
   - id: E-1320.1

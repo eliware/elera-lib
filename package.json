@@ -1,6 +1,6 @@
 {
   "name": "@eliware/elera-lib",
-  "version": "13.0.0",
+  "version": "15.0.0",
   "type": "module",
   "description": "Shared Elera routing contracts and validation",
   "keywords": [
@@ -45,7 +45,7 @@
     "node": ">=26"
   },
   "devDependencies": {
-    "@eliware/test": "^13.0.0",
+    "@eliware/test": "^15.0.0",
     "@types/node": "^26.6.5",
     "typescript": "^7.0.2"
   },

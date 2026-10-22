@@ -2,7 +2,8 @@
 
 ## Project
 
-Build `@eliware/elera-lib` with Node.js 26 or later and native ESM.
+Eliware maintains `@eliware/elera-lib` for shared Elera routing contracts and validation.
+Use Node.js 26 or later and native ESM.
 
 ## Scope and boundaries
 
@@ -20,7 +21,14 @@ Keep each source module under 100 lines and each test module under 200 lines.
 ## Validation
 
 Run `npm test` for aggregate validation.
-Run `npm run lint`, `npm run audit`, `npm run format`, and `npm run format:check` as separate checks.
+Run `npm run lint` for lint checks.
+Run `npm run audit` for dependency checks.
+Run `npm run format` to format maintained files.
+Run `npm run format:check` to check formatting.
+
+Run `npm run typecheck` to check declarations.
+Run `npm run check` to check the public entry point syntax.
+Run `npm run pack` to check package contents.
 
 ## Security
 
@@ -40,4 +48,6 @@ Run the full `npm test` suite for final validation before a commit, milestone, o
 
 ## npm publication
 
-Include `specs/` in the package. Document installation, entry points, package contents, and release limits in `README.md`.
+Include `specs/` in the package.
+Document installation, entry points, package contents, and release limits in `README.md`.
+Run `npm run pack` before release validation.

@@ -1,22 +1,22 @@
 # Release Notes
 
-## 13.0.0 — 2026-10-19
+## 15.0.0 — 2026-10-21
 
 ### Added
 
-- Expand end-user guides with complete bundle and event examples, validation rules, TypeScript guidance, and troubleshooting steps.
+- Add complete bundle and event examples, field rules, validation limits, TypeScript guidance, and troubleshooting steps to the user guides.
 
 ### Changed
 
-- Update package metadata and routing specifications to version 13.0.0. Refresh Eliware Test and TypeScript development dependencies.
-- Let `validateBundle` accept `unknown` input and return a validated `RoutingBundle`.
-- Align CI, Knit, and npm publication workflows with the version 13 repository conventions.
+- Set the package and specification versions to 15.0.0. Update Eliware Test to 15.0.0.
+- Let `validateBundle` accept `unknown` input and return a validated, detached `RoutingBundle`.
+- Align CI, Knit, and npm publication workflows with the v15 repository conventions.
 
 ### Fixed
 
-- Reject unknown bundle fields before copying input. Reject sparse topology node arrays and array keys that do not name an item.
-- Reject shutdown endpoints that encode private IPv4 addresses as expanded or hexadecimal IPv4-mapped IPv6 literals.
-- Clarify validation limits and endpoint error messages in the user guides.
+- Reject unknown bundle fields before copying input. Reject sparse topology node lists and non-index array keys.
+- Reject shutdown endpoints that encode private IPv4 addresses as IPv4-mapped IPv6 literals.
+- Report serialized byte limits and clarify endpoint error messages.
 
 ## 12.0.0 — 2026-10-14
 

@@ -5,7 +5,7 @@
 Use Node.js 26 or later. Install the package in your ESM project:
 
 ```sh
-npm install @eliware/elera-lib@13
+npm install @eliware/elera-lib@15
 ```
 
 The package uses native ESM and exposes no CommonJS entrypoint. It has no runtime dependencies. It reads no environment variables. It opens no network or database connections.
@@ -78,7 +78,7 @@ The function returns a detached, validated event. It throws `TypeError` for an u
 
 The package includes declarations for `RoutingNode`, `RoutingBundle`, `RoutingTopologyEvent`, and both public functions. Import the functions and types from the package root.
 
-`validateBundle` accepts and returns `RoutingBundle`. `validateRoutingEvent` accepts `unknown` and returns `unknown`. Narrow the event result by its `type` field before you read event-specific fields.
+`validateBundle` accepts `unknown` and returns a validated `RoutingBundle`. `validateRoutingEvent` accepts and returns `unknown`. Narrow the event result by its `type` field before you read event-specific fields.
 
 ```ts
 import { validateRoutingEvent, type RoutingTopologyEvent } from "@eliware/elera-lib";

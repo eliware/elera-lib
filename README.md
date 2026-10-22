@@ -31,7 +31,7 @@ Use Node.js 26 or later.
 
 ## Setup
 
-Install the public package with `npm install @eliware/elera-lib`.
+Install version 15 with `npm install @eliware/elera-lib@15`.
 
 ## Usage
 
