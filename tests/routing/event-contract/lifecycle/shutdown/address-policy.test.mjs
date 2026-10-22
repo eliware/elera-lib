@@ -10,6 +10,7 @@ test("blocks local and unspecified names and alternate IP literals", () => {
     "localhost.",
     "service.local",
     "0.0.0.0",
+    "255.255.255.255",
     "[::]",
     "0x7f000001",
     "0177",
